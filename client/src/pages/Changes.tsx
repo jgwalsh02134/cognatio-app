@@ -152,8 +152,9 @@ function download(filename: string, content: string, mime: string) {
 }
 
 export default function Changes() {
-  const { unlocked, pending, discard, discardAll, count } = useEdit();
+  const { unlocked, passcode, pending, discard, discardAll, count } = useEdit();
   const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null);
+  const [archiveAvailable, setArchiveAvailable] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -167,10 +168,44 @@ export default function Changes() {
       .catch(() => {
         if (!cancelled) setBackendAvailable(false);
       });
+    fetch("/api/archive/status")
+      .then((r) => (r.ok ? r.json() : { enabled: false }))
+      .then((j) => {
+        if (!cancelled) setArchiveAvailable(!!j.enabled);
+      })
+      .catch(() => {
+        if (!cancelled) setArchiveAvailable(false);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  async function saveToArchive() {
+    if (!passcode) {
+      setSaveError("Unlock edit mode first so the save can be authenticated.");
+      return;
+    }
+    setSaving(true);
+    setSaveError(null);
+    setSavedMessage(null);
+    try {
+      const r = await fetch("/api/archive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-edit-passcode": passcode },
+        body: JSON.stringify({ patches: pending }),
+      });
+      const json = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(json.error || `Server responded ${r.status}`);
+      setSavedMessage("Saved permanently. Reloading to apply the changes…");
+      discardAll();
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function saveToBackend() {
     setSaving(true);
@@ -237,8 +272,19 @@ export default function Changes() {
 
       {count > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
+          {archiveAvailable && (
+            <Button
+              onClick={saveToArchive}
+              disabled={saving}
+              data-testid="button-save-permanent"
+              className="gap-2"
+            >
+              <Save className="h-4 w-4" /> {saving ? "Saving…" : "Save permanently"}
+            </Button>
+          )}
           {backendAvailable && (
             <Button
+              variant={archiveAvailable ? "outline" : "default"}
               onClick={saveToBackend}
               disabled={saving}
               data-testid="button-save-disk"
@@ -299,11 +345,22 @@ export default function Changes() {
         </div>
       )}
 
-      {backendAvailable === false && count > 0 && (
+      {archiveAvailable && count > 0 && (
+        <div className="mb-4 flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
+          <Save className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+          <span>
+            <strong className="text-foreground">Save permanently</strong> writes these edits to the server
+            database. They&rsquo;ll appear for everyone on this site after the page reloads — no download or
+            rebuild needed.
+          </span>
+        </div>
+      )}
+
+      {backendAvailable === false && archiveAvailable === false && count > 0 && (
         <div className="mb-4 flex items-start gap-2 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
           <Download className="h-4 w-4 mt-0.5 shrink-0" />
           <span>
-            No local backend detected. Use the download buttons to grab a new <code>data.json</code> or an
+            No save backend detected. Use the download buttons to grab a new <code>data.json</code> or an
             <code> apply_changes.py</code> patch script you can run in your repo.
           </span>
         </div>

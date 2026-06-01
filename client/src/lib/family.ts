@@ -72,7 +72,32 @@ export interface TreeData {
   };
 }
 
-const data = dataJson as TreeData;
+declare global {
+  interface Window {
+    /** Saved edit overlay (personId -> partial patch), hydrated in main.tsx
+     *  from GET /api/archive before this module evaluates. */
+    __ARCHIVE_PATCHES__?: Record<string, Partial<Person>>;
+  }
+}
+
+/**
+ * Merge any server-saved edit overlay over the baked dataset. The overlay is
+ * fetched in main.tsx (Postgres-backed, Railway only) before the app mounts;
+ * on static hosts there is none and the baked data is used unchanged.
+ */
+function applyOverlay(base: TreeData): TreeData {
+  const patches =
+    typeof window !== "undefined" ? window.__ARCHIVE_PATCHES__ : undefined;
+  if (!patches || Object.keys(patches).length === 0) return base;
+  return {
+    ...base,
+    individuals: base.individuals.map((p) =>
+      patches[p.id] ? ({ ...p, ...patches[p.id] } as Person) : p,
+    ),
+  };
+}
+
+const data = applyOverlay(dataJson as TreeData);
 
 export const people: Person[] = data.individuals;
 export const families: Family[] = data.families;

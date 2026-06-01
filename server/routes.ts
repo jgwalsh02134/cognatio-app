@@ -6,6 +6,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { storage } from "./storage";
+import { archiveEnabled, getOverlay, mergeOverlay } from "./archive";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
 // so this becomes `<root>/client/src/data.json`. The endpoint only writes when
@@ -38,14 +39,23 @@ function rateLimited(ip: string): boolean {
   return recent.length > RL_MAX;
 }
 
-/** Constant-time passphrase check against AI_ACCESS_PASSCODE (default "2846"). */
-function passcodeOk(provided: string | undefined | null): boolean {
-  const expected = process.env.AI_ACCESS_PASSCODE || "2846";
+/** Constant-time comparison of a provided secret against an expected value. */
+function secretMatches(provided: string | undefined | null, expected: string): boolean {
   if (!provided) return false;
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
   if (a.length !== b.length) return false;
   return crypto.timingSafeEqual(a, b);
+}
+
+/** AI proxy passphrase (default "2846"). */
+function passcodeOk(provided: string | undefined | null): boolean {
+  return secretMatches(provided, process.env.AI_ACCESS_PASSCODE || "2846");
+}
+
+/** Edit-save passphrase — the family editor passphrase (default "2846"). */
+function editPasscodeOk(provided: string | undefined | null): boolean {
+  return secretMatches(provided, process.env.DATA_WRITE_PASSCODE || "2846");
 }
 
 export async function registerRoutes(
@@ -144,6 +154,58 @@ export async function registerRoutes(
         res.status(502).json({
           error: { message: e instanceof Error ? e.message : "Upstream AI error" },
         });
+      }
+    },
+  );
+
+  // ----- Persistent edit overlay (Postgres) ------------------------------
+
+  // Tells the client whether server-side permanent saving is available.
+  app.get("/api/archive/status", (_req: Request, res: Response) => {
+    res.json({ enabled: archiveEnabled() });
+  });
+
+  // Public read: the saved overlay (personId -> partial patch). The client
+  // merges this over the baked dataset at startup. Returns {} on any failure
+  // so the site always loads.
+  app.get("/api/archive", async (_req: Request, res: Response) => {
+    const patches = await getOverlay();
+    res.json({ patches });
+  });
+
+  // Passphrase-gated write: merge the submitted patches into the stored overlay.
+  app.post(
+    "/api/archive",
+    express.json({ limit: "10mb" }),
+    async (req: Request, res: Response) => {
+      if (!archiveEnabled()) {
+        return res
+          .status(503)
+          .json({ error: "Permanent saving is not configured on this server." });
+      }
+      if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+        return res
+          .status(401)
+          .json({ error: "Invalid or missing edit passphrase." });
+      }
+      const body = req.body as { patches?: unknown };
+      if (
+        !body ||
+        typeof body.patches !== "object" ||
+        body.patches === null ||
+        Array.isArray(body.patches)
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Body must be { patches: { [personId]: { ...fields } } }." });
+      }
+      try {
+        const result = await mergeOverlay(body.patches as Record<string, Record<string, unknown>>);
+        res.json({ ok: true, ...result });
+      } catch (e) {
+        res
+          .status(500)
+          .json({ error: e instanceof Error ? e.message : "Save failed" });
       }
     },
   );

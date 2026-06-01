@@ -45,6 +45,12 @@ interface EditContextValue {
   unlocked: boolean;
   unlock: (passphrase: string) => Promise<boolean>;
   lock: () => void;
+  /**
+   * The plaintext passphrase entered at unlock, kept in memory for the session
+   * so authenticated saves can send it to the server (POST /api/archive). Null
+   * when locked. Never persisted.
+   */
+  passcode: string | null;
   pending: Record<string, PersonPatch>;
   setPatch: (id: string, patch: PersonPatch) => void;
   discard: (id: string) => void;
@@ -67,12 +73,15 @@ async function sha256(input: string): Promise<string> {
 
 export function EditProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
+  const [passcode, setPasscode] = useState<string | null>(null);
   const [pending, setPending] = useState<Record<string, PersonPatch>>({});
 
   const unlock = useCallback(async (passphrase: string) => {
-    const hash = await sha256(passphrase.trim());
+    const trimmed = passphrase.trim();
+    const hash = await sha256(trimmed);
     if (hash === EDIT_PASSPHRASE_HASH) {
       setUnlocked(true);
+      setPasscode(trimmed);
       return true;
     }
     return false;
@@ -80,6 +89,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
 
   const lock = useCallback(() => {
     setUnlocked(false);
+    setPasscode(null);
   }, []);
 
   const setPatch = useCallback((id: string, patch: PersonPatch) => {
@@ -142,6 +152,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
       unlocked,
       unlock,
       lock,
+      passcode,
       pending,
       setPatch,
       discard,
@@ -150,7 +161,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
       hasChanges,
       merge,
     }),
-    [unlocked, unlock, lock, pending, setPatch, discard, discardAll, count, hasChanges, merge],
+    [unlocked, unlock, lock, passcode, pending, setPatch, discard, discardAll, count, hasChanges, merge],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
