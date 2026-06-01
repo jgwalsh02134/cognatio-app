@@ -6,6 +6,9 @@ import { serveStatic } from "./static";
 import { createServer } from "node:http";
 
 const app = express();
+// Behind Railway's proxy, trust X-Forwarded-For so req.ip is the real client
+// IP (used by the AI proxy's per-IP rate limiter).
+app.set("trust proxy", 1);
 const httpServer = createServer(app);
 
 declare module "http" {

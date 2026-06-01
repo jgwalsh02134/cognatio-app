@@ -34,9 +34,10 @@ import {
   useAI,
   type ChatMessage,
 } from "@/components/AIContext";
+import type { AiMode } from "@/components/AIContext";
 import { useEdit } from "@/components/EditContext";
 import { Textarea } from "@/components/ui/textarea";
-import { chat, buildArchiveSummary } from "@/lib/openai";
+import { chat, buildArchiveSummary, type AiAuth } from "@/lib/openai";
 import { people, getPerson, fullDisplayName } from "@/lib/family";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +48,9 @@ import { cn } from "@/lib/utils";
  */
 export function AIChat() {
   const {
-    apiKey,
+    aiMode,
+    aiReady,
+    getAuth,
     openKeyDialog,
     chatOpen,
     setChatOpen,
@@ -147,12 +150,12 @@ export function AIChat() {
             </div>
           </header>
 
-          {!apiKey ? (
-            <ConnectKeyEmpty onConnect={openKeyDialog} />
+          {!aiReady ? (
+            <ConnectKeyEmpty mode={aiMode} onConnect={openKeyDialog} />
           ) : (
             <ChatBody
               archiveSummary={archiveSummary}
-              apiKey={apiKey}
+              getAuth={getAuth}
               model={chatModel}
               history={chatHistory}
               appendChat={appendChat}
@@ -215,28 +218,39 @@ function ModelPicker({
   );
 }
 
-function ConnectKeyEmpty({ onConnect }: { onConnect: () => void }) {
+function ConnectKeyEmpty({
+  mode,
+  onConnect,
+}: {
+  mode: AiMode;
+  onConnect: () => void;
+}) {
+  const proxy = mode === "proxy";
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
       <div className="rounded-full bg-primary/10 p-3 mb-3">
         <KeyRound className="h-5 w-5 text-primary" />
       </div>
       <h3 className="font-display text-base font-semibold">
-        Connect OpenAI to chat
+        {proxy ? "Unlock AI to chat" : "Connect OpenAI to chat"}
       </h3>
       <p className="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xs">
-        Chat sends a compact summary of every person in this archive to your
+        Chat sends a compact summary of every person in this archive to the
         chosen OpenAI model, with built-in web search when fresh facts are
-        needed. The key is held only in this browser tab.
+        needed.{" "}
+        {proxy
+          ? "Enter the family access passphrase to unlock it."
+          : "The key is held only in this browser tab."}
       </p>
       <Button
         onClick={onConnect}
         className="mt-4"
         size="sm"
         data-testid="ai-chat-connect"
+        disabled={mode === "loading"}
       >
         <KeyRound className="h-3.5 w-3.5 mr-1.5" />
-        Add OpenAI key
+        {proxy ? "Enter passphrase" : "Add OpenAI key"}
       </Button>
     </div>
   );
@@ -260,7 +274,7 @@ function defaultPrompts(personName: string | null): string[] {
 
 function ChatBody({
   archiveSummary,
-  apiKey,
+  getAuth,
   model,
   history,
   appendChat,
@@ -269,7 +283,7 @@ function ChatBody({
   currentPersonName,
 }: {
   archiveSummary: string;
-  apiKey: string;
+  getAuth: () => AiAuth | null;
   model: string;
   history: ChatMessage[];
   appendChat: (m: ChatMessage) => void;
@@ -289,6 +303,8 @@ function ChatBody({
   async function send(content?: string, replaceHistoryTo?: number) {
     const text = (content ?? draft).trim();
     if (!text || sending) return;
+    const auth = getAuth();
+    if (!auth) return;
     setSending(true);
     setDraft("");
 
@@ -312,7 +328,7 @@ function ChatBody({
 
     try {
       const result = await chat({
-        apiKey,
+        auth,
         model,
         contextBlock: archiveSummary,
         history: baseHistory.map((h) => ({

@@ -4,6 +4,7 @@ import { createServer } from "node:http";
 import type { Server } from "node:http";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { storage } from "./storage";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
@@ -11,6 +12,41 @@ import { storage } from "./storage";
 // the file already exists (i.e. we're inside the source checkout), so it's a
 // no-op in production bundles where the file isn't shipped alongside the server.
 const DATA_PATH = path.resolve(process.cwd(), "client/src/data.json");
+
+// ---------------------------------------------------------------------------
+// AI proxy gate
+//
+// When OPENAI_API_KEY is set on the server, the browser can use AI features
+// WITHOUT supplying their own key — calls are proxied through here so the key
+// never reaches the client. Access is gated by a shared passphrase
+// (AI_ACCESS_PASSCODE, default "2846" — the family editor passphrase) checked
+// on every request, plus a simple in-memory per-IP rate limit to cap spend.
+// ---------------------------------------------------------------------------
+
+const OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses";
+
+/** Sliding-window per-IP limiter. Tunable via AI_RATE_PER_MIN (default 20). */
+const RL_WINDOW_MS = 60_000;
+const RL_MAX = Math.max(1, parseInt(process.env.AI_RATE_PER_MIN || "20", 10));
+const rlHits = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (rlHits.get(ip) ?? []).filter((t) => now - t < RL_WINDOW_MS);
+  recent.push(now);
+  rlHits.set(ip, recent);
+  return recent.length > RL_MAX;
+}
+
+/** Constant-time passphrase check against AI_ACCESS_PASSCODE (default "2846"). */
+function passcodeOk(provided: string | undefined | null): boolean {
+  const expected = process.env.AI_ACCESS_PASSCODE || "2846";
+  if (!provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -55,6 +91,62 @@ export async function registerRoutes(
         .json({ error: e instanceof Error ? e.message : "Unknown server error" });
     }
   });
+
+  // ----- AI proxy ---------------------------------------------------------
+
+  // Lets the client discover whether server-side AI is available. When false
+  // (e.g. static/disk builds, or no key set), the client falls back to its
+  // bring-your-own-OpenAI-key flow.
+  app.get("/api/ai/status", (_req: Request, res: Response) => {
+    res.json({ enabled: !!process.env.OPENAI_API_KEY });
+  });
+
+  // Passphrase-gated proxy to the OpenAI Responses API. The server's key is
+  // never exposed to the browser.
+  app.post(
+    "/api/ai/responses",
+    express.json({ limit: "1mb" }),
+    async (req: Request, res: Response) => {
+      const key = process.env.OPENAI_API_KEY;
+      if (!key) {
+        return res
+          .status(503)
+          .json({ error: { message: "AI is not configured on this server." } });
+      }
+
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
+      if (rateLimited(ip)) {
+        return res.status(429).json({
+          error: { message: "Too many AI requests — wait a minute and try again." },
+        });
+      }
+
+      if (!passcodeOk(req.header("x-ai-passcode"))) {
+        return res
+          .status(401)
+          .json({ error: { message: "Invalid or missing access passphrase." } });
+      }
+
+      try {
+        const upstream = await fetch(OPENAI_RESPONSES_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${key}`,
+          },
+          body: JSON.stringify(req.body ?? {}),
+        });
+        // Pass the upstream body & status straight through (it's already in the
+        // shape the client's openai.ts expects, including { error: { message } }).
+        const text = await upstream.text();
+        res.status(upstream.status).type("application/json").send(text);
+      } catch (e) {
+        res.status(502).json({
+          error: { message: e instanceof Error ? e.message : "Upstream AI error" },
+        });
+      }
+    },
+  );
 
   // Keep referencing storage so the import isn't tree-shaken / linted away.
   void storage;

@@ -1,12 +1,15 @@
 /**
  * Browser-side OpenAI helpers for per-person research and chat.
  *
- * Uses the Responses API (https://api.openai.com/v1/responses) so we can attach
- * the built-in `web_search` tool — the same approach analyze_archive.py uses
- * server-side. CORS is enabled for browser requests on this endpoint when an
- * API key is sent in the Authorization header.
+ * Uses the Responses API so we can attach the built-in `web_search` tool — the
+ * same approach analyze_archive.py uses server-side.
  *
- * The user's API key is held in React state (AIContext) for the session only.
+ * Two auth modes (see AiAuth):
+ *  - "direct": the user supplied their own OpenAI key; we call OpenAI directly
+ *    with an Authorization header. Works on static/disk builds.
+ *  - "proxy": a server holds the key (e.g. OPENAI_API_KEY on Railway); we call
+ *    our own /api/ai/responses endpoint with a shared access passphrase. The
+ *    key never reaches the browser.
  */
 import type {
   PersonWebFinding,
@@ -14,7 +17,29 @@ import type {
 } from "@/components/WebFindingsCard";
 import type { Person } from "@/lib/family";
 
-const ENDPOINT = "https://api.openai.com/v1/responses";
+/** How an AI request authenticates. */
+export type AiAuth =
+  | { mode: "direct"; apiKey: string }
+  | { mode: "proxy"; passcode: string };
+
+const OPENAI_ENDPOINT = "https://api.openai.com/v1/responses";
+const PROXY_ENDPOINT = "/api/ai/responses";
+
+/**
+ * Ask the server whether it has a key configured (passphrase-gated proxy mode).
+ * Returns false on any failure — including static deployments with no server,
+ * where the client falls back to bring-your-own-key direct mode.
+ */
+export async function checkServerAI(signal?: AbortSignal): Promise<boolean> {
+  try {
+    const res = await fetch("/api/ai/status", { signal });
+    if (!res.ok) return false;
+    const json = (await res.json()) as { enabled?: boolean };
+    return !!json.enabled;
+  } catch {
+    return false;
+  }
+}
 /**
  * Default model. As of mid-2026 OpenAI's current tiers are gpt-5.5 (flagship),
  * gpt-5.4, gpt-5.4-mini (strong mini), and gpt-5.4-nano. The gpt-4o family is
@@ -65,16 +90,22 @@ interface ResponsesApiResult {
 }
 
 async function callResponsesApi(
-  apiKey: string,
+  auth: AiAuth,
   body: ResponsesApiBody,
   signal?: AbortSignal,
 ): Promise<ResponsesApiResult> {
-  const res = await fetch(ENDPOINT, {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  let url: string;
+  if (auth.mode === "proxy") {
+    url = PROXY_ENDPOINT;
+    headers["x-ai-passcode"] = auth.passcode;
+  } else {
+    url = OPENAI_ENDPOINT;
+    headers["Authorization"] = `Bearer ${auth.apiKey}`;
+  }
+  const res = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
+    headers,
     body: JSON.stringify(body),
     signal,
   });
@@ -118,13 +149,13 @@ function extractCitations(resp: ResponsesApiResult): UrlCitation[] {
 /** Try the `web_search` tool first, fall back to `web_search_preview` on
  *  unsupported-tool errors so older keys / regions still work. */
 async function callWithWebSearch(
-  apiKey: string,
+  auth: AiAuth,
   baseBody: Omit<ResponsesApiBody, "tools">,
   signal?: AbortSignal,
 ): Promise<ResponsesApiResult> {
   try {
     return await callResponsesApi(
-      apiKey,
+      auth,
       { ...baseBody, tools: [{ type: "web_search" }] },
       signal,
     );
@@ -136,7 +167,7 @@ async function callWithWebSearch(
       msg.includes("not supported")
     ) {
       return await callResponsesApi(
-        apiKey,
+        auth,
         { ...baseBody, tools: [{ type: "web_search_preview" }] },
         signal,
       );
@@ -300,13 +331,13 @@ const ALLOWED_FIELDS = new Set<WebFindingField>([
 ]);
 
 export async function researchPerson(opts: {
-  apiKey: string;
+  auth: AiAuth;
   person: Person;
   nameById: Map<string, string>;
   model?: string;
   signal?: AbortSignal;
 }): Promise<PersonWebFinding> {
-  const { apiKey, person, nameById, model = DEFAULT_MODEL, signal } = opts;
+  const { auth, person, nameById, model = DEFAULT_MODEL, signal } = opts;
   const gaps = coreGaps(person);
   const anchors = personAnchors(person, nameById);
   const userMsg =
@@ -327,7 +358,7 @@ export async function researchPerson(opts: {
     text: { format: PERSON_SCHEMA },
     temperature: 0.2,
   };
-  const resp = await callWithWebSearch(apiKey, body, signal);
+  const resp = await callWithWebSearch(auth, body, signal);
   const text = extractText(resp);
   if (!text) {
     return {
@@ -400,14 +431,14 @@ export interface ChatResult {
 }
 
 export async function chat(opts: {
-  apiKey: string;
+  auth: AiAuth;
   contextBlock: string;
   history: ChatTurn[];
   userMessage: string;
   model?: string;
   signal?: AbortSignal;
 }): Promise<ChatResult> {
-  const { apiKey, contextBlock, history, userMessage, model = DEFAULT_MODEL, signal } = opts;
+  const { auth, contextBlock, history, userMessage, model = DEFAULT_MODEL, signal } = opts;
   const systemContent =
     `${CHAT_SYSTEM_PROMPT}\n\n` +
     `--- FAMILY DATA (compact summary; refer to people by name + ID) ---\n` +
@@ -424,7 +455,7 @@ export async function chat(opts: {
     input,
     temperature: 0.3,
   };
-  const resp = await callWithWebSearch(apiKey, body, signal);
+  const resp = await callWithWebSearch(auth, body, signal);
   const text = extractText(resp) || "(no response)";
   const cites = extractCitations(resp);
   // Deduplicate by URL

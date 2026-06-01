@@ -31,7 +31,7 @@ const STATIC = researchSuggestionsRaw as StaticResearch;
  * The button works for any signed-in OpenAI key; no key → opens ApiKeyDialog.
  */
 export function FindMissingInfo({ person }: { person: Person }) {
-  const { apiKey, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
+  const { aiMode, aiReady, getAuth, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
   const [error, setError] = useState<string | null>(null);
 
   const gaps = useMemo(() => getGaps(person), [person]);
@@ -42,7 +42,8 @@ export function FindMissingInfo({ person }: { person: Person }) {
 
   async function run() {
     if (placeholder) return; // hard guard — nothing useful to send
-    if (!apiKey) {
+    const auth = getAuth();
+    if (!auth) {
       openKeyDialog();
       return;
     }
@@ -52,7 +53,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
       // Compact id → name lookup so the model can reason about parents/spouses.
       const lookup = new Map<string, string>();
       for (const p of people) lookup.set(p.id, p.name);
-      const result = await researchPerson({ apiKey, person, nameById: lookup });
+      const result = await researchPerson({ auth, person, nameById: lookup });
       setResearched(person.id, result);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Research failed");
@@ -132,7 +133,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
               <RotateCw className="h-3.5 w-3.5 mr-1.5" />
               Re-run research
             </>
-          ) : apiKey ? (
+          ) : aiReady ? (
             <>
               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
               Find missing info
@@ -140,7 +141,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
           ) : (
             <>
               <KeyRound className="h-3.5 w-3.5 mr-1.5" />
-              Connect OpenAI to research
+              {aiMode === "proxy" ? "Enter passphrase to research" : "Connect OpenAI to research"}
             </>
           )}
         </Button>
@@ -168,9 +169,11 @@ export function FindMissingInfo({ person }: { person: Person }) {
       ) : (
         !isBusy && (
           <p className="text-xs text-muted-foreground leading-relaxed">
-            {apiKey
+            {aiReady
               ? "Click \"Find missing info\" to send this person's anchors to OpenAI. The model will search the open web (FindAGrave, obituaries, census, parish records) and return structured suggestions with source URLs."
-              : "Provide your OpenAI key once per session to enable per-person web research. Findings will appear here with source URLs you can click straight into."}
+              : aiMode === "proxy"
+                ? "Enter the family access passphrase to enable per-person web research. Findings will appear here with source URLs you can click straight into."
+                : "Provide your OpenAI key once per session to enable per-person web research. Findings will appear here with source URLs you can click straight into."}
           </p>
         )
       )}
