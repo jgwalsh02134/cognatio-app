@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="1000"
+   height="1900"
+   id="svg2">
+  <defs
+     id="defs4" />
+  <rect
+     width="1000"
+     height="1900"
+     x="0"
+     y="0"
+     style="fill:#bf0a30"
+     id="rect1307" />
+  <rect
+     width="500"
+     height="1200"
+     x="250"
+     y="350"
+     style="fill:#ffffff"
+     id="rect3057" />
+  <path
+     d="M 115.95324,931.45625 L 83.805969,908.15758 L 51.711795,931.52934 L 63.936092,893.75578 L 31.790582,870.45468 L 71.492888,870.408 L 83.720044,832.63537 L 96.033121,870.38008 L 135.73543,870.33641 L 103.64302,893.7106 L 115.95324,931.45625 z "
+     transform="matrix(2.8861459,0,0,2.8861459,258.24774,-1595.8184)"
+     style="opacity:1;fill:#002868;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path2166" />
+  <path
+     d="M 115.95324,931.45625 L 83.805969,908.15758 L 51.711795,931.52934 L 63.936092,893.75578 L 31.790582,870.45468 L 71.492888,870.408 L 83.720044,832.63537 L 96.033121,870.38008 L 135.73543,870.33641 L 103.64302,893.7106 L 115.95324,931.45625 z "
+     transform="matrix(2.5975313,0,0,2.5975313,282.42297,-1339.8366)"
+     style="opacity:1;fill:#ffd700;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path3139" />
+</svg>

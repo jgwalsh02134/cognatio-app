@@ -1,0 +1,122 @@
+# Cursor / AI Assistant Rules — Walsh · Maloy · Dugan Family Archive
+
+You are working on a **static** React + Vite + TypeScript genealogy site.
+The full archive ships as a single `client/src/data.json` baked into the
+bundle. There is no backend, no database, no runtime API.
+
+Read `CLAUDE.md` at the repo root for the full project guide before making
+any non-trivial change. This file is a fast checklist of the rules that
+most often get violated.
+
+## Hard rules — never break these
+
+1. **Never use `localStorage`, `sessionStorage`, `indexedDB`, or cookies.**
+   The site runs inside a sandboxed iframe in production where these APIs
+   are blocked and will crash the page. Use React state or context for
+   transient data. Persistent data lives in `client/src/data.json` only.
+
+2. **Hash routing only.** Routing uses `wouter` with `useHashLocation`.
+   Routes are `/#/`, `/#/people`, `/#/person/:id`, `/#/tree`, `/#/gaps`,
+   `/#/export`, `/#/changes`. Do NOT use BrowserRouter or path-based
+   routing — the site is served from static hosts where path routing 404s.
+
+3. **`text-xl` is the maximum heading size.** Never use `text-2xl` or
+   above anywhere in this app. The aesthetic is restrained and editorial.
+
+4. **Preserve the `t0:` / `t1:` ID namespacing on every person/family ID.**
+   These prefixes distinguish the two source GEDCOMs (Walsh+Maloy+Dugan
+   vs Cranwell) and link relatives across them.
+
+5. **AI features are trusted-family-only.** The OpenAI API key lives in
+   session memory only (never persisted) and is gated behind the editor
+   passphrase.
+
+6. **Editor passphrase plaintext is `2846`.** The SHA-256 hash lives in
+   `client/src/components/EditContext.tsx` as `EDIT_PASSPHRASE_HASH`. To
+   rotate, recompute with:
+   ```bash
+   python3 -c "import hashlib; print(hashlib.sha256(b'NEW').hexdigest())"
+   ```
+
+7. **No emoji in UI copy unless explicitly requested.**
+
+8. **Never say "scrape" or "scraping"** — say "collect", "gather", "read",
+   or "fetch".
+
+## Project layout
+
+```
+client/src/
+  App.tsx                 ← Router providers + route table
+  data.json               ← THE source of truth (~324 individuals, ~113 families)
+  lib/
+    family.ts             ← typed dataset loader; exports `people`, `families`, `stats`, `getPerson`, etc.
+    gedcomExport.ts       ← client-side GEDCOM 5.5.1 builder
+    openai.ts             ← Responses API + web_search wrapper
+    researchLinks.ts      ← Ancestry/FamilySearch URL helpers
+  pages/
+    Home.tsx              ← hero, stats, heraldry, on-this-day, charts
+    PeopleList.tsx        ← searchable index
+    PersonDetail.tsx      ← profile + Find Missing Info AI button
+    TreeView.tsx          ← interactive node graph
+    Gaps.tsx              ← research-gap dashboard
+    Export.tsx            ← GEDCOM / CSV export
+    Changes.tsx           ← edit diff review
+  components/
+    AppShell.tsx          ← header/footer/nav
+    AIChat.tsx            ← floating chat drawer (Markdown rendered)
+    AIContext.tsx         ← session-only key + findings + chat history
+    EditContext.tsx       ← passphrase + edit state
+    WebFindingsCard.tsx   ← shared AI findings UI
+    FindMissingInfo.tsx   ← per-profile research button
+    ScrollToTop.tsx       ← resets window scroll on every route change
+```
+
+## Common tasks
+
+| Task | Command |
+|---|---|
+| Install | `npm install` |
+| Dev (Vite hot reload) | `npm run dev` → http://localhost:5173 |
+| Production build | `rm -rf dist/public && npm run build` |
+| Preview built site | `npx serve dist/public` |
+| Type-check only | `npx tsc --noEmit` |
+| Regenerate GEDCOM | `python3 export_gedcom.py` |
+| Apply affiliation patch | edit + run `python3 patch_affiliations.py` |
+| Apply military patch | edit + run `python3 patch_military.py` |
+
+Force a clean build (delete `dist/public` first) when **small SVGs (<4 KB)
+change** — Vite inlines them as data-URIs and incremental builds skip
+re-inlining sometimes.
+
+## Mirroring to the JG3 fork
+
+This repo (Walsh · Maloy · Dugan) has a sibling fork at `../family-tree-jgwalsh`
+called **Walsh · Cranwell**. Differences are intentional and minimal:
+
+- AppShell.tsx title says "Walsh · Cranwell" (not "Walsh · Maloy · Dugan")
+- GEDCOM filename uses `walsh_cranwell_archive_*` (not `walsh_maloy_dugan_archive_*`)
+- Everything else (components, libs, pages, design) should match.
+
+When you make a change here, **mirror it to the fork** unless told otherwise.
+
+## Design system quick reference
+
+- **Type:** Serif display (`font-serif`) for proper-noun headings + body
+  sans. Max heading `text-xl`. Body `text-sm` / `text-base`.
+- **Color:** HSL CSS variables in `client/src/index.css`. Light + dark
+  themes via `.dark` class on `<html>`. Use semantic tokens
+  (`bg-background`, `text-foreground`, `text-muted-foreground`,
+  `border-border`) — not raw color names.
+- **Spacing:** 4 / 6 / 8 / 12 rhythm. Generous whitespace.
+- **Components:** shadcn/ui under `@/components/ui/*`. Icons from
+  `lucide-react`.
+
+## Useful imports
+
+```ts
+import { people, stats, getPerson, fullDisplayName, parseYear, lifespan } from "@/lib/family";
+import { Link, useLocation } from "wouter";
+import { useAI } from "@/components/AIContext";
+import { useEdit } from "@/components/EditContext";
+```

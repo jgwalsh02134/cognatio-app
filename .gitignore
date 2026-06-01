@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.vite/
+
+# Local SQLite dev artifacts (legacy server, not used in static build)
+data.db
+data.db-shm
+data.db-wal
+
+# Secrets — must never be committed
+.env
+.env.local
+.env.*.local
+*.pem

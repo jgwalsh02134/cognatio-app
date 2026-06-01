@@ -1,0 +1,585 @@
+{
+  "generated_at": "2026-05-24T22:10:03Z",
+  "model": "seed+deterministic",
+  "web_findings": {
+    "t0:I29550081035": {
+      "findings": [
+        {
+          "field": "birth_date",
+          "suggested_value": "29 May 1955",
+          "confidence": "high",
+          "reasoning": "Parker Bros funeral home obituary explicitly states 'Born in Troy on May 29, 1955'. Matches the death year 2013 anchor.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "birth_place",
+          "suggested_value": "Troy, Rensselaer, New York, USA",
+          "confidence": "high",
+          "reasoning": "Same obituary states 'Born in Troy'. Matches NY anchor.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "death_place",
+          "suggested_value": "Clifton Park, Saratoga, New York, USA",
+          "confidence": "high",
+          "reasoning": "Obituary heading: 'CLIFTON PARK — Joseph P. Patrizio, 58, died peacefully Tuesday evening, July 16, 2013 at his home'. Matches d.2013 anchor.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "parents_father",
+          "suggested_value": "Michael J. Patrizio",
+          "confidence": "high",
+          "reasoning": "Obituary lists 'son of the late Michael J. and Louise H. Gongoleski Patrizio'.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "parents_mother",
+          "suggested_value": "Louise H. Gongoleski",
+          "confidence": "high",
+          "reasoning": "Obituary lists 'Louise H. Gongoleski Patrizio' as his mother.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "occupation",
+          "suggested_value": "Welder at GE Silicones / Momentive Performance Materials (30+ years)",
+          "confidence": "high",
+          "reasoning": "Obituary: 'employed by GE Silicones and later by Momentive Performance Materials in Waterford for over 30 years as a welder'.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        },
+        {
+          "field": "education",
+          "suggested_value": "A.A.S. in Welding, Hudson Valley Community College",
+          "confidence": "high",
+          "reasoning": "Obituary: 'graduated from Hudson Valley Community College with an A.A.S. degree in Welding'. Also attended Shaker High School.",
+          "source_title": "Joseph Patrizio Obituary — Parker Bros. Memorial",
+          "source_url": "https://parkerbrosmemorial.com/book-of-memories/1634036/patrizio-joseph/share-photos.php"
+        }
+      ],
+      "narrative": "Joseph P. Patrizio (1955-2013) of Clifton Park, NY. Married Kathleen M. Dugan (38 years) — this is the family connection to the Dugan line via Raymond and Margaret Dugan. He was a welder at GE Silicones/Momentive for 30+ years, NASCAR fan, son of Michael J. and Louise H. (Gongoleski) Patrizio.",
+      "search_log": "Verified via Parker Bros. Memorial obituary page."
+    },
+    "t0:I372118911125": {
+      "findings": [
+        {
+          "field": "birth_place",
+          "suggested_value": "New Rochelle, Westchester, New York, USA",
+          "confidence": "high",
+          "reasoning": "Five Families genealogy page states 'Grenville Temple Keogh was born on 19 March 1922 in New Rochelle, Westchester County, New York'. Matches our 1922 birth year anchor and matches spouse Jane (Haupt) Keogh and child Anthony J Keogh in our data.",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        },
+        {
+          "field": "birth_date",
+          "suggested_value": "19 Mar 1922",
+          "confidence": "high",
+          "reasoning": "Five Families source provides exact birth date '19 March 1922', refining our 1922-only birth date.",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        },
+        {
+          "field": "death_place",
+          "suggested_value": "Greenwich, Fairfield, Connecticut, USA",
+          "confidence": "high",
+          "reasoning": "Five Families: 'He died on 9 July 1982 in Greenwich, Fairfield County, Connecticut, at age 60'. Matches our 1982 death date.",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        },
+        {
+          "field": "burial_place",
+          "suggested_value": "New Rochelle, Westchester, New York, USA",
+          "confidence": "high",
+          "reasoning": "Same source: 'He was buried in New Rochelle, Westchester County, New York.'",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        },
+        {
+          "field": "parents_father",
+          "suggested_value": "Grenville Temple Keogh",
+          "confidence": "high",
+          "reasoning": "Source: 'He was the son of Grenville Temple Keogh and Emma Mary Pallen.' (Father shares same name.)",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        },
+        {
+          "field": "parents_mother",
+          "suggested_value": "Emma Mary Pallen",
+          "confidence": "high",
+          "reasoning": "Source: 'son of Grenville Temple Keogh and Emma Mary Pallen'.",
+          "source_title": "Grenville Temple Keogh — Five Families genealogy",
+          "source_url": "http://www.gulbangi.com/5families-o/p13.htm"
+        }
+      ],
+      "narrative": "Grenville Temple Keogh (1922-1982) of New Rochelle, NY → Greenwich, CT. Son of Grenville T. Keogh Sr. and Emma Mary Pallen. Father of Mary, Marion, Grenville, Anthony, and Timothy by his wife Jane Haupt. Buried at Holy Sepulchre Cemetery, New Rochelle.",
+      "search_log": "Verified via gulbangi.com 'Five Families' genealogy site, which provides full citations on the page."
+    }
+  },
+  "cross_record": {
+    "duplicates": [
+      {
+        "a_id": "t1:I102119268454",
+        "a_name": "Edith Maud Caldwell",
+        "b_id": "t0:I19744304033",
+        "b_name": "Edith Maude Caldwell",
+        "confidence": "high",
+        "reasons": [
+          "born within 2 years (1877/1879)",
+          "both died 1968"
+        ]
+      },
+      {
+        "a_id": "t0:I372634356131",
+        "a_name": "Betty B. Crummey",
+        "b_id": "t0:I372634356507",
+        "b_name": "Betty B. Crummey",
+        "confidence": "high",
+        "reasons": [
+          "both born 1920",
+          "both died 2012"
+        ]
+      },
+      {
+        "a_id": "t0:I19808837836",
+        "a_name": "Mary Dugan",
+        "b_id": "t0:I29577990354",
+        "b_name": "Mary A Dugan",
+        "confidence": "medium",
+        "reasons": [
+          "born within 2 years (1874/1875)"
+        ]
+      },
+      {
+        "a_id": "t0:I19808837836",
+        "a_name": "Mary Dugan",
+        "b_id": "t0:I29577946355",
+        "b_name": "Mary Helena Dugan",
+        "confidence": "medium",
+        "reasons": [
+          "both died 1886"
+        ]
+      },
+      {
+        "a_id": "t0:I18635953178",
+        "a_name": "William B. Dugan",
+        "b_id": "t0:I18635953181",
+        "b_name": "William Francis Dugan",
+        "confidence": "medium",
+        "reasons": [
+          "both born in Troy, New York"
+        ]
+      },
+      {
+        "a_id": "t0:I29550637674",
+        "a_name": "William C Faden",
+        "b_id": "t0:I29550637901",
+        "b_name": "William C Faden",
+        "confidence": "medium",
+        "reasons": [
+          "born within 2 years (1926/1925)"
+        ]
+      },
+      {
+        "a_id": "t0:I19821174269",
+        "a_name": "Georg Ambros Kessler",
+        "b_id": "t0:I19821174260",
+        "b_name": "Georg Willibard Kessler",
+        "confidence": "high",
+        "reasons": [
+          "born within 2 years (1839/1837)",
+          "both born in Reiterswiesen, Bad Kissingen, Bayern, Germany"
+        ]
+      },
+      {
+        "a_id": "t0:I19895529673",
+        "a_name": "A. Louis Maier",
+        "b_id": "t0:I19895533869",
+        "b_name": "A. Teresa Maier",
+        "confidence": "medium",
+        "reasons": [
+          "identical parents"
+        ]
+      },
+      {
+        "a_id": "t0:I18635670923",
+        "a_name": "James H Maloy",
+        "b_id": "t0:I18635654544",
+        "b_name": "James Henry Maloy",
+        "confidence": "medium",
+        "reasons": [
+          "both died 1944"
+        ]
+      }
+    ],
+    "military_clusters": [
+      {
+        "theme": "World War II veterans",
+        "members": [
+          {
+            "id": "t0:I19886650464",
+            "name": "Edward J Crummey",
+            "branch": "army",
+            "rank": "Staff Sergeant (S/SGT)",
+            "unit": "24th Medical Battalion, 24th Infantry Division"
+          },
+          {
+            "id": "t0:I19739345719",
+            "name": "Walter J Dugan",
+            "branch": "navy",
+            "rank": "Engineering Officer",
+            "unit": "USS LST-491 (Landing Ship, Tank)"
+          },
+          {
+            "id": "t0:I18635953181",
+            "name": "William Francis Dugan",
+            "branch": "army",
+            "rank": "Private First Class (PFC)",
+            "unit": ""
+          },
+          {
+            "id": "t0:I19741461388",
+            "name": "J. Warren Faden",
+            "branch": "army",
+            "rank": "Technical Sergeant (T/SGT)",
+            "unit": "254th Infantry Regiment, 63rd Infantry Division"
+          },
+          {
+            "id": "t0:I29550637901",
+            "name": "William C Faden",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18635645027",
+            "name": "James H Maloy",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18635731420",
+            "name": "John Maloy",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I19738989728",
+            "name": "John Gaynor Walsh Jr.",
+            "branch": "coast_guard",
+            "rank": "",
+            "unit": ""
+          }
+        ],
+        "note": "8 family members served in World War II"
+      },
+      {
+        "theme": "World War I veterans",
+        "members": [
+          {
+            "id": "t0:I19744180137",
+            "name": "Edward H Cranwell Jr.",
+            "branch": "army",
+            "rank": "",
+            "unit": "102nd Engineer Regiment, 27th Infantry Division"
+          },
+          {
+            "id": "t0:I29577903368",
+            "name": "Louis. F. Dugan",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18635890324",
+            "name": "Walter J Dugan",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18669423244",
+            "name": "Joseph Faden",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18669423251",
+            "name": "Wm. John Faden",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I18635670923",
+            "name": "James H Maloy",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          },
+          {
+            "id": "t0:I19739309279",
+            "name": "John Gaynor Walsh",
+            "branch": "army",
+            "rank": "",
+            "unit": ""
+          }
+        ],
+        "note": "7 family members served in World War I"
+      }
+    ],
+    "place_era_clusters": [
+      {
+        "theme": "Troy, Rensselaer · 1890s",
+        "members": [
+          {
+            "id": "t0:I29577946353",
+            "name": "John W Dugan",
+            "year": 1892
+          },
+          {
+            "id": "t0:I29577902360",
+            "name": "Mark Thomas Dugan",
+            "year": 1893
+          },
+          {
+            "id": "t1:I102119268177",
+            "name": "Debora Dorothy Faden",
+            "year": 1890
+          },
+          {
+            "id": "t0:I18635922801",
+            "name": "Deborah Dorothy Faden",
+            "year": 1890
+          },
+          {
+            "id": "t0:I29568102525",
+            "name": "Bertha Irene Spall",
+            "year": 1897
+          }
+        ],
+        "note": "5 family members born in Troy, Rensselaer · 1890s"
+      },
+      {
+        "theme": "Jackson, Washington · 1890s",
+        "members": [
+          {
+            "id": "t0:I19744513602",
+            "name": "James Albert Pemrick",
+            "year": 1896
+          },
+          {
+            "id": "t0:I19821003133",
+            "name": "John A Pemrick",
+            "year": 1893
+          },
+          {
+            "id": "t0:I19744513637",
+            "name": "Martin Augustus Pemrick",
+            "year": 1899
+          },
+          {
+            "id": "t0:I19744513435",
+            "name": "Thomas Joseph Pemrick",
+            "year": 1894
+          },
+          {
+            "id": "t0:I28135914035",
+            "name": "Helen Frances (Nellie) Stanton",
+            "year": 1895
+          }
+        ],
+        "note": "5 family members born in Jackson, Washington · 1890s"
+      },
+      {
+        "theme": "Troy, Rensselaer · 1880s",
+        "members": [
+          {
+            "id": "t0:I29577946352",
+            "name": "Agnes D Dugan",
+            "year": 1886
+          },
+          {
+            "id": "t0:I29577946351",
+            "name": "Anna C Dugan",
+            "year": 1886
+          },
+          {
+            "id": "t0:I18635890324",
+            "name": "Walter J Dugan",
+            "year": 1883
+          },
+          {
+            "id": "t0:I19744463273",
+            "name": "Elizabeth A Faden",
+            "year": 1880
+          }
+        ],
+        "note": "4 family members born in Troy, Rensselaer · 1880s"
+      },
+      {
+        "theme": "Troy, New York · 1880s",
+        "members": [
+          {
+            "id": "t0:I29577903369",
+            "name": "James H Dugan",
+            "year": 1889
+          },
+          {
+            "id": "t0:I18635672053",
+            "name": "Emma Joan Flavin",
+            "year": 1889
+          },
+          {
+            "id": "t0:I29567832838",
+            "name": "Helen Olivia Flavin",
+            "year": 1887
+          },
+          {
+            "id": "t0:I29568280527",
+            "name": "John George Flavin",
+            "year": 1886
+          }
+        ],
+        "note": "4 family members born in Troy, New York · 1880s"
+      },
+      {
+        "theme": "Reiterswiesen, Bad Kissingen · 1830s",
+        "members": [
+          {
+            "id": "t0:I19821174256",
+            "name": "Anna Margaretta Kessler",
+            "year": 1835
+          },
+          {
+            "id": "t0:I19821174269",
+            "name": "Georg Ambros Kessler",
+            "year": 1839
+          },
+          {
+            "id": "t0:I19821174260",
+            "name": "Georg Willibard Kessler",
+            "year": 1837
+          },
+          {
+            "id": "t0:I19821174254",
+            "name": "Margaretha Kessler",
+            "year": 1831
+          }
+        ],
+        "note": "4 family members born in Reiterswiesen, Bad Kissingen · 1830s"
+      },
+      {
+        "theme": "Troy, Rensselaer · 1870s",
+        "members": [
+          {
+            "id": "t0:I29577946350",
+            "name": "JosephP Dugan",
+            "year": 1876
+          },
+          {
+            "id": "t0:I29577903368",
+            "name": "Louis. F. Dugan",
+            "year": 1874
+          },
+          {
+            "id": "t0:I19821535466",
+            "name": "A. Gustave Keller",
+            "year": 1877
+          }
+        ],
+        "note": "3 family members born in Troy, Rensselaer · 1870s"
+      },
+      {
+        "theme": "Troy, Rensselaer · 1920s",
+        "members": [
+          {
+            "id": "t0:I18635646682",
+            "name": "Ruth Eleanor Dugan",
+            "year": 1925
+          },
+          {
+            "id": "t0:I29568102526",
+            "name": "Barbara I. Marcou",
+            "year": 1927
+          },
+          {
+            "id": "t0:I29568102077",
+            "name": "Muriel H. Marcou",
+            "year": 1922
+          }
+        ],
+        "note": "3 family members born in Troy, Rensselaer · 1920s"
+      },
+      {
+        "theme": "County Mayo, Ireland · 1840s",
+        "members": [
+          {
+            "id": "t0:I19856993544",
+            "name": "Patrick Loftus",
+            "year": 1843
+          },
+          {
+            "id": "t0:I18635810354",
+            "name": "John Maloy",
+            "year": 1844
+          },
+          {
+            "id": "t0:I19809920785",
+            "name": "Mary Maloy",
+            "year": 1842
+          }
+        ],
+        "note": "3 family members born in County Mayo, Ireland · 1840s"
+      },
+      {
+        "theme": "Troy, NY · 1880s",
+        "members": [
+          {
+            "id": "t0:I19895442301",
+            "name": "Andrew W. Quandt",
+            "year": 1881
+          },
+          {
+            "id": "t0:I19895442299",
+            "name": "Still Born Quandt",
+            "year": 1880
+          },
+          {
+            "id": "t0:I19895442303",
+            "name": "William C. Quandt",
+            "year": 1884
+          }
+        ],
+        "note": "3 family members born in Troy, NY · 1880s"
+      },
+      {
+        "theme": "Troy, NY · 1870s",
+        "members": [
+          {
+            "id": "t0:I19895442291",
+            "name": "Joseph Andrew Quandt",
+            "year": 1874
+          },
+          {
+            "id": "t0:I19895442295",
+            "name": "Margaret L Quandt",
+            "year": 1875
+          },
+          {
+            "id": "t0:I19895442298",
+            "name": "Mary A Quandt",
+            "year": 1878
+          }
+        ],
+        "note": "3 family members born in Troy, NY · 1870s"
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+import { useMemo, useState } from "react";
+import { Loader2, Sparkles, KeyRound, RotateCw, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAI } from "@/components/AIContext";
+import {
+  WebFindingsCard,
+  type PersonWebFinding,
+} from "@/components/WebFindingsCard";
+import { researchPerson } from "@/lib/openai";
+import {
+  getGaps,
+  GAP_LABELS,
+  isAnchorlessPlaceholder,
+  people,
+  type Person,
+} from "@/lib/family";
+import researchSuggestionsRaw from "@/research_suggestions.json";
+
+interface StaticResearch {
+  web_findings?: Record<string, PersonWebFinding>;
+}
+const STATIC = researchSuggestionsRaw as StaticResearch;
+
+/**
+ * Per-profile "Find missing info" affordance. Surfaces:
+ *   1. A status line of detected gaps,
+ *   2. Either a previously researched WebFindingsCard or a button to run
+ *      AI research now (web_search + structured JSON),
+ *   3. Refresh / re-run controls.
+ *
+ * The button works for any signed-in OpenAI key; no key → opens ApiKeyDialog.
+ */
+export function FindMissingInfo({ person }: { person: Person }) {
+  const { apiKey, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
+  const [error, setError] = useState<string | null>(null);
+
+  const gaps = useMemo(() => getGaps(person), [person]);
+  const placeholder = useMemo(() => isAnchorlessPlaceholder(person), [person]);
+  const finding: PersonWebFinding | undefined =
+    researched[person.id] ?? STATIC.web_findings?.[person.id];
+  const isBusy = researching.has(person.id);
+
+  async function run() {
+    if (placeholder) return; // hard guard — nothing useful to send
+    if (!apiKey) {
+      openKeyDialog();
+      return;
+    }
+    setError(null);
+    setResearching(person.id, true);
+    try {
+      // Compact id → name lookup so the model can reason about parents/spouses.
+      const lookup = new Map<string, string>();
+      for (const p of people) lookup.set(p.id, p.name);
+      const result = await researchPerson({ apiKey, person, nameById: lookup });
+      setResearched(person.id, result);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Research failed");
+    } finally {
+      setResearching(person.id, false);
+    }
+  }
+
+  if (gaps.length === 0 && !finding) {
+    return null;
+  }
+
+  // Anchorless placeholder (e.g. "Unknown" mother of a known child): we have
+  // nothing concrete to send OpenAI — surface the limitation honestly instead
+  // of pretending the button will do something useful.
+  if (placeholder && !finding) {
+    return (
+      <section
+        className="rounded-lg border border-card-border bg-card p-4 sm:p-5"
+        data-testid="find-missing-info-placeholder"
+      >
+        <div className="flex items-start gap-2.5">
+          <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+          <div className="min-w-0">
+            <h2 className="font-display text-base font-semibold leading-tight">
+              Not enough to research yet
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              This person is a placeholder — their name, dates, and places are
+              all blank, so there is nothing identifying for the web to match
+              on. Add a known given name, surname, birth year, or place from a
+              record you already have, then come back and run research.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="rounded-lg border border-card-border bg-card p-4 sm:p-5"
+      data-testid="find-missing-info"
+    >
+      <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
+        <div className="min-w-0">
+          <h2 className="font-display text-base font-semibold flex items-center gap-1.5">
+            <Sparkles className="h-4 w-4 text-primary" />
+            AI research
+          </h2>
+          {gaps.length > 0 ? (
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              {gaps.length} unfilled field{gaps.length > 1 ? "s" : ""}:{" "}
+              <span className="text-foreground/80">
+                {gaps.map((g) => GAP_LABELS[g]).join(", ")}
+              </span>
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground mt-1">
+              No major gaps detected, but you can still re-run research.
+            </p>
+          )}
+        </div>
+        <Button
+          size="sm"
+          onClick={run}
+          disabled={isBusy || placeholder}
+          data-testid={`research-${person.id}`}
+        >
+          {isBusy ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+              Researching…
+            </>
+          ) : finding ? (
+            <>
+              <RotateCw className="h-3.5 w-3.5 mr-1.5" />
+              Re-run research
+            </>
+          ) : apiKey ? (
+            <>
+              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+              Find missing info
+            </>
+          ) : (
+            <>
+              <KeyRound className="h-3.5 w-3.5 mr-1.5" />
+              Connect OpenAI to research
+            </>
+          )}
+        </Button>
+      </div>
+
+      {error && (
+        <div
+          className="mb-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive break-words"
+          data-testid="research-error"
+        >
+          {error}
+        </div>
+      )}
+
+      {finding && (finding.findings?.length || finding.narrative) ? (
+        <WebFindingsCard
+          person={person}
+          finding={finding}
+          title={
+            researched[person.id]
+              ? "Findings from this session"
+              : "Seeded findings"
+          }
+        />
+      ) : (
+        !isBusy && (
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {apiKey
+              ? "Click \"Find missing info\" to send this person's anchors to OpenAI. The model will search the open web (FindAGrave, obituaries, census, parish records) and return structured suggestions with source URLs."
+              : "Provide your OpenAI key once per session to enable per-person web research. Findings will appear here with source URLs you can click straight into."}
+          </p>
+        )
+      )}
+    </section>
+  );
+}
