@@ -21,6 +21,9 @@ import {
   Unlock,
   Pencil,
   FileEdit,
+  LayoutGrid,
+  ChevronDown,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
@@ -33,29 +36,82 @@ import { ApiKeyDialog } from "./ApiKeyDialog";
 import { AIChat } from "./AIChat";
 import { EditSaveBar } from "./EditSaveBar";
 import { CommandPalette } from "./CommandPalette";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
-const NAV = [
+interface NavItem {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+// Curated primary destinations — shown directly in the header and as the
+// mobile bottom tabs. Everything else lives under "More" (grouped), keeping the
+// bar uncluttered at every breakpoint. The ⌘K palette covers jump-to-anything.
+const PRIMARY: NavItem[] = [
   { href: "/", icon: HomeIcon, label: "Home" },
   { href: "/people", icon: Users, label: "People" },
   { href: "/tree", icon: GitBranch, label: "Tree" },
   { href: "/timeline", icon: Clock, label: "Timeline" },
-  { href: "/surnames", icon: ScrollText, label: "Surnames" },
-  { href: "/places", icon: MapPin, label: "Places" },
-  { href: "/relate", icon: GitMerge, label: "Relate" },
-  { href: "/research", icon: Compass, label: "Research" },
-  { href: "/roots", icon: Crown, label: "Roots" },
-  { href: "/finder", icon: Telescope, label: "Finder" },
-  { href: "/anomalies", icon: ShieldAlert, label: "Anomalies" },
-  { href: "/insights", icon: BarChart3, label: "Insights" },
-  { href: "/gaps", icon: Sparkles, label: "Gaps" },
-  { href: "/export", icon: Download, label: "Export" },
 ];
+
+const GROUPS: NavGroup[] = [
+  {
+    title: "Explore",
+    items: [
+      { href: "/surnames", icon: ScrollText, label: "Surnames" },
+      { href: "/places", icon: MapPin, label: "Places" },
+      { href: "/roots", icon: Crown, label: "Roots" },
+      { href: "/insights", icon: BarChart3, label: "Insights" },
+    ],
+  },
+  {
+    title: "Research",
+    items: [
+      { href: "/research", icon: Compass, label: "Research" },
+      { href: "/relate", icon: GitMerge, label: "Relate" },
+      { href: "/finder", icon: Telescope, label: "Finder" },
+      { href: "/gaps", icon: Sparkles, label: "Gaps" },
+      { href: "/anomalies", icon: ShieldAlert, label: "Anomalies" },
+    ],
+  },
+  {
+    title: "Data",
+    items: [{ href: "/export", icon: Download, label: "Export" }],
+  },
+];
+
+const MORE_ITEMS: NavItem[] = GROUPS.flatMap((g) => g.items);
+
+function isActivePath(location: string, href: string): boolean {
+  return href === "/"
+    ? location === "/"
+    : location === href || location.startsWith(href + "/");
+}
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { theme, toggle } = useTheme();
   const { unlocked, unlock, lock, count, hasChanges } = useEdit();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [unlockOpen, setUnlockOpen] = useState(false);
   const [unlockDraft, setUnlockDraft] = useState("");
   const [unlockErr, setUnlockErr] = useState<string | null>(null);
@@ -99,6 +155,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [unlockOpen]);
 
+  // Close the mobile "More" sheet after navigating.
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [location]);
+
+  const moreActive = MORE_ITEMS.some((item) => isActivePath(location, item.href));
+
   async function tryUnlock() {
     if (!unlockDraft.trim()) return;
     const ok = await unlock(unlockDraft);
@@ -133,28 +196,73 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
 
           <nav className="ml-auto hidden md:flex items-center gap-0.5 lg:gap-1">
-            {NAV.map(({ href, icon: Icon, label }) => {
-              const active =
-                href === "/"
-                  ? location === "/"
-                  : location === href || location.startsWith(href + "/");
+            {PRIMARY.map(({ href, icon: Icon, label }) => {
+              const active = isActivePath(location, href);
               return (
                 <Link
                   key={href}
                   href={href}
                   title={label}
                   aria-label={label}
+                  aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-2 rounded-md px-2 lg:px-3 py-1.5 text-sm font-medium hover-elevate active-elevate-2",
-                    active ? "text-foreground" : "text-muted-foreground",
+                    "flex items-center gap-2 rounded-md px-2.5 lg:px-3 py-1.5 text-sm font-medium hover-elevate active-elevate-2",
+                    active ? "bg-muted text-foreground" : "text-muted-foreground",
                   )}
                   data-testid={`nav-${label.toLowerCase()}`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
-                  <span className="hidden xl:inline">{label}</span>
+                  <span className="hidden lg:inline">{label}</span>
                 </Link>
               );
             })}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  title="More"
+                  aria-label="More sections"
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-md px-2.5 lg:px-3 py-1.5 text-sm font-medium hover-elevate active-elevate-2",
+                    moreActive ? "bg-muted text-foreground" : "text-muted-foreground",
+                  )}
+                  data-testid="nav-more"
+                >
+                  <LayoutGrid className="h-4 w-4 shrink-0" />
+                  <span className="hidden lg:inline">More</span>
+                  <ChevronDown className="hidden lg:inline h-3 w-3 opacity-60" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60">
+                {GROUPS.map((group, gi) => (
+                  <div key={group.title}>
+                    {gi > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      {group.title}
+                    </DropdownMenuLabel>
+                    {group.items.map(({ href, icon: Icon, label }) => {
+                      const active = isActivePath(location, href);
+                      return (
+                        <DropdownMenuItem key={href} asChild>
+                          <Link
+                            href={href}
+                            className={cn(
+                              "flex items-center gap-2.5 cursor-pointer",
+                              active && "bg-muted text-foreground font-medium",
+                            )}
+                            data-testid={`nav-more-${label.toLowerCase()}`}
+                          >
+                            <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            {label}
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
 
           <Button
@@ -231,23 +339,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1 min-w-0 overflow-x-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
 
-      {/* Mobile bottom nav (thumb-zone, scroll-snap horizontally) */}
+      {/* Mobile bottom nav: 4 primary tabs + a "More" tab opening a grouped sheet.
+          Five equal thumb-zone targets — no horizontal scrolling. */}
       <nav
         className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
         aria-label="Primary"
       >
-        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none">
-          {NAV.map(({ href, icon: Icon, label }) => {
-            const active =
-              href === "/"
-                ? location === "/"
-                : location === href || location.startsWith(href + "/");
+        <div className="flex">
+          {PRIMARY.map(({ href, icon: Icon, label }) => {
+            const active = isActivePath(location, href);
             return (
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "snap-start shrink-0 basis-1/5 min-w-[20%] flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[10.5px] font-medium leading-none hover-elevate active-elevate-2",
+                  "basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[10.5px] font-medium leading-none hover-elevate active-elevate-2",
                   active ? "text-primary" : "text-muted-foreground",
                 )}
                 data-testid={`nav-mobile-${label.toLowerCase()}`}
@@ -257,12 +364,72 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
+          <button
+            type="button"
+            onClick={() => setMoreOpen(true)}
+            aria-label="More sections"
+            aria-expanded={moreOpen}
+            className={cn(
+              "basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[10.5px] font-medium leading-none hover-elevate active-elevate-2",
+              moreActive ? "text-primary" : "text-muted-foreground",
+            )}
+            data-testid="nav-mobile-more"
+          >
+            <LayoutGrid className="h-5 w-5" />
+            More
+          </button>
         </div>
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-background/95 to-transparent"
-          aria-hidden="true"
-        />
       </nav>
+
+      {/* Mobile "More" sheet — all secondary destinations, grouped. */}
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          className="md:hidden rounded-t-2xl max-h-[80dvh] overflow-y-auto p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+          data-testid="sheet-more"
+        >
+          <SheetHeader className="mb-3 text-left">
+            <SheetTitle className="font-display text-base">Browse</SheetTitle>
+          </SheetHeader>
+          <div className="space-y-5">
+            {GROUPS.map((group) => (
+              <div key={group.title}>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2">
+                  {group.title}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {group.items.map(({ href, icon: Icon, label }) => {
+                    const active = isActivePath(location, href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={() => setMoreOpen(false)}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-sm hover-elevate active-elevate-2",
+                          active
+                            ? "border-primary/40 bg-primary/5 text-foreground font-medium"
+                            : "border-card-border text-muted-foreground",
+                        )}
+                        data-testid={`nav-sheet-${label.toLowerCase()}`}
+                      >
+                        <Icon
+                          className={cn(
+                            "h-4 w-4 shrink-0",
+                            active ? "text-primary" : "text-muted-foreground",
+                          )}
+                        />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <footer className="border-t mt-12 py-6 px-4 sm:px-5 pb-24 md:pb-6">
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
