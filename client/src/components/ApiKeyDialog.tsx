@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bot, ExternalLink, KeyRound, ShieldCheck } from "lucide-react";
 import { useAI } from "@/components/AIContext";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,24 +13,28 @@ import {
 import { Input } from "@/components/ui/input";
 
 /**
- * Modal for entering an OpenAI API key. Lives only in React state (the key
- * is never stored to localStorage/cookies — sandbox blocks them anyway, and
- * not persisting is the safer default for a personal-use key).
+ * Modal for entering an OpenAI API key. By default the key lives only in React
+ * state (cleared on refresh) — the safest posture, and the only one that works
+ * inside the sandboxed iframe build. When "Remember on this device" is checked
+ * it is also persisted via crash-safe storage so a standalone deployment
+ * doesn't prompt on every reload.
  */
 export function ApiKeyDialog() {
-  const { apiKey, setApiKey, keyDialogOpen, closeKeyDialog } = useAI();
+  const { apiKey, setApiKey, rememberKey, keyDialogOpen, closeKeyDialog } = useAI();
   const [draft, setDraft] = useState("");
+  const [remember, setRemember] = useState(rememberKey);
 
   function onSave() {
     if (!draft.trim()) return;
-    setApiKey(draft.trim());
+    setApiKey(draft.trim(), remember);
     setDraft("");
     closeKeyDialog();
   }
 
   function onClear() {
-    setApiKey(null);
+    setApiKey(null, false);
     setDraft("");
+    setRemember(false);
   }
 
   return (
@@ -44,9 +49,9 @@ export function ApiKeyDialog() {
         <div className="space-y-3 text-sm">
           <p className="text-muted-foreground leading-relaxed">
             Paste an OpenAI API key to enable per-person web research and the
-            archive chat. The key is held only in this browser tab and is
-            cleared when you refresh or close it — it's never sent anywhere
-            except OpenAI.
+            archive chat. It's never sent anywhere except OpenAI. By default the
+            key is held only in this browser tab and cleared on refresh — tick
+            the box below to keep it on this device instead.
           </p>
           <div>
             <label className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">
@@ -63,11 +68,26 @@ export function ApiKeyDialog() {
               data-testid="api-key-input"
             />
           </div>
+          <label className="flex items-start gap-2 cursor-pointer select-none">
+            <Checkbox
+              checked={remember}
+              onCheckedChange={(c) => setRemember(c === true)}
+              className="mt-0.5"
+              data-testid="api-key-remember"
+            />
+            <span className="text-xs text-muted-foreground leading-relaxed">
+              Remember on this device
+              <span className="block text-[11px] opacity-80">
+                Stores the key in this browser so you don't re-enter it. Use only
+                on a private, trusted device.
+              </span>
+            </span>
+          </label>
           {apiKey && (
             <div className="flex items-center justify-between rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs">
               <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Key set for this session
+                {rememberKey ? "Key saved on this device" : "Key set for this session"}
               </span>
               <button
                 onClick={onClear}
@@ -106,7 +126,7 @@ export function ApiKeyDialog() {
             Cancel
           </Button>
           <Button onClick={onSave} disabled={!draft.trim()} data-testid="api-key-save">
-            Save for this session
+            {remember ? "Save on this device" : "Save for this session"}
           </Button>
         </DialogFooter>
       </DialogContent>

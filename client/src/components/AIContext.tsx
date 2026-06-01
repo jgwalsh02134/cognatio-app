@@ -7,6 +7,10 @@ import {
   type ReactNode,
 } from "react";
 import type { PersonWebFinding } from "@/components/WebFindingsCard";
+import { safeGet, safeRemove, safeSet } from "@/lib/safeStorage";
+
+/** Storage key for an opt-in, remembered OpenAI key. */
+const API_KEY_STORAGE = "cognatio.openai_key";
 
 /**
  * Session-only AI state. Holds:
@@ -34,7 +38,15 @@ export interface ChatMessage {
 interface AIContextValue {
   /** Current OpenAI API key, or null if not set this session. */
   apiKey: string | null;
-  setApiKey: (key: string | null) => void;
+  /**
+   * Set (or clear) the key. Pass `remember: true` to persist it on this device
+   * via crash-safe storage; `false` (or null key) clears any stored copy. When
+   * omitted, the current `rememberKey` preference is used.
+   */
+  setApiKey: (key: string | null, remember?: boolean) => void;
+  /** Whether the key is (or should be) persisted on this device. */
+  rememberKey: boolean;
+  setRememberKey: (remember: boolean) => void;
   /** UI state for the "enter key" modal. */
   keyDialogOpen: boolean;
   openKeyDialog: () => void;
@@ -77,7 +89,8 @@ export const CHAT_MODELS = [
 const Ctx = createContext<AIContextValue | null>(null);
 
 export function AIProvider({ children }: { children: ReactNode }) {
-  const [apiKey, setApiKeyState] = useState<string | null>(null);
+  const [apiKey, setApiKeyState] = useState<string | null>(() => safeGet(API_KEY_STORAGE));
+  const [rememberKey, setRememberKeyState] = useState<boolean>(() => safeGet(API_KEY_STORAGE) != null);
   const [keyDialogOpen, setKeyDialogOpen] = useState(false);
   const [researched, setResearchedState] = useState<Record<string, PersonWebFinding>>({});
   const [researching, setResearchingState] = useState<Set<string>>(new Set());
@@ -85,9 +98,32 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatModel, setChatModel] = useState<string>("gpt-5.4-mini");
 
-  const setApiKey = useCallback((key: string | null) => {
-    setApiKeyState(key && key.trim() ? key.trim() : null);
-  }, []);
+  const setApiKey = useCallback(
+    (key: string | null, remember?: boolean) => {
+      const clean = key && key.trim() ? key.trim() : null;
+      setApiKeyState(clean);
+      const shouldRemember = remember ?? rememberKey;
+      if (remember !== undefined) setRememberKeyState(remember);
+      if (clean && shouldRemember) {
+        safeSet(API_KEY_STORAGE, clean);
+      } else {
+        safeRemove(API_KEY_STORAGE);
+      }
+    },
+    [rememberKey],
+  );
+
+  const setRememberKey = useCallback(
+    (remember: boolean) => {
+      setRememberKeyState(remember);
+      if (remember && apiKey) {
+        safeSet(API_KEY_STORAGE, apiKey);
+      } else {
+        safeRemove(API_KEY_STORAGE);
+      }
+    },
+    [apiKey],
+  );
 
   const openKeyDialog = useCallback(() => setKeyDialogOpen(true), []);
   const closeKeyDialog = useCallback(() => setKeyDialogOpen(false), []);
@@ -125,6 +161,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
     () => ({
       apiKey,
       setApiKey,
+      rememberKey,
+      setRememberKey,
       keyDialogOpen,
       openKeyDialog,
       closeKeyDialog,
@@ -145,6 +183,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
     [
       apiKey,
       setApiKey,
+      rememberKey,
+      setRememberKey,
       keyDialogOpen,
       openKeyDialog,
       closeKeyDialog,
