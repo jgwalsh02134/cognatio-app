@@ -28,6 +28,7 @@ import { linksFor } from "@/lib/researchLinks";
 import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
 import { cn } from "@/lib/utils";
 import { EditableText, EventEditorPopover } from "@/components/Editable";
+import { NameFixChips } from "@/components/NameFixChips";
 import { FindMissingInfo } from "@/components/FindMissingInfo";
 import {
   ArrowDown,
@@ -221,6 +222,7 @@ export default function PersonDetail() {
               </>
             ) : null}
           </p>
+          <NameFixChips person={person} />
           {unlocked && (
             <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span className="uppercase tracking-[0.16em]">Sex</span>

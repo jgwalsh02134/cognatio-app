@@ -25,6 +25,7 @@ import {
   Crown,
   Telescope,
   ShieldAlert,
+  Combine,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -172,6 +173,14 @@ export function CommandPalette({
         icon: <ShieldAlert className="h-4 w-4" />,
         keywords: ["anomalies", "data quality", "errors", "missing", "issues", "validate", "audit"],
         perform: go("/anomalies"),
+      },
+      {
+        id: "nav-duplicates",
+        label: "Go to Duplicates",
+        hint: "Find & merge duplicate people",
+        icon: <Combine className="h-4 w-4" />,
+        keywords: ["duplicates", "merge", "dupes", "same person", "consolidate", "combine"],
+        perform: go("/duplicates"),
       },
       {
         id: "nav-insights",

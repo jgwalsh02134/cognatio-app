@@ -17,6 +17,7 @@ import {
   Crown,
   Telescope,
   ShieldAlert,
+  Combine,
   Lock,
   Unlock,
   Pencil,
@@ -90,6 +91,7 @@ const GROUPS: NavGroup[] = [
       { href: "/finder", icon: Telescope, label: "Finder" },
       { href: "/gaps", icon: Sparkles, label: "Gaps" },
       { href: "/anomalies", icon: ShieldAlert, label: "Anomalies" },
+      { href: "/duplicates", icon: Combine, label: "Duplicates" },
     ],
   },
   {

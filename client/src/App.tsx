@@ -24,6 +24,7 @@ import Research from "@/pages/Research";
 import Roots from "@/pages/Roots";
 import Finder from "@/pages/Finder";
 import Anomalies from "@/pages/Anomalies";
+import Duplicates from "@/pages/Duplicates";
 import ExportPage from "@/pages/Export";
 import Changes from "@/pages/Changes";
 import NotFound from "@/pages/not-found";
@@ -46,6 +47,7 @@ function AppRouter() {
       <Route path="/roots" component={Roots} />
       <Route path="/finder" component={Finder} />
       <Route path="/anomalies" component={Anomalies} />
+      <Route path="/duplicates" component={Duplicates} />
       <Route path="/export" component={ExportPage} />
       <Route path="/changes" component={Changes} />
       <Route component={NotFound} />

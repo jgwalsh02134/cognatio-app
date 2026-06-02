@@ -798,6 +798,14 @@ export default function Home() {
             testId="feature-anomalies"
           />
           <FeatureCard
+            href="/duplicates"
+            icon={GitMerge}
+            title="Find duplicates"
+            description="Spot the same person imported twice and merge their records."
+            accent="primary"
+            testId="feature-duplicates"
+          />
+          <FeatureCard
             href="/gaps"
             icon={ListChecks}
             title="Gaps to research"

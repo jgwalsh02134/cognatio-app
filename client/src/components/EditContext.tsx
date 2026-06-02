@@ -29,6 +29,7 @@ export interface EditableSource {
 export type PersonPatch = Partial<{
   given: string;
   surname: string;
+  suffix: string;
   sex: string | null;
   birth: Person["birth"];
   death: Person["death"];
