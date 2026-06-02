@@ -1,4 +1,5 @@
 import { Switch, Route, Router } from "wouter";
+import { useState } from "react";
 import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -26,6 +27,7 @@ import Anomalies from "@/pages/Anomalies";
 import ExportPage from "@/pages/Export";
 import Changes from "@/pages/Changes";
 import NotFound from "@/pages/not-found";
+import IntroScreen from "@/components/IntroScreen";
 
 function AppRouter() {
   return (
@@ -52,6 +54,23 @@ function AppRouter() {
 }
 
 function App() {
+  // Show cinematic intro only on first visit.
+  // Uses localStorage key `cognatio_intro_seen` so returning users skip it.
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("cognatio_intro_seen") !== "true";
+  });
+
+  const handleIntroComplete = () => {
+    localStorage.setItem("cognatio_intro_seen", "true");
+    setShowIntro(false);
+  };
+
+  if (showIntro) {
+    // Render only the intro on first launch — main app content is hidden.
+    return <IntroScreen onComplete={handleIntroComplete} />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
