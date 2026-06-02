@@ -183,7 +183,7 @@ export default function Timeline() {
       <div className="mb-5 sm:mb-7">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-2 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
           data-testid="link-back-home"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -235,7 +235,7 @@ export default function Timeline() {
                 type="button"
                 onClick={() => setFilter(f.key)}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors",
+                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs transition-colors",
                   active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:text-foreground hover-elevate",
@@ -260,7 +260,7 @@ export default function Timeline() {
         ) : (
           grouped.map(([century, items]) => (
             <div key={century} className="mb-10 last:mb-0">
-              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm py-2 mb-3 border-b border-border/60">
+              <div className="sticky top-14 sm:top-16 z-10 bg-background/95 backdrop-blur-sm py-2 mb-3 border-b border-border/60">
                 <h2 className="font-display text-xl font-semibold tabular-nums">
                   {century}s
                   <span className="ml-2 text-xs font-normal text-muted-foreground tabular-nums">
@@ -268,7 +268,7 @@ export default function Timeline() {
                   </span>
                 </h2>
               </div>
-              <ol className="relative space-y-2 border-l border-border/60 ml-3 pl-5">
+              <ol className="relative space-y-2 border-l border-border/60 ml-3 pl-5 overflow-x-hidden">
                 {items.map((e, i) => {
                   const meta = KIND_META[e.kind];
                   const Icon = meta.icon;

@@ -133,7 +133,7 @@ function ResearchChip({ link }: { link: ResearchLink }) {
       target="_blank"
       rel="noopener noreferrer"
       title={link.hint}
-      className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-background px-2.5 py-1 text-xs font-medium hover-elevate active-elevate-2"
+      className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-background px-2.5 py-2 text-xs font-medium hover-elevate active-elevate-2"
       data-testid={`research-${link.id}`}
     >
       {link.countryName ? (
@@ -160,7 +160,7 @@ function CopyButton({ text, label, testId }: { text: string; label: string; test
           // ignore
         }
       }}
-      className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-background px-2.5 py-1 text-xs font-medium hover-elevate active-elevate-2"
+      className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-background px-2.5 py-2 text-xs font-medium hover-elevate active-elevate-2"
       data-testid={testId}
     >
       {copied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
@@ -396,7 +396,7 @@ export default function Gaps() {
             data-testid="input-gap-filter"
           />
         </div>
-        <div className="inline-flex rounded-md border border-card-border bg-card overflow-hidden">
+        <div className="inline-flex rounded-md border border-card-border bg-card overflow-x-auto">
           {(Object.keys(SORT_LABELS) as SortMode[]).map((s) => {
             const Icon = SORT_ICONS[s];
             return (
@@ -404,7 +404,7 @@ export default function Gaps() {
                 key={s}
                 onClick={() => setSortMode(s)}
                 className={cn(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium hover-elevate active-elevate-2",
+                  "inline-flex items-center gap-1.5 px-3 py-2.5 min-h-10 text-xs font-medium hover-elevate active-elevate-2",
                   sortMode === s ? "bg-accent text-accent-foreground" : "text-muted-foreground",
                 )}
                 data-testid={`sort-${s}`}
@@ -419,7 +419,7 @@ export default function Gaps() {
           <button
             onClick={() => downloadCsv(filtered)}
             disabled={filtered.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-card px-2.5 py-1.5 text-xs font-medium hover-elevate active-elevate-2 disabled:opacity-50 disabled:pointer-events-none"
+            className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-card px-2.5 py-2.5 min-h-10 text-xs font-medium hover-elevate active-elevate-2 disabled:opacity-50 disabled:pointer-events-none"
             data-testid="button-export-csv"
           >
             <Download className="h-3 w-3" />
@@ -427,7 +427,7 @@ export default function Gaps() {
           </button>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-card px-2.5 py-1.5 text-xs font-medium hover-elevate active-elevate-2"
+            className="inline-flex items-center gap-1.5 rounded-md border border-card-border bg-card px-2.5 py-2.5 min-h-10 text-xs font-medium hover-elevate active-elevate-2"
             data-testid="button-print"
           >
             <Printer className="h-3 w-3" />
@@ -714,7 +714,7 @@ function GapCard({
         />
         <Link
           href={`/person/${encodeURIComponent(person.id)}`}
-          className="ml-auto inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs text-primary hover:underline"
+          className="w-full sm:w-auto sm:ml-auto inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-xs text-primary hover:underline"
           data-testid={`gap-detail-${person.id}`}
         >
           View profile →
@@ -794,18 +794,18 @@ function AIConnectionsPanel({ suggestions }: { suggestions: ResearchSuggestions 
       className="mb-4 rounded-md border border-primary/25 bg-primary/5 px-3 sm:px-4 py-3 max-w-full overflow-hidden"
       data-testid="ai-connections-panel"
     >
-      <div className="flex items-center justify-between mb-2 gap-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-2 sm:gap-3">
         <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-primary">
           <Bot className="h-3 w-3" />
           Cross-record findings
         </div>
-        <div className="text-[10px] text-muted-foreground">
+        <div className="min-w-0 truncate text-[10px] text-muted-foreground">
           {suggestions.model ?? ""}
           {suggestions.generated_at ? ` · ${suggestions.generated_at.slice(0, 10)}` : ""}
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
         {/* Duplicates */}
         <div className="min-w-0">
           <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">

@@ -341,12 +341,12 @@ export function CommandPalette({
       data-testid="overlay-command"
     >
       <div
-        className="w-full max-w-xl rounded-xl border bg-card shadow-2xl overflow-hidden"
+        className="w-full max-w-xl max-h-[85dvh] flex flex-col rounded-xl border bg-card shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Command palette"
       >
-        <div className="flex items-center gap-3 border-b px-4 py-3">
+        <div className="flex items-center gap-3 border-b px-4 py-3 shrink-0">
           <SearchIcon className="h-4 w-4 text-muted-foreground" />
           <Input
             ref={inputRef}
@@ -362,7 +362,7 @@ export function CommandPalette({
             size="icon"
             onClick={onClose}
             aria-label="Close command palette"
-            className="h-7 w-7"
+            className="h-9 w-9 shrink-0"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -370,7 +370,7 @@ export function CommandPalette({
 
         <div
           ref={listRef}
-          className="max-h-[55vh] overflow-y-auto scrollbar-thin"
+          className="flex-1 min-h-0 overflow-y-auto scrollbar-thin"
         >
           {rows.length === 0 && (
             <div className="px-6 py-10 text-sm text-muted-foreground text-center">
@@ -446,7 +446,7 @@ export function CommandPalette({
           })}
         </div>
 
-        <div className="hidden sm:flex items-center justify-between gap-3 border-t bg-muted/40 px-4 py-2 text-[10px] text-muted-foreground">
+        <div className="hidden sm:flex shrink-0 items-center justify-between gap-3 border-t bg-muted/40 px-4 py-2 text-[10px] text-muted-foreground">
           <div className="flex items-center gap-3">
             <KeyHint k="↑↓" label="Navigate" />
             <KeyHint k="↵" label="Open" />

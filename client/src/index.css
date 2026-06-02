@@ -201,9 +201,40 @@
     @apply border-border;
   }
 
+  html {
+    /* Stop iOS/Android from inflating text on orientation change. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
+  }
+
+  /* The app uses custom hover-elevate/active-elevate states, so suppress the
+     default grey tap-flash that mobile WebKit/Chromium paints on every touch. */
+  a,
+  button,
+  [role='button'],
+  input,
+  select,
+  textarea,
+  label,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent iOS Safari from auto-zooming when a form field gains focus:
+     any control rendered under ~16px triggers that zoom. This mirrors the
+     shared <Input> convention (16px on phones, 14px from the sm: breakpoint
+     up) and covers the page-level raw <input>/<select> fields too. */
+  @media (max-width: 639.98px) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']),
+    select,
+    textarea {
+      font-size: 16px;
+    }
   }
 
   .font-display {

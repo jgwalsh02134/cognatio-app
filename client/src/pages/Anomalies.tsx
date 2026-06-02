@@ -93,9 +93,9 @@ export default function Anomalies() {
       />
 
       {/* Filter bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-1 mb-5">
+      <div className="flex flex-col md:flex-row md:items-center gap-3 mt-1 mb-5">
         <div
-          className="flex gap-1 overflow-x-auto scrollbar-none -mx-1.5 px-1.5 snap-x"
+          className="flex min-w-0 flex-1 gap-1 overflow-x-auto scrollbar-none -mx-1.5 px-1.5 snap-x"
           role="tablist"
         >
           {(["all", "high", "medium", "low"] as SeverityFilter[]).map((s) => {
@@ -105,7 +105,7 @@ export default function Anomalies() {
                 key={s}
                 onClick={() => setSeverity(s)}
                 className={cn(
-                  "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-1.5 text-xs font-medium transition-colors hover-elevate active-elevate-2",
+                  "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-2.5 text-xs font-medium transition-colors hover-elevate active-elevate-2",
                   active
                     ? "border-foreground/30 bg-foreground/[0.06] text-foreground"
                     : "border-border/70 bg-background/40 text-muted-foreground",
@@ -131,7 +131,7 @@ export default function Anomalies() {
           <select
             value={kindFilter}
             onChange={(e) => setKindFilter(e.target.value as AnomalyKind | "all")}
-            className="rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5 text-xs"
+            className="rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5 text-xs min-h-10 w-full md:w-auto max-w-[12rem]"
             data-testid="anomaly-kind"
           >
             <option value="all">All issue types</option>
@@ -263,8 +263,9 @@ function ExportButton({ anomalies }: { anomalies: Anomaly[] }) {
       <button
         type="button"
         onClick={handleCopy}
-        className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 py-1.5 text-[11px] hover-elevate active-elevate-2"
+        className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 py-1.5 text-[11px] hover-elevate active-elevate-2 min-h-10 min-w-10"
         title="Copy as JSON"
+        aria-label="Copy anomalies as JSON"
       >
         {done === "copy" ? (
           <Check className="h-3 w-3 text-emerald-500" />
@@ -276,8 +277,9 @@ function ExportButton({ anomalies }: { anomalies: Anomaly[] }) {
       <button
         type="button"
         onClick={handleDownload}
-        className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 py-1.5 text-[11px] hover-elevate active-elevate-2"
+        className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 py-1.5 text-[11px] hover-elevate active-elevate-2 min-h-10 min-w-10"
         title="Download as JSON"
+        aria-label="Download anomalies as JSON"
       >
         {done === "download" ? (
           <Check className="h-3 w-3 text-emerald-500" />

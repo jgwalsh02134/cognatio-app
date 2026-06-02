@@ -145,7 +145,7 @@ export default function PersonDetail() {
       <div className="flex items-center justify-between mb-5 sm:mb-7 print:hidden">
         <Link
           href="/people"
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
           data-testid="link-back"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -154,7 +154,7 @@ export default function PersonDetail() {
         <div className="flex items-center gap-1">
           <Link
             href={`/relate?a=${encodeURIComponent(person.id)}`}
-            className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="link-relate"
           >
             <GitMerge className="h-3.5 w-3.5" />
@@ -164,7 +164,7 @@ export default function PersonDetail() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="button-print"
           >
             <Printer className="h-3.5 w-3.5" />
@@ -253,13 +253,13 @@ export default function PersonDetail() {
               return (
                 <Link
                   href={`/person/${encodeURIComponent(root.id)}`}
-                  className="inline-flex items-center gap-2 mt-3 rounded-full border border-card-border bg-card pl-1 pr-3 py-1 hover-elevate active-elevate-2"
+                  className="inline-flex items-center gap-2 mt-3 max-w-full rounded-full border border-card-border bg-card pl-1 pr-3 py-1.5 min-h-10 hover-elevate active-elevate-2"
                   data-testid="badge-relationship"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
                     <GitBranch className="h-3 w-3" />
                   </span>
-                  <span className="text-xs">
+                  <span className="text-xs min-w-0 break-words">
                     {!isOrphan && (
                       <span className="text-muted-foreground">
                         {relationship.bySpouse ? "By marriage · " : ""}
@@ -325,7 +325,7 @@ export default function PersonDetail() {
                 key={t.id}
                 type="button"
                 onClick={() => scrollToSection(t.id)}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-2.5 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
                 data-testid={`jump-${t.id}`}
               >
                 {t.icon}
@@ -340,11 +340,11 @@ export default function PersonDetail() {
         {/* Left: facts & life */}
         <div className="space-y-6 min-w-0">
           {person.military && (
-            <section id="section-military" className="scroll-mt-20">
+            <section id="section-military" className="scroll-mt-24">
               <MilitaryServiceCard person={person} />
             </section>
           )}
-          <section id="section-life" className="scroll-mt-20 space-y-6">
+          <section id="section-life" className="scroll-mt-24 space-y-6">
             <FactsCard person={person} update={update} unlocked={unlocked} />
             {unlocked && (
               <>
@@ -354,19 +354,19 @@ export default function PersonDetail() {
               </>
             )}
           </section>
-          <section id="section-affiliations" className="scroll-mt-20">
+          <section id="section-affiliations" className="scroll-mt-24">
             <AffiliationsEditor person={person} update={update} unlocked={unlocked} />
           </section>
-          <section id="section-notes" className="scroll-mt-20">
+          <section id="section-notes" className="scroll-mt-24">
             <NotesEditor person={person} update={update} unlocked={unlocked} />
           </section>
-          <section id="section-sources" className="scroll-mt-20">
+          <section id="section-sources" className="scroll-mt-24">
             <SourcesEditor sources={sources} update={update} unlocked={unlocked} />
           </section>
-          <section id="section-research" className="scroll-mt-20">
+          <section id="section-research" className="scroll-mt-24">
             <ResearchCard person={person} />
           </section>
-          <section id="section-pedigree" className="scroll-mt-20">
+          <section id="section-pedigree" className="scroll-mt-24">
             <PedigreeCard pedigree={pedigree} />
           </section>
         </div>
@@ -537,8 +537,8 @@ function FactsCard({
                     {f.label}
                     {f.date && <span className="text-muted-foreground font-normal ml-2">{f.date}</span>}
                   </div>
-                  {f.place && <div className="text-muted-foreground">{f.place}</div>}
-                  {f.note && <div className="text-xs text-muted-foreground/85 mt-0.5">{f.note}</div>}
+                  {f.place && <div className="text-muted-foreground break-words">{f.place}</div>}
+                  {f.note && <div className="text-xs text-muted-foreground/85 mt-0.5 break-words">{f.note}</div>}
                 </div>
               </li>
             ))}
@@ -627,7 +627,7 @@ function NoteRow({
 
   if (!unlocked) {
     return (
-      <p className="whitespace-pre-line" data-testid={`note-${index}`}>
+      <p className="whitespace-pre-line break-words" data-testid={`note-${index}`}>
         {note}
       </p>
     );
@@ -1260,7 +1260,7 @@ function ResearchCard({ person }: { person: Person }) {
                 rel="noopener noreferrer"
                 title={l.hint}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] hover-elevate active-elevate-2",
+                  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] hover-elevate active-elevate-2",
                   l.group === "tree" && "bg-sky-500/10 border-sky-500/30",
                   l.group === "records" && "bg-emerald-500/10 border-emerald-500/30",
                   l.group === "graves" && "bg-stone-500/10 border-stone-500/30",
@@ -1292,7 +1292,7 @@ function ResearchCard({ person }: { person: Person }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`${c.country} ${c.year} census — age ${c.age ?? "?"}${c.placeHint ? " in " + c.placeHint : ""}`}
-                  className="inline-flex items-center gap-1.5 rounded-md border bg-background/40 px-2 py-1 text-[11px] hover-elevate active-elevate-2"
+                  className="inline-flex items-center gap-1.5 rounded-md border bg-background/40 px-2.5 py-1.5 text-[11px] hover-elevate active-elevate-2"
                   data-testid={`census-${c.year}`}
                 >
                   <CountryFlag country={c.country} className="h-2.5 w-3.5 rounded-sm" />

@@ -182,7 +182,7 @@ export default function Insights() {
   const maxCountryCount = Math.max(1, ...data.countryEntries.map((c) => c.count));
 
   return (
-    <div className="mx-auto max-w-7xl px-3 sm:px-5 py-6 sm:py-10 space-y-8 fade-up">
+    <div className="mx-auto max-w-7xl px-4 sm:px-5 py-6 sm:py-10 space-y-8 fade-up">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
@@ -244,7 +244,7 @@ export default function Insights() {
             />
             {data.avgLife !== null ? (
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
                   <Stat label="Average" value={`${Math.round(data.avgLife)}y`} />
                   <Stat label="Shortest" value={`${data.minLife}y`} />
                   <Stat label="Longest" value={`${data.maxLife}y`} />
@@ -431,7 +431,7 @@ export default function Insights() {
                 </p>
                 <Link
                   href="/gaps"
-                  className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                  className="inline-flex items-center min-h-10 gap-1 text-xs font-medium text-primary hover:underline"
                 >
                   See gap list <ArrowRight className="h-3 w-3" />
                 </Link>
@@ -547,9 +547,9 @@ function CoverageBar({
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
   return (
     <div>
-      <div className="flex items-center justify-between text-xs mb-1">
-        <span className="text-foreground/80">{label}</span>
-        <span className="font-mono tabular-nums text-muted-foreground">
+      <div className="flex items-center justify-between gap-2 min-w-0 text-xs mb-1">
+        <span className="text-foreground/80 min-w-0 truncate">{label}</span>
+        <span className="font-mono tabular-nums text-muted-foreground shrink-0">
           {count} <span className="opacity-60">/ {total}</span>{" "}
           <span className="ml-1 opacity-80">{pct}%</span>
         </span>
@@ -585,6 +585,7 @@ function DecadeChart({
                 className="w-full rounded-t bg-primary/70 hover:bg-primary transition-colors"
                 style={{ height: `${pct}%` }}
                 title={`${decade}s — ${count} births`}
+                aria-label={`${decade}s — ${count} births`}
                 data-testid={`decade-bar-${decade}`}
               />
               <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-popover border border-border rounded px-1.5 py-0.5 text-[10px] font-mono whitespace-nowrap pointer-events-none">

@@ -95,7 +95,7 @@ export default function Surnames() {
       <div className="mb-5 sm:mb-7">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-2 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
           data-testid="link-back-home"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -117,7 +117,7 @@ export default function Surnames() {
       </header>
 
       <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="search"
@@ -132,7 +132,7 @@ export default function Surnames() {
           type="button"
           onClick={() => setOnlyArms((v) => !v)}
           className={cn(
-            "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs transition-colors",
+            "inline-flex items-center gap-2 rounded-md border px-3 py-2 min-h-10 text-xs transition-colors",
             onlyArms
               ? "border-primary bg-primary text-primary-foreground"
               : "border-border bg-background text-muted-foreground hover:text-foreground hover-elevate",
@@ -225,7 +225,7 @@ export default function Surnames() {
                             <Link
                               key={p.id}
                               href={`/person/${encodeURIComponent(p.id)}`}
-                              className="flex items-center gap-2.5 rounded-md px-2 py-1.5 hover-elevate active-elevate-2 min-w-0"
+                              className="flex items-center gap-2.5 rounded-md px-2 py-2.5 hover-elevate active-elevate-2 min-w-0"
                               data-testid={`surname-person-${p.id}`}
                             >
                               <PersonAvatar person={p} size="xs" />

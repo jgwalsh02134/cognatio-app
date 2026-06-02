@@ -108,7 +108,7 @@ function PersonPicker({ label, testId, value, onChange }: PickerProps) {
                     setOpen(false);
                     setQuery("");
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-left border-b last:border-b-0 hover-elevate"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 min-h-10 text-left border-b last:border-b-0 hover-elevate"
                   data-testid={`picker-option-${testId}-${p.id}`}
                 >
                   <PersonAvatar person={p} size="xs" />
@@ -148,7 +148,7 @@ function ChainView({ chain }: ChainViewProps) {
     <ol className="grid gap-0">
       {chain.map((step, i) => (
         <li key={`${step.person.id}-${i}`} className="grid gap-0">
-          <div className="flex items-center gap-3 rounded-md border border-card-border bg-card/40 px-3 py-2.5">
+          <div className="flex flex-wrap items-center gap-3 rounded-md border border-card-border bg-card/40 px-3 py-2.5">
             <Link
               href={`/person/${encodeURIComponent(step.person.id)}`}
               className="shrink-0"
@@ -261,7 +261,7 @@ export default function Relate() {
       <div className="mb-5 sm:mb-7">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-2 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
           data-testid="link-back-home"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -282,15 +282,15 @@ export default function Relate() {
         </p>
       </header>
 
-      <section className="mt-6 sm:mt-8 grid sm:grid-cols-[1fr_auto_1fr] gap-3 sm:gap-4 items-end">
+      <section className="mt-6 sm:mt-8 grid md:grid-cols-[1fr_auto_1fr] gap-3 md:gap-4 items-end">
         <PersonPicker label="Person A" testId="a" value={a} onChange={setA} />
-        <div className="flex sm:flex-col items-center justify-center gap-2 sm:gap-1.5 pb-1.5">
+        <div className="flex md:flex-col items-center justify-center gap-2 md:gap-1.5 pb-1.5">
           <Button
             type="button"
             variant="ghost"
             size="icon"
             onClick={swap}
-            className="h-9 w-9"
+            className="h-10 w-10"
             aria-label="Swap people"
             data-testid="button-swap"
             disabled={!a && !b}
@@ -307,6 +307,7 @@ export default function Relate() {
           variant="outline"
           size="sm"
           onClick={pickRandom}
+          className="min-h-10"
           data-testid="button-random-pair"
         >
           <Users className="h-3.5 w-3.5 mr-1.5" />
@@ -318,6 +319,7 @@ export default function Relate() {
             variant="ghost"
             size="sm"
             onClick={reset}
+            className="min-h-10"
             data-testid="button-reset"
           >
             Reset
@@ -363,7 +365,7 @@ export default function Relate() {
                   of <span className="font-medium">{fullDisplayName(b)}</span>.
                 </p>
                 {chain.length > 2 && (
-                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5">
+                  <p className="text-xs text-muted-foreground mt-2 flex flex-wrap items-center gap-1.5 break-words">
                     <ArrowRight className="h-3 w-3" />
                     Shortest chain through{" "}
                     <span className="tabular-nums font-medium text-foreground">

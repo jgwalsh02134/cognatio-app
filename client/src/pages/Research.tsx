@@ -110,7 +110,7 @@ export default function Research() {
               key={id}
               onClick={() => setTab(id)}
               className={cn(
-                "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+                "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-2.5 text-xs font-medium transition-colors",
                 "hover-elevate active-elevate-2",
                 active
                   ? "border-foreground/30 bg-foreground/[0.06] text-foreground"
@@ -402,7 +402,7 @@ function BrickWallStrategies({ person }: { person: Person }) {
                 href={sl.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border bg-background/40 px-2 py-1 text-[11px] hover-elevate active-elevate-2"
+                className="inline-flex items-center gap-1.5 rounded-md border bg-background/40 px-2 py-2 text-[11px] hover-elevate active-elevate-2"
               >
                 {sl.label}
                 <ExternalLink className="h-2.5 w-2.5 text-muted-foreground" />
@@ -678,7 +678,7 @@ function RecordChecklist({ person }: { person: Person }) {
           <button
             type="button"
             onClick={handleCopy}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 sm:px-2.5 py-1 text-[11px] hover-elevate active-elevate-2"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-2 sm:px-2.5 py-1 text-[11px] hover-elevate active-elevate-2 min-h-10"
             data-testid="copy-checklist"
             aria-label={copied ? "Copied" : "Copy checklist"}
             title={copied ? "Copied" : "Copy checklist"}
@@ -777,7 +777,7 @@ function SurnameProjectsPanel() {
                 type="button"
                 onClick={() => setPicked(s.surname)}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] hover-elevate active-elevate-2",
+                  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-2 text-[11px] hover-elevate active-elevate-2",
                   active ? "bg-foreground/[0.06] border-foreground/30 text-foreground" : "bg-background/40 text-muted-foreground"
                 )}
                 data-testid={`surname-pick-${s.surname.toLowerCase()}`}
@@ -791,11 +791,13 @@ function SurnameProjectsPanel() {
 
         {picked && (
           <div className="space-y-3">
-            <div className="flex items-center gap-3 rounded-md border bg-background/40 p-3">
+            <div className="flex flex-wrap items-center gap-3 rounded-md border bg-background/40 p-3">
               {getArmsForSurname(picked) ? (
-                <SurnameArms surname={picked} size="sm" />
+                <div className="shrink-0">
+                  <SurnameArms surname={picked} size="sm" />
+                </div>
               ) : (
-                <div className="h-10 w-10 rounded border border-dashed border-border/60" />
+                <div className="h-10 w-10 shrink-0 rounded border border-dashed border-border/60" />
               )}
               <div className="min-w-0">
                 <div className="text-sm font-semibold">{picked}</div>
@@ -865,7 +867,7 @@ function Stat({
   accent?: "warn";
 }) {
   return (
-    <div className="rounded-md border bg-card p-3">
+    <div className="rounded-md border bg-card p-3 min-w-0">
       <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-1">{label}</div>
       <div
         className={cn(
@@ -875,7 +877,7 @@ function Stat({
       >
         {value}
       </div>
-      {subtext && <div className="text-[11px] text-muted-foreground mt-0.5">{subtext}</div>}
+      {subtext && <div className="text-[11px] text-muted-foreground mt-0.5 break-words">{subtext}</div>}
     </div>
   );
 }
@@ -894,9 +896,9 @@ function CoverageBar({
   const pct = Math.round((value / Math.max(1, total)) * 100);
   return (
     <div>
-      <div className="flex items-center justify-between text-[11px] mb-1">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-mono tabular-nums text-muted-foreground">
+      <div className="flex items-center justify-between gap-2 text-[11px] mb-1">
+        <span className="text-muted-foreground min-w-0 truncate">{label}</span>
+        <span className="font-mono tabular-nums text-muted-foreground shrink-0">
           {value} <span className="text-muted-foreground/60">/ {total}</span> · {hint}
         </span>
       </div>
@@ -934,7 +936,7 @@ function PersonPicker({
             onChange(null);
             setQuery("");
           }}
-          className="text-[11px] rounded-md border bg-background/60 px-2 py-1 hover-elevate active-elevate-2"
+          className="text-[11px] rounded-md border bg-background/60 px-2 py-1 hover-elevate active-elevate-2 min-h-10"
           data-testid="picker-change"
         >
           Change
@@ -997,7 +999,7 @@ function LinkChipRow({ links }: { links: ReturnType<typeof linksFor> }) {
           rel="noopener noreferrer"
           title={l.hint}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] hover-elevate active-elevate-2",
+            "inline-flex items-center gap-1.5 rounded-md border px-2 py-2 text-[11px] hover-elevate active-elevate-2",
             l.group === "tree" && "bg-sky-500/10 border-sky-500/30",
             l.group === "records" && "bg-emerald-500/10 border-emerald-500/30",
             l.group === "graves" && "bg-stone-500/10 border-stone-500/30",

@@ -111,38 +111,40 @@ export function AIChat() {
       <Sheet open={chatOpen} onOpenChange={setChatOpen}>
         <SheetContent
           side="right"
-          className="w-full sm:max-w-md md:max-w-xl p-0 flex flex-col gap-0"
+          className="w-full sm:max-w-md md:max-w-xl p-0 flex flex-col gap-0 [&>button]:hidden"
           data-testid="ai-chat-sheet"
         >
-          <header className="flex items-center justify-between gap-2 px-4 py-3 border-b">
+          <header className="flex items-center justify-between gap-2 px-4 py-3 border-b shrink-0">
             <div className="flex items-center gap-2 min-w-0">
               <Bot className="h-4 w-4 text-primary shrink-0" />
               <div className="min-w-0">
-                <div className="text-sm font-medium leading-tight">Archive AI</div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="text-sm font-medium leading-tight truncate">Archive AI</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground truncate">
                   OpenAI · web search
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <ModelPicker value={chatModel} onChange={setChatModel} />
               {chatHistory.length > 0 && (
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={clearChat}
-                  className="h-8 px-2 text-[11px]"
+                  className="h-9 px-2 text-[11px]"
+                  aria-label="Clear chat"
                   data-testid="ai-chat-clear"
                 >
-                  <Trash2 className="h-3.5 w-3.5 mr-1" />
-                  Clear
+                  <Trash2 className="h-3.5 w-3.5 sm:mr-1" />
+                  <span className="hidden sm:inline">Clear</span>
                 </Button>
               )}
               <Button
                 size="icon"
                 variant="ghost"
                 onClick={() => setChatOpen(false)}
-                className="h-8 w-8"
+                className="h-9 w-9 shrink-0"
+                aria-label="Close AI chat"
                 data-testid="ai-chat-close"
               >
                 <X className="h-4 w-4" />
@@ -188,11 +190,11 @@ function ModelPicker({
         <Button
           size="sm"
           variant="ghost"
-          className="h-8 px-2 text-[11px] gap-1"
+          className="h-9 px-2 text-[11px] gap-1 max-w-[7.5rem]"
           data-testid="ai-chat-model"
         >
-          {current.label}
-          <ChevronDown className="h-3 w-3 opacity-60" />
+          <span className="truncate">{current.label}</span>
+          <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -412,7 +414,7 @@ function ChatBody({
         )}
       </div>
 
-      <div className="border-t px-3 py-2.5">
+      <div className="border-t px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] shrink-0">
         <div className="flex items-end gap-2">
           <Textarea
             value={draft}
@@ -749,7 +751,7 @@ function MessageActions({
     <div className="mt-2 pt-1.5 flex items-center gap-1 -mx-1">
       <button
         onClick={copy}
-        className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
+        className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
         data-testid="chat-copy"
         aria-label="Copy answer"
       >
@@ -758,7 +760,7 @@ function MessageActions({
       </button>
       <button
         onClick={share}
-        className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
+        className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
         data-testid="chat-share"
         aria-label="Share answer"
       >
@@ -768,7 +770,7 @@ function MessageActions({
       {canRegenerate && (
         <button
           onClick={onRegenerate}
-          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
+          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1.5 rounded hover-elevate active-elevate-2 text-muted-foreground"
           data-testid="chat-regenerate"
           aria-label="Regenerate answer"
         >

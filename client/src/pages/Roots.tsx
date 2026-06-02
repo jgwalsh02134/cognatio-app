@@ -102,7 +102,7 @@ export default function Roots() {
               role="tab"
               aria-selected={active}
               className={cn(
-                "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-1.5 text-xs font-medium transition-colors hover-elevate active-elevate-2",
+                "snap-start inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-2.5 text-xs font-medium transition-colors hover-elevate active-elevate-2",
                 active
                   ? "border-foreground/30 bg-foreground/[0.06] text-foreground"
                   : "border-border/70 bg-background/40 text-muted-foreground",
@@ -210,7 +210,7 @@ function LineCard({
               <li key={p.id}>
                 <Link
                   href={`/person/${encodeURIComponent(p.id)}`}
-                  className="group flex items-center gap-2.5 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5 hover-elevate active-elevate-2"
+                  className="group flex items-center gap-2.5 rounded-md border border-border/60 bg-background/40 px-2.5 py-2 hover-elevate active-elevate-2"
                 >
                   <span
                     className={cn(
@@ -264,12 +264,12 @@ function AhnentafelGrid({ entries }: { entries: AhnentafelEntry[] }) {
               · {list.length} ancestor{list.length === 1 ? "" : "s"} known
             </span>
           </h3>
-          <div className="grid gap-1.5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+          <div className="grid gap-1.5 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
             {list.map((e) => (
               <Link
                 key={e.sosa}
                 href={`/person/${encodeURIComponent(e.person.id)}`}
-                className="group flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2 py-1.5 hover-elevate active-elevate-2 min-w-0"
+                className="group flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2 py-2.5 hover-elevate active-elevate-2 min-w-0"
               >
                 <span className="shrink-0 inline-flex h-5 min-w-5 items-center justify-center rounded bg-foreground/[0.06] px-1 text-[10px] font-semibold tabular-nums">
                   {e.sosa}
@@ -326,7 +326,7 @@ function SurnamesPanel({ rows }: { rows: RootLine[] }) {
                       <div className="font-display text-sm font-semibold uppercase tracking-wider">
                         {r.surname}
                       </div>
-                      <div className="text-[11px] text-muted-foreground">
+                      <div className="text-[11px] text-muted-foreground break-words">
                         {r.depth} generation{r.depth === 1 ? "" : "s"} ·{" "}
                         <Link
                           href={`/person/${encodeURIComponent(r.apex.id)}`}
@@ -422,18 +422,20 @@ function DepthDistributionPanel() {
           For every person in the tree, the number of generations of recorded ancestors above them.
           The taller the right-hand bars, the more people in the tree connect to a deep lineage.
         </p>
-        <div className="mt-4 h-64">
+        <div className="mt-4 h-48 sm:h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: -20 }}>
+            <BarChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: 0 }}>
               <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="2 4" vertical={false} />
               <XAxis
                 dataKey="depth"
+                interval="preserveStartEnd"
                 tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 allowDecimals={false}
+                width={28}
                 tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                 axisLine={false}
                 tickLine={false}

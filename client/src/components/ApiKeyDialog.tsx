@@ -109,7 +109,7 @@ export function ApiKeyDialog() {
               </span>
               <button
                 onClick={onClear}
-                className="text-muted-foreground hover:text-foreground underline"
+                className="inline-flex items-center min-h-10 px-2 -mr-2 text-muted-foreground hover:text-foreground underline"
                 data-testid="api-key-clear"
               >
                 Clear

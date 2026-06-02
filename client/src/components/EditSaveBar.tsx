@@ -40,11 +40,12 @@ export function EditSaveBar() {
           </div>
           <Link
             href="/changes"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary-foreground text-primary text-xs sm:text-sm font-semibold px-3 sm:px-3.5 hover-elevate active-elevate-2 shrink-0 whitespace-nowrap"
+            className="inline-flex h-10 items-center gap-1.5 rounded-md bg-primary-foreground text-primary text-xs sm:text-sm font-semibold px-3 sm:px-3.5 hover-elevate active-elevate-2 shrink-0 whitespace-nowrap"
             data-testid="save-bar-review"
           >
             <Download className="h-4 w-4" />
-            Review &amp; save
+            <span className="hidden sm:inline">Review &amp; save</span>
+            <span className="sm:hidden">Review</span>
           </Link>
           <button
             type="button"
@@ -54,7 +55,7 @@ export function EditSaveBar() {
               }
             }}
             aria-label="Discard all pending edits"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-primary-foreground/80 hover:text-primary-foreground hover-elevate active-elevate-2 shrink-0"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary-foreground/80 hover:text-primary-foreground hover-elevate active-elevate-2 shrink-0"
             data-testid="save-bar-discard"
             title="Discard all pending edits"
           >

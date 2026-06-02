@@ -29,7 +29,7 @@ export default function ExportPage() {
   const filename = `cognatio_archive_${today}.ged`;
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-10 max-w-5xl">
+    <div className="container mx-auto px-4 sm:px-5 py-6 sm:py-10 max-w-5xl">
       <header className="mb-6 sm:mb-10">
         <h1 className="font-display text-xl sm:text-2xl font-semibold mb-2">Export archive</h1>
         <p className="text-sm text-muted-foreground max-w-2xl">
@@ -60,7 +60,7 @@ export default function ExportPage() {
             </div>
             <Button
               size="lg"
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
               onClick={() => downloadGedcom(filename)}
               data-testid="button-download-gedcom"
             >
@@ -100,6 +100,7 @@ export default function ExportPage() {
             <Button
               variant="outline"
               size="sm"
+              className="min-h-10"
               onClick={() => setPreviewOpen((v) => !v)}
               data-testid="button-toggle-preview"
             >
@@ -107,7 +108,7 @@ export default function ExportPage() {
             </Button>
           </div>
           {previewOpen && (
-            <pre className="text-xs bg-muted/40 border border-border/60 rounded-md p-3 overflow-auto max-h-96 font-mono leading-relaxed">
+            <pre className="text-xs bg-muted/40 border border-border/60 rounded-md p-3 overflow-x-auto overflow-y-auto max-h-96 font-mono leading-relaxed break-all">
               {summary.text.split(/\r?\n/).slice(0, 80).join("\n")}
             </pre>
           )}

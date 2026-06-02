@@ -13,7 +13,7 @@ import {
 import { PersonAvatar } from "@/components/PersonAvatar";
 import { CountryFlag } from "@/components/CountryFlag";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Category = "surname" | "country";
@@ -34,6 +34,9 @@ export default function PeopleList() {
   const [activeSurname, setActiveSurname] = useState<string | null>(initialSurname);
   const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry);
   const [livingFilter, setLivingFilter] = useState<"all" | "living" | "deceased">("all");
+  // Mobile-only: the long surname/country browser is collapsed by default so the
+  // results sit near the top of the screen. On md+ the full sidebar always shows.
+  const [facetsOpen, setFacetsOpen] = useState(false);
 
   const surnameGroups = useMemo(() => bySurname(), []);
   const surnames = useMemo(
@@ -148,6 +151,33 @@ export default function PeopleList() {
               ))}
             </div>
 
+            {/* Mobile-only disclosure: collapses the long facet list so results
+                stay near the top. Hidden on md+, where the sidebar is always open. */}
+            <button
+              type="button"
+              onClick={() => setFacetsOpen((v) => !v)}
+              aria-expanded={facetsOpen}
+              className="md:hidden mb-2 w-full flex items-center justify-between gap-2 rounded-md border bg-card px-3 py-2 text-sm hover-elevate active-elevate-2"
+              data-testid="button-facets-toggle"
+            >
+              <span className="truncate min-w-0">
+                {category === "surname"
+                  ? activeSurname
+                    ? `Surname · ${activeSurname}`
+                    : "Browse by surname"
+                  : activeCountry
+                    ? `Country · ${activeCountry}`
+                    : "Browse by country"}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                  facetsOpen && "rotate-180",
+                )}
+              />
+            </button>
+
+            <div className={cn("md:block", facetsOpen ? "block" : "hidden")}>
             {category === "surname" ? (
               <>
                 <button
@@ -168,6 +198,7 @@ export default function PeopleList() {
                       onClick={() => {
                         setActiveSurname(s.surname);
                         setActiveCountry(null);
+                        setFacetsOpen(false);
                       }}
                       className={cn(
                         "w-full flex items-center justify-between text-sm py-1.5 px-2 rounded hover-elevate active-elevate-2 text-left",
@@ -203,6 +234,7 @@ export default function PeopleList() {
                       onClick={() => {
                         setActiveCountry(c.country);
                         setActiveSurname(null);
+                        setFacetsOpen(false);
                       }}
                       className={cn(
                         "w-full flex items-center justify-between gap-2 text-sm py-1.5 px-2 rounded hover-elevate active-elevate-2 text-left",
@@ -222,6 +254,7 @@ export default function PeopleList() {
                 </div>
               </>
             )}
+            </div>
           </div>
         </aside>
 

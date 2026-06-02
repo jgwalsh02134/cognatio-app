@@ -39,7 +39,7 @@ export function PageHero({
     <header className="relative mb-6 sm:mb-8 fade-up">
       <Link
         href={backHref}
-        className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+        className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
       >
         <ArrowLeft className="h-3 w-3" />
         {backLabel}

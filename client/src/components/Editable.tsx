@@ -22,11 +22,11 @@ function EditAffordance({
       onClick={onClick}
       data-testid={testId}
       className={cn(
-        "ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground hover-elevate active-elevate-2 align-middle",
+        "ml-1 inline-flex h-8 w-8 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground hover-elevate active-elevate-2 align-middle",
       )}
       aria-label={hasValue ? "Edit field" : "Add value"}
     >
-      <Pencil className="h-3 w-3" />
+      <Pencil className="h-3.5 w-3.5" />
     </button>
   );
 }
@@ -111,19 +111,19 @@ export function EditableText({
             type="button"
             onClick={commit}
             aria-label="Save"
-            className="inline-flex h-6 w-6 items-center justify-center rounded text-primary hover-elevate active-elevate-2"
+            className="inline-flex h-8 w-8 items-center justify-center rounded text-primary hover-elevate active-elevate-2"
             data-testid={testId ? `${testId}-save` : undefined}
           >
-            <Check className="h-3.5 w-3.5" />
+            <Check className="h-4 w-4" />
           </button>
           <button
             type="button"
             onClick={cancel}
             aria-label="Cancel"
-            className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover-elevate active-elevate-2"
+            className="inline-flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover-elevate active-elevate-2"
             data-testid={testId ? `${testId}-cancel` : undefined}
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </button>
         </span>
       </span>
@@ -192,10 +192,10 @@ export function EventEditorPopover({
         type="button"
         onClick={() => setOpen((s) => !s)}
         aria-label={`Edit ${label}`}
-        className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground hover-elevate active-elevate-2 align-middle"
+        className="ml-1 inline-flex h-8 w-8 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground hover-elevate active-elevate-2 align-middle"
         data-testid={testId ? `${testId}-toggle` : undefined}
       >
-        <Pencil className="h-3 w-3" />
+        <Pencil className="h-3.5 w-3.5" />
       </button>
       {open && (
         <div
@@ -235,7 +235,7 @@ export function EventEditorPopover({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded px-2 py-1 text-xs text-muted-foreground hover-elevate active-elevate-2"
+              className="inline-flex items-center min-h-10 rounded px-3 py-1 text-xs text-muted-foreground hover-elevate active-elevate-2"
               data-testid={testId ? `${testId}-cancel` : undefined}
             >
               Cancel
@@ -249,7 +249,7 @@ export function EventEditorPopover({
                 });
                 setOpen(false);
               }}
-              className="rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover-elevate active-elevate-2"
+              className="inline-flex items-center min-h-10 rounded bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover-elevate active-elevate-2"
               data-testid={testId ? `${testId}-save` : undefined}
             >
               Save

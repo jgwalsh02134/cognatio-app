@@ -256,7 +256,7 @@ export default function Changes() {
     <div className="mx-auto max-w-4xl px-4 sm:px-5 py-6 sm:py-8">
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mb-4"
+        className="inline-flex items-center gap-1 min-h-10 text-xs text-muted-foreground hover:text-foreground mb-4"
       >
         <ArrowLeft className="h-3 w-3" /> Back
       </Link>
@@ -382,14 +382,14 @@ export default function Changes() {
                       {original ? fullDisplayName(original) : id}
                     </Link>
                     <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mt-0.5">
-                      <span className="font-mono normal-case tracking-normal">{id}</span> ·{" "}
+                      <span className="font-mono normal-case tracking-normal break-all">{id}</span> ·{" "}
                       {diffs.length} {diffs.length === 1 ? "field" : "fields"}
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => discard(id)}
-                    className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:text-destructive hover-elevate active-elevate-2"
+                    className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded text-muted-foreground hover:text-destructive hover-elevate active-elevate-2"
                     aria-label="Discard this person's edits"
                     data-testid={`change-${id}-discard`}
                   >
@@ -405,13 +405,13 @@ export default function Changes() {
                       <div className="grid sm:grid-cols-2 gap-2">
                         <div className="rounded border border-card-border bg-muted/30 p-2">
                           <div className="text-[10px] text-muted-foreground mb-0.5">Before</div>
-                          <div className="whitespace-pre-line break-words text-muted-foreground">
+                          <div className="whitespace-pre-line break-words break-all text-muted-foreground">
                             {d.before}
                           </div>
                         </div>
                         <div className="rounded border border-primary/30 bg-primary/5 p-2">
                           <div className="text-[10px] text-primary/80 mb-0.5">After</div>
-                          <div className="whitespace-pre-line break-words">{d.after}</div>
+                          <div className="whitespace-pre-line break-words break-all">{d.after}</div>
                         </div>
                       </div>
                     </li>

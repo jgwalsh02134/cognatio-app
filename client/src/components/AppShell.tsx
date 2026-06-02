@@ -163,6 +163,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const moreActive = MORE_ITEMS.some((item) => isActivePath(location, item.href));
 
+  // When the floating EditSaveBar is showing, reserve extra space at the bottom
+  // so the last of the page content isn't hidden behind it (mobile especially).
+  const editBarVisible = unlocked && hasChanges && location !== "/changes";
+
   async function tryUnlock() {
     if (!unlockDraft.trim()) return;
     const ok = await unlock(unlockDraft);
@@ -338,7 +342,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
-      <main className="flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+      <main
+        className={cn(
+          "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col",
+          editBarVisible
+            ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-24"
+            : "pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
+        )}
+      >
+        {children}
+      </main>
 
       {/* Mobile bottom nav: 4 primary tabs + a "More" tab opening a grouped sheet.
           Five equal thumb-zone targets — no horizontal scrolling. */}

@@ -31,6 +31,16 @@ import { cn } from "@/lib/utils";
 
 type SortKey = "name" | "birth" | "death" | "surname" | "place" | "sources" | "children";
 
+const MOBILE_SORT_OPTIONS: [SortKey, string][] = [
+  ["name", "Person"],
+  ["surname", "Surname"],
+  ["birth", "Born"],
+  ["death", "Died"],
+  ["place", "Place"],
+  ["sources", "Sources"],
+  ["children", "Children"],
+];
+
 const DEFAULT_QUERY: FinderQuery = {
   sex: "any",
   hasSource: "any",
@@ -117,7 +127,7 @@ export default function Finder() {
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setAdvancedOpen((v) => !v)}
-                className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2"
+                className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2 min-h-10"
               >
                 <ChevronDown
                   className={cn("h-3 w-3 transition-transform", !advancedOpen && "-rotate-90")}
@@ -126,8 +136,9 @@ export default function Finder() {
               </button>
               <button
                 onClick={reset}
-                className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2"
+                className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2 min-h-10 min-w-10"
                 title="Reset filters"
+                aria-label="Reset filters"
               >
                 <RefreshCw className="h-3 w-3" />
                 <span className="hidden sm:inline">Reset</span>
@@ -377,7 +388,7 @@ function Toggle({
       type="button"
       onClick={() => onChange(!active)}
       className={cn(
-        "inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-xs transition-colors hover-elevate active-elevate-2",
+        "inline-flex items-center gap-2 rounded-md border px-2.5 py-2.5 text-xs transition-colors hover-elevate active-elevate-2",
         active
           ? "border-foreground/30 bg-foreground/[0.06] text-foreground"
           : "border-border/70 bg-background/40 text-muted-foreground",
@@ -405,8 +416,9 @@ function CopyShareUrl() {
   return (
     <button
       onClick={handle}
-      className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2"
+      className="inline-flex items-center gap-1.5 rounded-md border bg-background/60 px-3 py-2 text-xs hover-elevate active-elevate-2 min-h-10 min-w-10"
       title="Copy shareable URL"
+      aria-label="Copy shareable URL"
     >
       <Copy className="h-3 w-3" />
       <span className="hidden sm:inline">{done ? "Copied" : "Share"}</span>
@@ -527,6 +539,25 @@ function ResultsTable({
               })}
             </tbody>
           </table>
+        </div>
+        {/* Mobile sort control */}
+        <div className="md:hidden border-b border-border/40 px-3 py-2.5">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            Sort by
+            <select
+              value={sort.key}
+              onChange={(e) => onSort(e.target.value as SortKey)}
+              className="flex-1 min-w-0 rounded-md border border-border/70 bg-background text-sm normal-case tracking-normal text-foreground px-2.5 py-2 min-h-10 focus:outline-none focus:ring-2 focus:ring-foreground/15"
+              data-testid="finder-mobile-sort"
+              aria-label="Sort results by"
+            >
+              {MOBILE_SORT_OPTIONS.map(([k, l]) => (
+                <option key={k} value={k}>
+                  {l}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         {/* Mobile cards */}
         <div className="md:hidden divide-y divide-border/40">

@@ -180,7 +180,7 @@ export function WebFindingsCard({
                 >
                   {f.confidence}
                 </span>
-                <span className="font-medium text-foreground/95 flex-1 min-w-[140px] break-words">
+                <span className="font-medium text-foreground/95 flex-1 basis-full min-w-0 break-words">
                   {f.suggested_value}
                 </span>
               </div>
@@ -206,7 +206,7 @@ export function WebFindingsCard({
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 px-2 text-[11px]"
+                    className="min-h-10 px-3 text-[11px]"
                     onClick={() => setPreviewIdx(i)}
                     data-testid={`apply-finding-${person.id}-${i}`}
                   >
@@ -275,7 +275,7 @@ function ApplyPreviewDialog({
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
               {FIELD_LABELS[finding.field] ?? finding.field}
             </div>
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Before</div>
                 <div className="text-foreground/80 break-words">{computed.before}</div>
