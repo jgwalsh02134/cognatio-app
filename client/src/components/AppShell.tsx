@@ -338,7 +338,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
-      <main className="flex-1 min-w-0 overflow-x-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+      <main className="flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
 
       {/* Mobile bottom nav: 4 primary tabs + a "More" tab opening a grouped sheet.
           Five equal thumb-zone targets — no horizontal scrolling. */}

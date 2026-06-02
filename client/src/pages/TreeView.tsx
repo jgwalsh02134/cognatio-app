@@ -465,7 +465,7 @@ export default function TreeView() {
   const searchResults = useMemo(() => searchPeople(searchQuery, 8), [searchQuery]);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
       {/* Toolbar */}
       <div className="border-b bg-card/60 backdrop-blur-md">
         <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5">
