@@ -152,9 +152,11 @@ function download(filename: string, content: string, mime: string) {
 }
 
 export default function Changes() {
-  const { unlocked, passcode, pending, discard, discardAll, count } = useEdit();
+  const {
+    unlocked, pending, discard, discardAll, count,
+    commitToArchive, archiveEnabled, saving: archiveSaving,
+  } = useEdit();
   const [backendAvailable, setBackendAvailable] = useState<boolean | null>(null);
-  const [archiveAvailable, setArchiveAvailable] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -168,42 +170,20 @@ export default function Changes() {
       .catch(() => {
         if (!cancelled) setBackendAvailable(false);
       });
-    fetch("/api/archive/status")
-      .then((r) => (r.ok ? r.json() : { enabled: false }))
-      .then((j) => {
-        if (!cancelled) setArchiveAvailable(!!j.enabled);
-      })
-      .catch(() => {
-        if (!cancelled) setArchiveAvailable(false);
-      });
     return () => {
       cancelled = true;
     };
   }, []);
 
   async function saveToArchive() {
-    if (!passcode) {
-      setSaveError("Unlock edit mode first so the save can be authenticated.");
-      return;
-    }
-    setSaving(true);
     setSaveError(null);
     setSavedMessage(null);
-    try {
-      const r = await fetch("/api/archive", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-edit-passcode": passcode },
-        body: JSON.stringify({ patches: pending }),
-      });
-      const json = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(json.error || `Server responded ${r.status}`);
-      setSavedMessage("Saved permanently. Reloading to apply the changes…");
-      discardAll();
-      setTimeout(() => window.location.reload(), 1200);
-    } catch (e) {
-      setSaveError(e instanceof Error ? e.message : "Save failed");
-    } finally {
-      setSaving(false);
+    const res = await commitToArchive();
+    if (res.ok) {
+      const n = res.saved ?? 0;
+      setSavedMessage(`Saved permanently — ${n} ${n === 1 ? "edit is" : "edits are"} live now. No reload needed.`);
+    } else {
+      setSaveError(res.error ?? "Save failed");
     }
   }
 
@@ -272,19 +252,19 @@ export default function Changes() {
 
       {count > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
-          {archiveAvailable && (
+          {archiveEnabled && (
             <Button
               onClick={saveToArchive}
-              disabled={saving}
+              disabled={archiveSaving}
               data-testid="button-save-permanent"
               className="gap-2"
             >
-              <Save className="h-4 w-4" /> {saving ? "Saving…" : "Save permanently"}
+              <Save className="h-4 w-4" /> {archiveSaving ? "Saving…" : "Save permanently"}
             </Button>
           )}
           {backendAvailable && (
             <Button
-              variant={archiveAvailable ? "outline" : "default"}
+              variant={archiveEnabled ? "outline" : "default"}
               onClick={saveToBackend}
               disabled={saving}
               data-testid="button-save-disk"
@@ -345,18 +325,18 @@ export default function Changes() {
         </div>
       )}
 
-      {archiveAvailable && count > 0 && (
+      {archiveEnabled && count > 0 && (
         <div className="mb-4 flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
           <Save className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
           <span>
             <strong className="text-foreground">Save permanently</strong> writes these edits to the server
-            database. They&rsquo;ll appear for everyone on this site after the page reloads — no download or
-            rebuild needed.
+            database. They appear immediately for everyone on this site — no reload, download, or rebuild
+            needed. You can also save in one click from the bar at the bottom of any page.
           </span>
         </div>
       )}
 
-      {backendAvailable === false && archiveAvailable === false && count > 0 && (
+      {backendAvailable === false && archiveEnabled === false && count > 0 && (
         <div className="mb-4 flex items-start gap-2 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
           <Download className="h-4 w-4 mt-0.5 shrink-0" />
           <span>

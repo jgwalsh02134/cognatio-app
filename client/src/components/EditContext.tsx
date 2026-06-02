@@ -58,8 +58,20 @@ interface EditContextValue {
   discardAll: () => void;
   count: number;
   hasChanges: boolean;
-  /** Merge any pending edits for a person into a display copy. */
+  /** Merge any pending (and already-saved-this-session) edits into a display copy. */
   merge: <T extends Person>(p: T) => T;
+
+  /** Whether the server can persist edits permanently (proxy/archive mode). */
+  archiveEnabled: boolean | null;
+  /** True while a permanent save is in flight. */
+  saving: boolean;
+  /**
+   * Commit all pending edits to the server archive in one call. On success the
+   * edits move into a session overlay (so the view stays correct WITHOUT a full
+   * page reload) and `pending` is cleared. Returns the outcome so callers can
+   * surface a toast.
+   */
+  commitToArchive: () => Promise<{ ok: boolean; error?: string; saved?: number }>;
 }
 
 const Ctx = createContext<EditContextValue | null>(null);
@@ -76,6 +88,27 @@ export function EditProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
   const [passcode, setPasscode] = useState<string | null>(null);
   const [pending, setPending] = useState<Record<string, PersonPatch>>({});
+  // Edits saved to the server THIS session. Kept as an overlay so a successful
+  // save reflects immediately without forcing a full-page reload.
+  const [saved, setSaved] = useState<Record<string, PersonPatch>>({});
+  const [archiveEnabled, setArchiveEnabled] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Probe once whether the server can persist edits permanently.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/archive/status")
+      .then((r) => (r.ok ? r.json() : { enabled: false }))
+      .then((j) => {
+        if (!cancelled) setArchiveEnabled(!!j.enabled);
+      })
+      .catch(() => {
+        if (!cancelled) setArchiveEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const unlock = useCallback(async (passphrase: string) => {
     const trimmed = passphrase.trim();
@@ -127,12 +160,46 @@ export function EditProvider({ children }: { children: ReactNode }) {
 
   const merge = useCallback(
     <T extends Person>(p: T): T => {
+      const s = saved[p.id];
       const patch = pending[p.id];
-      if (!patch) return p;
-      return { ...p, ...patch } as T;
+      if (!s && !patch) return p;
+      return { ...p, ...(s || {}), ...(patch || {}) } as T;
     },
-    [pending],
+    [saved, pending],
   );
+
+  const commitToArchive = useCallback(async () => {
+    if (!passcode) {
+      return { ok: false, error: "Unlock edit mode first so the save can be authenticated." };
+    }
+    const toSave = pending;
+    const n = Object.keys(toSave).length;
+    if (n === 0) return { ok: true, saved: 0 };
+    setSaving(true);
+    try {
+      const r = await fetch("/api/archive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-edit-passcode": passcode },
+        body: JSON.stringify({ patches: toSave }),
+      });
+      const json = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(json.error || `Server responded ${r.status}`);
+      // Move saved edits into the session overlay, then clear pending — no reload.
+      setSaved((prev) => {
+        const next = { ...prev };
+        for (const [id, patch] of Object.entries(toSave)) {
+          next[id] = { ...(next[id] || {}), ...patch };
+        }
+        return next;
+      });
+      setPending({});
+      return { ok: true, saved: n };
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : "Save failed" };
+    } finally {
+      setSaving(false);
+    }
+  }, [passcode, pending]);
 
   const count = Object.keys(pending).length;
   const hasChanges = count > 0;
@@ -161,8 +228,14 @@ export function EditProvider({ children }: { children: ReactNode }) {
       count,
       hasChanges,
       merge,
+      archiveEnabled,
+      saving,
+      commitToArchive,
     }),
-    [unlocked, unlock, lock, passcode, pending, setPatch, discard, discardAll, count, hasChanges, merge],
+    [
+      unlocked, unlock, lock, passcode, pending, setPatch, discard, discardAll,
+      count, hasChanges, merge, archiveEnabled, saving, commitToArchive,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

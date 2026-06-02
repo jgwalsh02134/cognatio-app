@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useEdit } from "./EditContext";
+import { useToast } from "@/hooks/use-toast";
 import { ApiKeyDialog } from "./ApiKeyDialog";
 import { AIChat } from "./AIChat";
 import { EditSaveBar } from "./EditSaveBar";
@@ -112,7 +113,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const isTreePage = location === "/tree";
   const { theme, toggle } = useTheme();
-  const { unlocked, unlock, lock, count, hasChanges } = useEdit();
+  const { unlocked, unlock, lock, count, hasChanges, archiveEnabled, commitToArchive } = useEdit();
+  const { toast } = useToast();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [unlockOpen, setUnlockOpen] = useState(false);
@@ -157,6 +159,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       setTimeout(() => unlockInputRef.current?.focus(), 30);
     }
   }, [unlockOpen]);
+
+  // ⌘S / Ctrl+S saves pending edits straight to the archive (server mode only).
+  // We only intercept the browser's Save dialog when there is actually
+  // something to persist, so the shortcut stays unsurprising otherwise.
+  useEffect(() => {
+    async function onSaveKey(e: KeyboardEvent) {
+      if (!((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s")) return;
+      if (!(unlocked && hasChanges && archiveEnabled)) return;
+      e.preventDefault();
+      const n = count;
+      const res = await commitToArchive();
+      if (res.ok) {
+        toast({
+          title: "Saved to the archive",
+          description: `${n} ${n === 1 ? "edit is" : "edits are"} now live — no reload needed.`,
+        });
+      } else {
+        toast({
+          title: "Save failed",
+          description: res.error ?? "Could not reach the server.",
+          variant: "destructive",
+        });
+      }
+    }
+    window.addEventListener("keydown", onSaveKey);
+    return () => window.removeEventListener("keydown", onSaveKey);
+  }, [unlocked, hasChanges, archiveEnabled, count, commitToArchive, toast]);
 
   // Close the mobile "More" sheet after navigating.
   useEffect(() => {

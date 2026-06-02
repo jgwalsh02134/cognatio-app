@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { Download, FileEdit, X } from "lucide-react";
+import { Check, FileEdit, Loader2, Save, X } from "lucide-react";
 import { useEdit } from "./EditContext";
+import { useToast } from "@/hooks/use-toast";
 
 /**
  * Sticky bottom-of-viewport bar that appears whenever the user is in edit
@@ -14,12 +15,36 @@ import { useEdit } from "./EditContext";
  * - Sits clear of the AI chat launcher on desktop.
  */
 export function EditSaveBar() {
-  const { unlocked, hasChanges, count, discardAll } = useEdit();
+  const { unlocked, hasChanges, count, discardAll, archiveEnabled, saving, commitToArchive } =
+    useEdit();
   const [location] = useLocation();
+  const { toast } = useToast();
 
   if (!unlocked) return null;
   if (!hasChanges) return null;
   if (location === "/changes") return null;
+
+  async function handleSave() {
+    const n = count;
+    const res = await commitToArchive();
+    if (res.ok) {
+      toast({
+        title: "Saved to the archive",
+        description: `${n} ${n === 1 ? "edit is" : "edits are"} now live — no reload needed.`,
+      });
+    } else {
+      toast({
+        title: "Save failed",
+        description: res.error ?? "Could not reach the server. Try Review & save.",
+        variant: "destructive",
+      });
+    }
+  }
+
+  // When the server can persist edits, the bar offers a one-click Save and a
+  // lightweight "Review" link. On static/disk builds (no archive), it routes to
+  // the Changes page where the download/patch-script flow lives.
+  const canSaveDirect = archiveEnabled === true;
 
   return (
     <div
@@ -35,18 +60,53 @@ export function EditSaveBar() {
               {count} unsaved {count === 1 ? "edit" : "edits"}
             </div>
             <div className="hidden sm:block text-[11px] opacity-85 leading-tight mt-0.5 truncate">
-              Edits stay in this session only — review and download to make them permanent.
+              {canSaveDirect
+                ? "Save writes straight to the shared archive — instantly, no reload."
+                : "Edits stay in this session only — review and download to make them permanent."}
             </div>
           </div>
-          <Link
-            href="/changes"
-            className="inline-flex h-10 items-center gap-1.5 rounded-md bg-primary-foreground text-primary text-xs sm:text-sm font-semibold px-3 sm:px-3.5 hover-elevate active-elevate-2 shrink-0 whitespace-nowrap"
-            data-testid="save-bar-review"
-          >
-            <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">Review &amp; save</span>
-            <span className="sm:hidden">Review</span>
-          </Link>
+
+          {canSaveDirect ? (
+            <>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving}
+                className="inline-flex h-10 items-center gap-1.5 rounded-md bg-primary-foreground text-primary text-xs sm:text-sm font-semibold px-3 sm:px-4 hover-elevate active-elevate-2 shrink-0 whitespace-nowrap disabled:opacity-70"
+                data-testid="save-bar-save"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving…
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Save
+                  </>
+                )}
+              </button>
+              <Link
+                href="/changes"
+                className="hidden sm:inline-flex h-10 items-center rounded-md px-2.5 text-xs font-medium text-primary-foreground/85 hover:text-primary-foreground hover-elevate active-elevate-2 shrink-0 whitespace-nowrap"
+                data-testid="save-bar-review"
+              >
+                Review
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/changes"
+              className="inline-flex h-10 items-center gap-1.5 rounded-md bg-primary-foreground text-primary text-xs sm:text-sm font-semibold px-3 sm:px-3.5 hover-elevate active-elevate-2 shrink-0 whitespace-nowrap"
+              data-testid="save-bar-review"
+            >
+              <Save className="h-4 w-4" />
+              <span className="hidden sm:inline">Review &amp; save</span>
+              <span className="sm:hidden">Review</span>
+            </Link>
+          )}
+
           <button
             type="button"
             onClick={() => {
