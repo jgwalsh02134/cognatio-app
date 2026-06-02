@@ -26,6 +26,7 @@ import {
   type Person,
 } from "@/lib/family";
 import { linksFor } from "@/lib/researchLinks";
+import type { FsCandidate } from "@/lib/familysearch";
 
 /** How an AI request authenticates. */
 export type AiAuth =
@@ -479,10 +480,12 @@ export async function researchPerson(opts: {
   nameById: Map<string, string>;
   /** Full archive — used to build duplicate/relationship candidates. */
   allPeople?: Person[];
+  /** FamilySearch API candidates to ground the model in verified records. */
+  fsCandidates?: FsCandidate[];
   model?: string;
   signal?: AbortSignal;
 }): Promise<PersonWebFinding> {
-  const { auth, person, nameById, allPeople = [], model = DEFAULT_MODEL, signal } = opts;
+  const { auth, person, nameById, allPeople = [], fsCandidates, model = DEFAULT_MODEL, signal } = opts;
   const gaps = coreGaps(person);
   const anchors = personAnchors(person, nameById);
   const getP = (id: string) => allPeople.find((p) => p.id === id);
@@ -496,6 +499,24 @@ export async function researchPerson(opts: {
     .map((l) => `  ${l.label}: ${l.url}`)
     .join("\n");
 
+  // Build FamilySearch grounding block when candidates are available.
+  const fsBlock =
+    fsCandidates && fsCandidates.length > 0
+      ? [
+          "FAMILYSEARCH RECORDS (verified via API — treat these as primary sources):",
+          ...fsCandidates.map((c, i) => {
+            const parts: string[] = [`  [${i + 1}] ${c.name} (FS ID: ${c.fsId})`];
+            if (c.sex) parts.push(`      Sex: ${c.sex}`);
+            if (c.birth?.date || c.birth?.place)
+              parts.push(`      Birth: ${c.birth?.date ?? "?"} @ ${c.birth?.place ?? "?"}`);
+            if (c.death?.date || c.death?.place)
+              parts.push(`      Death: ${c.death?.date ?? "?"} @ ${c.death?.place ?? "?"}`);
+            parts.push(`      URL: ${c.url}`);
+            return parts.join("\n");
+          }),
+        ].join("\n")
+      : null;
+
   const userMsg = [
     "PERSON TO RESEARCH:",
     anchors,
@@ -508,12 +529,19 @@ export async function researchPerson(opts: {
     "",
     "PRE-BUILT RECORD SEARCHES (solid starting points for web_search):",
     recordUrls || "  (none)",
+    ...(fsBlock ? ["", fsBlock] : []),
     "",
     `Detected gaps for job 1: ${gaps.join(", ") || "(use your judgment)"}`,
     "",
     "Do all three jobs. For job 1 issue at least 3 web_search queries and cite",
     "real record pages. For job 2 only flag genuine contradictions. For job 3",
     "prefer candidates from the list above and fill related_id with their ID.",
+    ...(fsBlock
+      ? [
+          "For job 1, prioritize the FAMILYSEARCH RECORDS above — cite their URLs",
+          "directly and extract birth/death dates and places from them first.",
+        ]
+      : []),
   ].join("\n");
 
   const body = {
