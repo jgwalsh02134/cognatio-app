@@ -1,9 +1,13 @@
 import { useMemo, useState } from "react";
-import { Loader2, Sparkles, KeyRound, RotateCw, AlertCircle } from "lucide-react";
+import { Loader2, Sparkles, KeyRound, RotateCw, AlertCircle, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAI } from "@/components/AIContext";
+import { useEdit } from "@/components/EditContext";
+import { useToast } from "@/hooks/use-toast";
 import {
   WebFindingsCard,
+  buildFindingsPatch,
+  correctionToFinding,
   type PersonWebFinding,
 } from "@/components/WebFindingsCard";
 import { researchPerson } from "@/lib/openai";
@@ -32,7 +36,10 @@ const STATIC = researchSuggestionsRaw as StaticResearch;
  */
 export function FindMissingInfo({ person }: { person: Person }) {
   const { aiMode, aiReady, getAuth, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
+  const { unlocked, setPatch, pending } = useEdit();
+  const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
+  const [autoApply, setAutoApply] = useState(false);
 
   const gaps = useMemo(() => getGaps(person), [person]);
   const placeholder = useMemo(() => isAnchorlessPlaceholder(person), [person]);
@@ -55,6 +62,26 @@ export function FindMissingInfo({ person }: { person: Person }) {
       for (const p of people) lookup.set(p.id, p.name);
       const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people });
       setResearched(person.id, result);
+
+      // AI makes the edits: when opted in (and the editor is unlocked), stage
+      // every HIGH-confidence fill/correction automatically. They still land in
+      // the pending queue for one-click review + save — nothing is permanent yet.
+      if (autoApply && unlocked) {
+        const highConf = [
+          ...(result.findings ?? []).filter((f) => f.confidence === "high"),
+          ...(result.corrections ?? [])
+            .filter((c) => c.confidence === "high")
+            .map(correctionToFinding),
+        ];
+        if (highConf.length > 0) {
+          const base = pending[person.id] || {};
+          setPatch(person.id, buildFindingsPatch(person, base, highConf));
+          toast({
+            title: "Auto-applied",
+            description: `${highConf.length} high-confidence ${highConf.length === 1 ? "edit" : "edits"} staged for review.`,
+          });
+        }
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Research failed");
     } finally {
@@ -146,6 +173,22 @@ export function FindMissingInfo({ person }: { person: Person }) {
           )}
         </Button>
       </div>
+
+      {aiReady && unlocked && (
+        <label className="mb-3 flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={autoApply}
+            onChange={(e) => setAutoApply(e.target.checked)}
+            className="h-4 w-4 accent-primary"
+            data-testid={`auto-apply-${person.id}`}
+          />
+          <Wand2 className="h-3.5 w-3.5 text-primary shrink-0" />
+          <span>
+            Let AI apply high-confidence fixes automatically (still staged for your review).
+          </span>
+        </label>
+      )}
 
       {error && (
         <div

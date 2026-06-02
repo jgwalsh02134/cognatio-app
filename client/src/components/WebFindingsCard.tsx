@@ -8,10 +8,12 @@ import {
   Plus,
   TriangleAlert,
   Users,
+  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fullDisplayName, getPerson, type Person } from "@/lib/family";
 import { useEdit, type PersonPatch } from "@/components/EditContext";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -169,10 +171,41 @@ export function WebFindingsCard({
   headerRight?: React.ReactNode;
 }) {
   const { unlocked, setPatch, pending } = useEdit();
+  const { toast } = useToast();
   const [preview, setPreview] = useState<WebFinding | null>(null);
   const findings = finding.findings ?? [];
   const corrections = finding.corrections ?? [];
   const connections = finding.connections ?? [];
+  // Findings + corrections are both directly applyable as field edits.
+  const applyable: WebFinding[] = [
+    ...findings,
+    ...corrections.map(correctionToFinding),
+  ];
+
+  function applyAll() {
+    if (applyable.length === 0) return;
+    const base = pending[person.id] || {};
+    setPatch(person.id, buildFindingsPatch(person, base, applyable));
+    toast({
+      title: "Edits staged",
+      description: `${applyable.length} AI ${applyable.length === 1 ? "suggestion" : "suggestions"} staged — review in the save bar.`,
+    });
+  }
+
+  function saveAllConnections() {
+    if (connections.length === 0) return;
+    const base = pending[person.id] || {};
+    let notes = base.notes ?? person.notes ?? [];
+    for (const c of connections) {
+      const ref = c.related_id ? ` (${c.related_id})` : "";
+      notes = [...notes, `AI connection — ${c.relation}: ${c.related_name}${ref}. ${c.reasoning}`];
+    }
+    setPatch(person.id, { ...base, notes });
+    toast({
+      title: "Connections saved",
+      description: `${connections.length} saved as notes — review in the save bar.`,
+    });
+  }
   const isEmpty =
     findings.length === 0 &&
     corrections.length === 0 &&
@@ -194,12 +227,25 @@ export function WebFindingsCard({
       className="rounded-md border border-primary/25 bg-primary/5 px-3 py-2.5"
       data-testid={`web-findings-${person.id}`}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
+      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
         <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-primary">
           <Bot className="h-3 w-3" />
           {title}
         </div>
-        {headerRight}
+        <div className="flex items-center gap-2">
+          {unlocked && applyable.length > 0 && (
+            <Button
+              size="sm"
+              className="min-h-9 px-3 text-[11px]"
+              onClick={applyAll}
+              data-testid={`apply-all-${person.id}`}
+            >
+              <Wand2 className="h-3 w-3 mr-1" />
+              Apply all {applyable.length}
+            </Button>
+          )}
+          {headerRight}
+        </div>
       </div>
       {finding.narrative && (
         <p className="text-xs leading-relaxed text-foreground/90 mb-2.5 break-words">
@@ -353,10 +399,22 @@ export function WebFindingsCard({
       {/* Possible connections — duplicates & missing relationships. */}
       {connections.length > 0 && (
         <>
-          <SectionLabel
-            icon={<GitMerge className="h-3 w-3" />}
-            text="Possible connections"
-          />
+          <div className="flex items-center justify-between gap-2">
+            <SectionLabel
+              icon={<GitMerge className="h-3 w-3" />}
+              text="Possible connections"
+            />
+            {unlocked && (
+              <button
+                type="button"
+                onClick={saveAllConnections}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 min-h-8 text-[10px] uppercase tracking-wider text-primary hover-elevate active-elevate-2"
+                data-testid={`save-all-connections-${person.id}`}
+              >
+                <Plus className="h-3 w-3" /> Save all as notes
+              </button>
+            )}
+          </div>
           <ul className="space-y-2">
             {connections.map((c, i) => {
               const linked = c.related_id ? getPerson(c.related_id) : undefined;
@@ -446,9 +504,32 @@ export function WebFindingsCard({
   );
 }
 
+/**
+ * Fold a list of findings into a SINGLE PersonPatch, composed on top of any
+ * edits already staged for this person. Composing iteratively (rather than
+ * calling setPatch per item) is essential because several findings can touch
+ * the same compound field — e.g. birth_date + birth_place both live on the
+ * `birth` event, and notes append — so each step must see the running result.
+ */
+export function buildFindingsPatch(
+  person: Person,
+  base: PersonPatch,
+  finds: WebFinding[],
+): PersonPatch {
+  let cur = { ...person, ...base } as Person;
+  let patch: PersonPatch = { ...base };
+  for (const f of finds) {
+    const r = findingToPatch(cur, f);
+    if (!r) continue;
+    patch = { ...patch, ...r.patch };
+    cur = { ...cur, ...r.patch } as Person;
+  }
+  return patch;
+}
+
 /** Convert a flagged correction into the WebFinding shape the apply dialog
  *  understands (the field-overwrite logic is identical to a fill). */
-function correctionToFinding(c: WebCorrection): WebFinding {
+export function correctionToFinding(c: WebCorrection): WebFinding {
   return {
     field: c.field,
     suggested_value: c.suggested_value,
