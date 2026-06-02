@@ -1,12 +1,27 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/*
+  Cinematic first-launch intro for Cognatio.
+  - 3D door swing + glowing ancestor tree nodes + golden flare (Framer Motion).
+  - Background: Place your final image at client/public/cognatio-intro.jpg (9:16).
+    The image prompt you supplied describes a Federal limestone facade, red door
+    swinging open to a mahogany foyer with a glowing living family tree inside.
+  - Uses relative path (no leading /) so it works when dist/public/index.html
+    is opened directly from disk (per project requirements with base: "./").
+  - If the jpg is missing (404 or not yet added), a CSS fallback foyer is shown
+    so the animation remains beautiful and usable during development.
+  - The `cognatio_intro_seen` localStorage flag (UI preference only) lets
+    returning visitors skip it. Genealogical data is never stored in storage.
+*/
+
 interface IntroScreenProps {
   onComplete: () => void;
 }
 
 export default function IntroScreen({ onComplete }: IntroScreenProps) {
   const [show, setShow] = useState(true);
+  const [useFallback, setUseFallback] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,11 +64,26 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
             transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
             style={{ transformStyle: "preserve-3d", transformOrigin: "left center" }}
           >
-            <img
-              src="/cognatio-intro.jpg"
-              alt="Cognatio Intro"
-              className="w-full h-full object-cover rounded-[4px] shadow-2xl"
-            />
+            {!useFallback ? (
+              <img
+                src="cognatio-intro.jpg"
+                alt="Cognatio Intro"
+                className="w-full h-full object-cover rounded-[4px] shadow-2xl"
+                onError={() => setUseFallback(true)}
+              />
+            ) : (
+              // Fallback (used if cognatio-intro.jpg is not present in client/public).
+              // Provides an elegant CSS interpretation of the Federal foyer + glowing tree
+              // so the cinematic animation still feels complete while you add your final image.
+              <div className="w-full h-full bg-[#1f1814] rounded-[4px] shadow-2xl relative overflow-hidden border border-[#3a2f28]">
+                {/* Subtle wood paneling / wainscoting */}
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,#2a221e_0,#2a221e_17%,#1f1814_19%,#1f1814_21%)] opacity-70" />
+                {/* Hint of top fanlight / transom glow */}
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[82%] h-[38%] bg-gradient-to-b from-amber-200/10 via-amber-100/5 to-transparent rounded-full blur-lg" />
+                {/* Central warm interior light (tree location) */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_47%,rgba(252,211,77,0.13)_0%,rgba(252,211,77,0.04)_35%,transparent_62%)]" />
+              </div>
+            )}
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-amber-400/60 via-yellow-300/40 to-transparent"
               initial={{ opacity: 0.2 }}
