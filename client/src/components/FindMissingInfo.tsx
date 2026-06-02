@@ -53,7 +53,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
       // Compact id → name lookup so the model can reason about parents/spouses.
       const lookup = new Map<string, string>();
       for (const p of people) lookup.set(p.id, p.name);
-      const result = await researchPerson({ auth, person, nameById: lookup });
+      const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people });
       setResearched(person.id, result);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Research failed");
@@ -156,7 +156,11 @@ export function FindMissingInfo({ person }: { person: Person }) {
         </div>
       )}
 
-      {finding && (finding.findings?.length || finding.narrative) ? (
+      {finding &&
+      (finding.findings?.length ||
+        finding.corrections?.length ||
+        finding.connections?.length ||
+        finding.narrative) ? (
         <WebFindingsCard
           person={person}
           finding={finding}
@@ -170,10 +174,10 @@ export function FindMissingInfo({ person }: { person: Person }) {
         !isBusy && (
           <p className="text-xs text-muted-foreground leading-relaxed">
             {aiReady
-              ? "Click \"Find missing info\" to send this person's anchors to OpenAI. The model will search the open web (FindAGrave, obituaries, census, parish records) and return structured suggestions with source URLs."
+              ? "Runs three passes for this person: (1) searches the open web (FindAGrave, obituaries, census, parish records) for missing facts with source URLs, (2) checks the existing dates/places for errors and conflicts, and (3) scans the archive for likely duplicates and missing parent / spouse / sibling links — each one applyable or savable as a note."
               : aiMode === "proxy"
-                ? "Enter the family access passphrase to enable per-person web research. Findings will appear here with source URLs you can click straight into."
-                : "Provide your OpenAI key once per session to enable per-person web research. Findings will appear here with source URLs you can click straight into."}
+                ? "Enter the family access passphrase to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
+                : "Provide your OpenAI key once per session to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."}
           </p>
         )
       )}

@@ -4,9 +4,13 @@ import {
   Bot,
   Check,
   ExternalLink,
+  GitMerge,
+  Plus,
+  TriangleAlert,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fullDisplayName, type Person } from "@/lib/family";
+import { fullDisplayName, getPerson, type Person } from "@/lib/family";
 import { useEdit, type PersonPatch } from "@/components/EditContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,8 +37,32 @@ export type WebFinding = {
   source_url: string;
 };
 
+/** A flagged problem with an EXISTING value (date conflict, impossible age,
+ *  wrong place, etc.) plus the proposed correction. */
+export type WebCorrection = {
+  field: WebFindingField;
+  current_value: string;
+  suggested_value: string;
+  issue: string;
+  confidence: "high" | "medium" | "low";
+  source_title?: string;
+  source_url?: string;
+};
+
+/** A likely link to ANOTHER person — a duplicate record, or a missing
+ *  parent / spouse / sibling / child relationship. */
+export type WebConnection = {
+  relation: string;
+  related_id?: string;
+  related_name: string;
+  reasoning: string;
+  confidence: "high" | "medium" | "low";
+};
+
 export type PersonWebFinding = {
   findings?: WebFinding[];
+  corrections?: WebCorrection[];
+  connections?: WebConnection[];
   narrative?: string;
   search_log?: string;
 };
@@ -140,9 +168,27 @@ export function WebFindingsCard({
   title?: string;
   headerRight?: React.ReactNode;
 }) {
-  const { unlocked } = useEdit();
-  const [previewIdx, setPreviewIdx] = useState<number | null>(null);
+  const { unlocked, setPatch, pending } = useEdit();
+  const [preview, setPreview] = useState<WebFinding | null>(null);
   const findings = finding.findings ?? [];
+  const corrections = finding.corrections ?? [];
+  const connections = finding.connections ?? [];
+  const isEmpty =
+    findings.length === 0 &&
+    corrections.length === 0 &&
+    connections.length === 0;
+
+  // Connections can't yet be applied as structural edits (relationships are
+  // editor v2), so the actionable move is to record them as a note on this
+  // person for the family to review.
+  function saveConnectionNote(c: WebConnection) {
+    const ref = c.related_id ? ` (${c.related_id})` : "";
+    const text = `AI connection — ${c.relation}: ${c.related_name}${ref}. ${c.reasoning}`;
+    const existing = pending[person.id] || {};
+    const existingNotes = existing.notes ?? person.notes ?? [];
+    setPatch(person.id, { ...existing, notes: [...existingNotes, text] });
+  }
+
   return (
     <div
       className="rounded-md border border-primary/25 bg-primary/5 px-3 py-2.5"
@@ -160,7 +206,11 @@ export function WebFindingsCard({
           {finding.narrative}
         </p>
       )}
-      {findings.length > 0 ? (
+      {findings.length > 0 && (
+        <>
+          {(corrections.length > 0 || connections.length > 0) && (
+            <SectionLabel icon={<Plus className="h-3 w-3" />} text="Suggested additions" />
+          )}
         <ul className="space-y-2">
           {findings.map((f, i) => (
             <li
@@ -207,7 +257,7 @@ export function WebFindingsCard({
                     size="sm"
                     variant="outline"
                     className="min-h-10 px-3 text-[11px]"
-                    onClick={() => setPreviewIdx(i)}
+                    onClick={() => setPreview(f)}
                     data-testid={`apply-finding-${person.id}-${i}`}
                   >
                     <Check className="h-3 w-3 mr-1" />
@@ -220,18 +270,213 @@ export function WebFindingsCard({
             </li>
           ))}
         </ul>
-      ) : (
-        !finding.narrative && (
-          <p className="text-[11px] text-muted-foreground">No findings.</p>
-        )
+        </>
       )}
-      {previewIdx !== null && (
+
+      {/* Possible corrections — flagged problems with existing values. */}
+      {corrections.length > 0 && (
+        <>
+          <SectionLabel
+            icon={<TriangleAlert className="h-3 w-3" />}
+            text="Possible corrections"
+            tone="warn"
+          />
+          <ul className="space-y-2">
+            {corrections.map((c, i) => (
+              <li
+                key={i}
+                className="rounded-md border border-amber-500/30 bg-amber-500/5 px-2.5 py-2 text-xs"
+                data-testid={`web-correction-${person.id}-${i}`}
+              >
+                <div className="flex items-start gap-2 flex-wrap">
+                  <span className="inline-flex items-center rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-amber-700 dark:text-amber-300">
+                    {FIELD_LABELS[c.field] ?? c.field}
+                  </span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] uppercase tracking-wider",
+                      CONFIDENCE_COLORS[c.confidence],
+                    )}
+                  >
+                    {c.confidence}
+                  </span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-2 flex-wrap text-[11px]">
+                  <span className="text-muted-foreground line-through break-words">
+                    {c.current_value || "(empty)"}
+                  </span>
+                  <span className="text-muted-foreground">→</span>
+                  <span className="font-medium text-foreground break-words">
+                    {c.suggested_value}
+                  </span>
+                </div>
+                {c.issue && (
+                  <div className="mt-1 text-[11px] text-muted-foreground leading-relaxed break-words">
+                    {c.issue}
+                  </div>
+                )}
+                <div className="mt-1.5 flex items-center justify-between gap-2 flex-wrap">
+                  {c.source_url ? (
+                    <a
+                      href={c.source_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline truncate max-w-[60%]"
+                    >
+                      <ExternalLink className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{c.source_title || c.source_url}</span>
+                    </a>
+                  ) : (
+                    <span />
+                  )}
+                  {unlocked ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="min-h-10 px-3 text-[11px]"
+                      onClick={() => setPreview(correctionToFinding(c))}
+                      data-testid={`apply-correction-${person.id}-${i}`}
+                    >
+                      <Check className="h-3 w-3 mr-1" />
+                      Review & fix
+                    </Button>
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground">Unlock editor to fix</span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Possible connections — duplicates & missing relationships. */}
+      {connections.length > 0 && (
+        <>
+          <SectionLabel
+            icon={<GitMerge className="h-3 w-3" />}
+            text="Possible connections"
+          />
+          <ul className="space-y-2">
+            {connections.map((c, i) => {
+              const linked = c.related_id ? getPerson(c.related_id) : undefined;
+              return (
+                <li
+                  key={i}
+                  className="rounded-md border border-card-border bg-background px-2.5 py-2 text-xs"
+                  data-testid={`web-connection-${person.id}-${i}`}
+                >
+                  <div className="flex items-start gap-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1 rounded bg-violet-500/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-violet-700 dark:text-violet-300">
+                      <Users className="h-2.5 w-2.5" />
+                      {c.relation}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] uppercase tracking-wider",
+                        CONFIDENCE_COLORS[c.confidence],
+                      )}
+                    >
+                      {c.confidence}
+                    </span>
+                    <span className="font-medium text-foreground/95 flex-1 basis-full min-w-0 break-words">
+                      {linked ? (
+                        <Link
+                          href={`/person/${encodeURIComponent(linked.id)}`}
+                          className="text-primary hover:underline"
+                        >
+                          {fullDisplayName(linked)}
+                        </Link>
+                      ) : (
+                        c.related_name
+                      )}
+                    </span>
+                  </div>
+                  {c.reasoning && (
+                    <div className="mt-1 text-[11px] text-muted-foreground leading-relaxed break-words">
+                      {c.reasoning}
+                    </div>
+                  )}
+                  <div className="mt-1.5 flex items-center justify-between gap-2 flex-wrap">
+                    {linked ? (
+                      <Link
+                        href={`/person/${encodeURIComponent(linked.id)}`}
+                        className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
+                      >
+                        <ExternalLink className="h-3 w-3 shrink-0" />
+                        View profile
+                      </Link>
+                    ) : (
+                      <span />
+                    )}
+                    {unlocked ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="min-h-10 px-3 text-[11px]"
+                        onClick={() => saveConnectionNote(c)}
+                        data-testid={`save-connection-${person.id}-${i}`}
+                      >
+                        <Plus className="h-3 w-3 mr-1" />
+                        Save as note
+                      </Button>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">Unlock editor to save</span>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+
+      {isEmpty && !finding.narrative && (
+        <p className="text-[11px] text-muted-foreground">No findings.</p>
+      )}
+
+      {preview && (
         <ApplyPreviewDialog
           person={person}
-          finding={findings[previewIdx]}
-          onClose={() => setPreviewIdx(null)}
+          finding={preview}
+          onClose={() => setPreview(null)}
         />
       )}
+    </div>
+  );
+}
+
+/** Convert a flagged correction into the WebFinding shape the apply dialog
+ *  understands (the field-overwrite logic is identical to a fill). */
+function correctionToFinding(c: WebCorrection): WebFinding {
+  return {
+    field: c.field,
+    suggested_value: c.suggested_value,
+    confidence: c.confidence,
+    reasoning: c.issue,
+    source_title: c.source_title ?? "",
+    source_url: c.source_url ?? "",
+  };
+}
+
+function SectionLabel({
+  icon,
+  text,
+  tone = "default",
+}: {
+  icon: React.ReactNode;
+  text: string;
+  tone?: "default" | "warn";
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-1.5 mt-3 mb-2 text-[10px] uppercase tracking-[0.16em] first:mt-0",
+        tone === "warn" ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground",
+      )}
+    >
+      {icon}
+      {text}
     </div>
   );
 }

@@ -14,8 +14,18 @@
 import type {
   PersonWebFinding,
   WebFindingField,
+  WebCorrection,
+  WebConnection,
 } from "@/components/WebFindingsCard";
-import type { Person } from "@/lib/family";
+import {
+  fullDisplayName,
+  getSiblings,
+  isAnchorlessPlaceholder,
+  lifespan,
+  parseYear,
+  type Person,
+} from "@/lib/family";
+import { linksFor } from "@/lib/researchLinks";
 
 /** How an AI request authenticates. */
 export type AiAuth =
@@ -180,36 +190,64 @@ async function callWithWebSearch(
 // Per-person research
 // ---------------------------------------------------------------------------
 
+const FIELD_ENUM = [
+  "birth_date", "birth_place",
+  "death_date", "death_place",
+  "burial_date", "burial_place",
+  "occupation", "military", "education",
+  "note", "parents_father", "parents_mother",
+];
+
 const RESEARCH_SYSTEM_PROMPT = `You are a working genealogy research assistant
 for the Walsh, Maloy, Dugan, Cranwell family archive — an American Catholic
 family primarily in Albany & Troy NY, with Irish, German, and Anglo lines
-reaching back to the 1700s.
+reaching back to the 1700s. This archive was merged from TWO Ancestry GEDCOM
+exports, so IDs are namespaced "t0:" and "t1:" and the SAME real person often
+appears twice (once under each prefix). Finding those duplicates is valuable.
 
-Your job: use the web_search tool to find CONCRETE missing facts about a
-specific person — not a same-named stranger.
+You perform THREE jobs in a single pass. Use the web_search tool for job 1;
+jobs 2 and 3 are mostly reasoning over the data you are given.
 
-Required search behavior:
-- Search FindAGrave, Ancestry public trees, FamilySearch, obituary sites
-  (parkerbrosmemorial.com, dignitymemorial.com, legacy.com,
-  wjlyonsfuneralhome.com, konicekandcollettfuneralhome.com), local newspaper
-  archives, NYS Historic Newspapers, Catholic parish records, US census,
-  Irish civil records.
-- Issue multiple queries: "Name findagrave", "Name obituary", "Name City",
-  "Surname family City", and surname-variant spellings.
-- Visit the actual record/memorial/obituary page — don't return search-result
-  URLs.
-- Match findings to THIS person via multiple anchors: year of birth/death,
-  place, spouse, parents, occupation. Note which anchors matched.
+JOB 1 — FIND MISSING FACTS ("findings"):
+- Use web_search to find CONCRETE missing facts about THIS specific person,
+  not a same-named stranger. Search FindAGrave, Ancestry public trees,
+  FamilySearch, obituary sites (legacy.com, dignitymemorial.com, local funeral
+  homes), NYS Historic Newspapers, US census, Catholic parish records, Irish
+  civil records. Try surname-variant spellings.
+- Issue multiple queries. Prefer visiting the actual record/memorial/obituary
+  page over a search-results page. Cite its real URL — NEVER fabricate a URL.
+- Disambiguate using the FAMILY block and anchors (birth/death year, place,
+  spouse, parents). Say which anchors matched in "reasoning".
 
-Output STRICT JSON matching the provided schema. No commentary outside JSON.
+JOB 2 — FLAG ERRORS ("corrections"):
+- Inspect the existing values for internal contradictions or impossibilities
+  and propose fixes. Examples: death before birth; born after a parent's
+  death or before a parent was ~13; child born when the person was <13 or
+  dead; marriage before birth; lifespan > 110 years; a place that is clearly
+  malformed; a year that is an obvious typo (e.g. 1089 for 1809).
+- Only flag things that are actually wrong or near-certainly wrong. Put the
+  current bad value in "current_value" and the fix in "suggested_value", and
+  explain in "issue". A web source is optional here.
+
+JOB 3 — FIND CONNECTIONS ("connections"):
+- Using the CANDIDATE PEOPLE list (all already in this archive), identify
+  likely (a) DUPLICATES — the same real person as THIS one, especially across
+  the t0:/t1: split — and (b) MISSING RELATIONSHIPS — a probable parent,
+  spouse, sibling, or child of THIS person who is in the archive but not yet
+  linked. Reference the candidate by the exact ID shown and put it in
+  "related_id". If you propose someone NOT in the candidate list, leave
+  related_id "" and name them in "related_name".
+- Justify each with shared name/dates/places/relatives in "reasoning".
+
+Output STRICT JSON matching the schema. No prose outside JSON.
 
 Confidence:
-- "high"   = 3+ anchors matched OR an exact FindAGrave/Ancestry record
-- "medium" = 2 anchors matched with a credible source URL
-- "low"    = 1 weak anchor but a real URL — still emit as a research lead
+- "high"   = 3+ matching anchors / an exact record / a near-certain duplicate
+- "medium" = 2 anchors with a credible basis
+- "low"    = a single weak signal but still worth a human look
 
-NEVER invent or speculate. NEVER produce a fake URL. If nothing matches,
-return an empty findings array and explain why in narrative.`;
+NEVER invent facts or URLs. If a job yields nothing, return an empty array for
+it and explain briefly in "narrative".`;
 
 const PERSON_SCHEMA = {
   type: "json_schema" as const,
@@ -225,16 +263,7 @@ const PERSON_SCHEMA = {
           type: "object",
           additionalProperties: false,
           properties: {
-            field: {
-              type: "string",
-              enum: [
-                "birth_date", "birth_place",
-                "death_date", "death_place",
-                "burial_date", "burial_place",
-                "occupation", "military", "education",
-                "note", "parents_father", "parents_mother",
-              ],
-            },
+            field: { type: "string", enum: FIELD_ENUM },
             suggested_value: { type: "string" },
             confidence: { type: "string", enum: ["high", "medium", "low"] },
             reasoning: { type: "string" },
@@ -247,10 +276,47 @@ const PERSON_SCHEMA = {
           ],
         },
       },
+      corrections: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            field: { type: "string", enum: FIELD_ENUM },
+            current_value: { type: "string" },
+            suggested_value: { type: "string" },
+            issue: { type: "string" },
+            confidence: { type: "string", enum: ["high", "medium", "low"] },
+            source_title: { type: "string" },
+            source_url: { type: "string" },
+          },
+          required: [
+            "field", "current_value", "suggested_value", "issue",
+            "confidence", "source_title", "source_url",
+          ],
+        },
+      },
+      connections: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            relation: { type: "string" },
+            related_id: { type: "string" },
+            related_name: { type: "string" },
+            reasoning: { type: "string" },
+            confidence: { type: "string", enum: ["high", "medium", "low"] },
+          },
+          required: [
+            "relation", "related_id", "related_name", "reasoning", "confidence",
+          ],
+        },
+      },
       narrative: { type: "string" },
       search_log: { type: "string" },
     },
-    required: ["findings", "narrative", "search_log"],
+    required: ["findings", "corrections", "connections", "narrative", "search_log"],
   },
 };
 
@@ -310,6 +376,83 @@ function personAnchors(person: Person, lookup: Map<string, string>): string {
   return parts.join("\n");
 }
 
+/** Compact one-liner used in family + candidate lists. */
+function relLine(p: Person): string {
+  const place = p.birth?.place?.split(",")[0]?.trim();
+  return `${p.id} — ${fullDisplayName(p)} (${lifespan(p)}${place ? `, ${place}` : ""})`;
+}
+
+/** Linked family already in the archive, so the model can disambiguate THIS
+ *  person from same-named strangers and reason about missing links. */
+function buildFamilyBlock(
+  person: Person,
+  getP: (id: string) => Person | undefined,
+): string {
+  const sections: string[] = [];
+  const collect = (label: string, ids: string[] | undefined) => {
+    const ppl = (ids ?? []).map(getP).filter((x): x is Person => !!x);
+    if (ppl.length) sections.push(`${label}:\n` + ppl.map((p) => "  " + relLine(p)).join("\n"));
+  };
+  collect("PARENTS", person.parent_ids);
+  collect("SPOUSES", person.spouse_ids);
+  collect("CHILDREN", person.child_ids);
+  const sibs = getSiblings(person).slice(0, 10);
+  if (sibs.length) sections.push("SIBLINGS:\n" + sibs.map((p) => "  " + relLine(p)).join("\n"));
+  return sections.length ? sections.join("\n") : "(no linked family recorded in the archive)";
+}
+
+function normName(p: Person): string {
+  return `${p.given || ""} ${p.surname || ""}`
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Pick archive people who might be a duplicate of, or a missing relative of,
+ * THIS person — so the model has concrete, ID-referenced candidates to reason
+ * about for connections. Scored by name/surname similarity, birth-year
+ * proximity, and a cross-source (t0:/t1:) duplicate bonus.
+ */
+function connectionCandidates(person: Person, all: Person[], max = 22): Person[] {
+  const selfNorm = normName(person);
+  const selfSur = (person.surname || "").toLowerCase().trim();
+  const by = parseYear(person.birth?.date);
+  const exclude = new Set<string>([
+    person.id,
+    ...(person.parent_ids ?? []),
+    ...(person.spouse_ids ?? []),
+    ...(person.child_ids ?? []),
+  ]);
+  const scored: { p: Person; s: number }[] = [];
+  for (const o of all) {
+    if (exclude.has(o.id) || isAnchorlessPlaceholder(o)) continue;
+    const oNorm = normName(o);
+    const oSur = (o.surname || "").toLowerCase().trim();
+    let s = 0;
+    const sameName = !!selfNorm && oNorm === selfNorm;
+    if (sameName) s += 5;
+    else if (selfSur && oSur && oSur === selfSur) s += 2;
+    else if (
+      selfSur.length >= 4 &&
+      oSur.length >= 4 &&
+      (oSur.startsWith(selfSur.slice(0, 4)) || selfSur.startsWith(oSur.slice(0, 4)))
+    )
+      s += 1;
+    const oby = parseYear(o.birth?.date);
+    if (by && oby) {
+      const d = Math.abs(by - oby);
+      if (d <= 3) s += 2;
+      else if (d <= 40) s += 1;
+    }
+    // Cross-source duplicate: same name but the other GEDCOM prefix.
+    if (sameName && o.id.slice(0, 2) !== person.id.slice(0, 2)) s += 2;
+    if (s >= 2) scored.push({ p: o, s });
+  }
+  return scored.sort((a, b) => b.s - a.s).slice(0, max).map((x) => x.p);
+}
+
 function coreGaps(person: Person): string[] {
   const g: string[] = [];
   if (!person.birth?.date) g.push("birth_date");
@@ -334,20 +477,44 @@ export async function researchPerson(opts: {
   auth: AiAuth;
   person: Person;
   nameById: Map<string, string>;
+  /** Full archive — used to build duplicate/relationship candidates. */
+  allPeople?: Person[];
   model?: string;
   signal?: AbortSignal;
 }): Promise<PersonWebFinding> {
-  const { auth, person, nameById, model = DEFAULT_MODEL, signal } = opts;
+  const { auth, person, nameById, allPeople = [], model = DEFAULT_MODEL, signal } = opts;
   const gaps = coreGaps(person);
   const anchors = personAnchors(person, nameById);
-  const userMsg =
-    `Person to research:\n\n${anchors}\n\n` +
-    `Detected gaps: ${gaps.join(", ") || "(use your judgment based on the anchors)"}\n\n` +
-    "Use the web_search tool to find concrete facts. Issue at least 3 " +
-    "queries (findagrave, obituary, place-anchored). Visit the actual " +
-    "record page (not search results) and cite its URL. Match THIS person " +
-    "via the anchors above — when uncertain, label confidence as low " +
-    "rather than omitting.";
+  const getP = (id: string) => allPeople.find((p) => p.id === id);
+  const familyBlock = buildFamilyBlock(person, getP);
+  const candidates = connectionCandidates(person, allPeople);
+  const candidateBlock = candidates.length
+    ? candidates.map((p) => "  " + relLine(p)).join("\n")
+    : "(no obvious candidates found in the archive)";
+  const recordUrls = linksFor(person)
+    .slice(0, 6)
+    .map((l) => `  ${l.label}: ${l.url}`)
+    .join("\n");
+
+  const userMsg = [
+    "PERSON TO RESEARCH:",
+    anchors,
+    "",
+    "FAMILY ALREADY LINKED IN THE ARCHIVE (use to disambiguate & to spot missing links):",
+    familyBlock,
+    "",
+    "CANDIDATE PEOPLE IN THIS ARCHIVE (for duplicate / connection checks — reference by the exact ID shown):",
+    candidateBlock,
+    "",
+    "PRE-BUILT RECORD SEARCHES (solid starting points for web_search):",
+    recordUrls || "  (none)",
+    "",
+    `Detected gaps for job 1: ${gaps.join(", ") || "(use your judgment)"}`,
+    "",
+    "Do all three jobs. For job 1 issue at least 3 web_search queries and cite",
+    "real record pages. For job 2 only flag genuine contradictions. For job 3",
+    "prefer candidates from the list above and fill related_id with their ID.",
+  ].join("\n");
 
   const body = {
     model,
@@ -361,11 +528,7 @@ export async function researchPerson(opts: {
   const resp = await callWithWebSearch(auth, body, signal);
   const text = extractText(resp);
   if (!text) {
-    return {
-      findings: [],
-      narrative: "No response from model.",
-      search_log: "",
-    };
+    return { findings: [], corrections: [], connections: [], narrative: "No response from model.", search_log: "" };
   }
   let parsed: PersonWebFinding;
   try {
@@ -373,13 +536,21 @@ export async function researchPerson(opts: {
   } catch {
     return {
       findings: [],
+      corrections: [],
+      connections: [],
       narrative: text.slice(0, 500),
       search_log: "JSON parse failed",
     };
   }
-  // Defense-in-depth: validate field enum, drop bad rows
+  // Defense-in-depth: validate enums / required bits, drop bad rows.
   parsed.findings = (parsed.findings ?? []).filter(
     (f) => f && ALLOWED_FIELDS.has(f.field) && f.source_url,
+  );
+  parsed.corrections = ((parsed.corrections ?? []) as WebCorrection[]).filter(
+    (c) => c && ALLOWED_FIELDS.has(c.field) && (c.suggested_value || "").trim(),
+  );
+  parsed.connections = ((parsed.connections ?? []) as WebConnection[]).filter(
+    (c) => c && (c.related_name || c.related_id),
   );
   return parsed;
 }
@@ -398,6 +569,14 @@ You help the family historian:
 - find missing facts via web_search (FindAGrave, obituaries, US census,
   Catholic parish records, FamilySearch, Ancestry public trees, NYS Historic
   Newspapers, Irish civil records),
+- find CONNECTIONS in the data: likely duplicate records (the archive was
+  merged from two GEDCOMs, so the same person often appears under both a t0:
+  and a t1: ID — flag these), and missing parent/spouse/sibling/child links
+  between people already present,
+- spot ERRORS: contradictory or impossible dates (death before birth, child
+  born after a parent died or before they were ~13, lifespan > 110, obvious
+  year typos), malformed places, and mismatched relationships — name the
+  person(s) by ID and say what the fix should be,
 - explain relationships, name variants, and historical context (e.g. typical
   immigration / military service / parish patterns for the era and place).
 
