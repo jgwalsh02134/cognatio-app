@@ -284,6 +284,66 @@ Key rules they both enforce:
 
 ---
 
+## FamilySearch API Integration
+
+The server optionally integrates with the FamilySearch Tree API to surface
+verified genealogy records directly in the "Matching records" panel on each
+person's profile page.
+
+### How to obtain credentials
+
+1. Go to [developers.familysearch.org](https://developers.familysearch.org) and
+   sign in with the family FamilySearch account.
+2. Create a new app (type: "Registered"). Note the **Client ID** and
+   **Client Secret**.
+3. Generate a **refresh token** for the family account using the OAuth2
+   authorization-code or device-code flow. The refresh token is long-lived and
+   represents the family account's permission to read tree data.
+
+### Environment variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `FAMILYSEARCH_CLIENT_ID` | Yes | OAuth2 client ID from developers.familysearch.org |
+| `FAMILYSEARCH_CLIENT_SECRET` | Yes | OAuth2 client secret |
+| `FAMILYSEARCH_REFRESH_TOKEN` | Yes | Long-lived refresh token for the family account |
+| `FAMILYSEARCH_ENV` | No | `prod` (default) or `beta` (uses apibeta.familysearch.org) |
+
+All three required vars must be set for `familySearchEnabled()` to return true.
+If any are missing the feature silently disables itself — the UI shows a
+"not configured" message and the `/api/familysearch/status` endpoint returns
+`{ enabled: false }`.
+
+### Architecture (owner-token / server-only model)
+
+- The refresh token is exchanged for a short-lived access token (≈1 hour) via
+  `POST https://ident.familysearch.org/cis-web/oauth2/v3/token`.
+- The access token is cached in memory with a 5-minute safety margin and
+  refreshed automatically on the next request after expiry.
+- **The access token is never sent to the browser.** All FamilySearch API calls
+  happen in `server/familysearch.ts` and only the normalized result
+  (`{ fsId, name, sex, birth, death, url, score }[]`) is returned to the client.
+- The search route (`POST /api/familysearch/search`) is gated by the family
+  passphrase (`x-edit-passcode`) and the existing per-IP rate limiter.
+
+### Rate limits and ToS
+
+- FamilySearch throttles unauthenticated calls aggressively; authenticated calls
+  are more generous but still subject to per-app quotas.
+- Results are capped at 10 per search. The server never retries on 429 — the
+  existing per-IP rate limiter provides a first line of defence.
+- Always comply with the [FamilySearch Terms of Service](https://www.familysearch.org/terms).
+  Do not use this integration to bulk-harvest or redistribute FamilySearch data.
+
+### AI integration
+
+When `fsCandidates` are passed to `researchPerson()` in `client/src/lib/openai.ts`,
+they are injected into the research prompt as a `FAMILYSEARCH RECORDS (verified
+via API)` block. This grounds the model's findings in real records and includes
+the FamilySearch URLs as citations, reducing hallucination.
+
+---
+
 ## When in doubt
 
 Read `README.md` for the build flow, then `client/src/pages/Home.tsx` to see how

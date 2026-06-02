@@ -57,8 +57,23 @@ import {
   ExternalLink,
   ListChecks,
   Check,
+  Database,
+  Loader2,
+  RotateCw,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  familySearchStatus,
+  searchFamilySearch,
+  type FsCandidate,
+} from "@/lib/familysearch";
+import {
+  buildFindingsPatch,
+  type WebFinding,
+} from "@/components/WebFindingsCard";
+import { useToast } from "@/hooks/use-toast";
+
+
 
 const SEX_OPTIONS: { value: string; label: string }[] = [
   { value: "M", label: "Male" },
@@ -134,8 +149,9 @@ export default function PersonDetail() {
   if (sources.length > 0 || unlocked)
     jumpTargets.push({ id: "section-sources", label: "Sources", icon: <BookOpen className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-community", label: "Community", icon: <MessageSquare className="h-3.5 w-3.5" /> });
+  jumpTargets.push({ id: "section-records", label: "Records", icon: <Database className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-research", label: "Research", icon: <Compass className="h-3.5 w-3.5" /> });
-  jumpTargets.push({ id: "section-pedigree", label: "Ancestors", icon: <GitBranch className="h-3.5 w-3.5" /> });
+
   if (person.family_spouse_ids.length > 0)
     jumpTargets.push({ id: "section-family", label: "Family", icon: <Heart className="h-3.5 w-3.5" /> });
 
@@ -371,12 +387,16 @@ export default function PersonDetail() {
           <section id="section-community" className="scroll-mt-24">
             <CommunityNotes person={person} />
           </section>
+          <section id="section-records" className="scroll-mt-24">
+            <FamilySearchRecords person={person} update={update} unlocked={unlocked} />
+          </section>
           <section id="section-research" className="scroll-mt-24">
             <ResearchCard person={person} />
           </section>
           <section id="section-pedigree" className="scroll-mt-24">
             <PedigreeCard pedigree={pedigree} />
           </section>
+
         </div>
 
         {/* Right: relationships */}
@@ -1589,5 +1609,301 @@ function PedigreeCell({ node }: { node: PedigreeNode }) {
       <div className="text-[11px] sm:text-xs font-medium truncate">{fullDisplayName(node.person)}</div>
       <div className="text-[10px] text-muted-foreground truncate">{lifespan(node.person)}</div>
     </Link>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// FamilySearch Matching Records panel
+// ---------------------------------------------------------------------------
+
+/**
+ * Derive a compact search input from a Person record so we can pre-fill the
+ * FamilySearch query without asking the user to type anything.
+ */
+function personToFsInput(person: Person): {
+  given?: string;
+  surname?: string;
+  birthYear?: string;
+  deathYear?: string;
+  birthPlace?: string;
+  deathPlace?: string;
+} {
+  const byMatch = (person.birth?.date ?? "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+  const dyMatch = (person.death?.date ?? "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+  return {
+    given: person.given || undefined,
+    surname: person.surname || undefined,
+    birthYear: byMatch ? byMatch[0] : undefined,
+    deathYear: dyMatch ? dyMatch[0] : undefined,
+    birthPlace: person.birth?.place || undefined,
+    deathPlace: person.death?.place || undefined,
+  };
+}
+
+/** Format a FsEventInfo for display. */
+function fmtEvent(ev: { date?: string; place?: string } | undefined): string {
+  if (!ev) return "";
+  const parts: string[] = [];
+  if (ev.date) parts.push(ev.date);
+  if (ev.place) parts.push(ev.place);
+  return parts.join(" · ");
+}
+
+/**
+ * Convert a FamilySearch candidate's birth/death into WebFinding objects so
+ * we can reuse the existing buildFindingsPatch / staged-edit flow.
+ */
+function candidateToFindings(c: FsCandidate): WebFinding[] {
+  const findings: WebFinding[] = [];
+  if (c.birth?.date) {
+    findings.push({
+      field: "birth_date",
+      suggested_value: c.birth.date,
+      confidence: "high",
+      reasoning: `From FamilySearch record ${c.fsId}`,
+      source_title: `FamilySearch — ${c.name}`,
+      source_url: c.url,
+    });
+  }
+  if (c.birth?.place) {
+    findings.push({
+      field: "birth_place",
+      suggested_value: c.birth.place,
+      confidence: "high",
+      reasoning: `From FamilySearch record ${c.fsId}`,
+      source_title: `FamilySearch — ${c.name}`,
+      source_url: c.url,
+    });
+  }
+  if (c.death?.date) {
+    findings.push({
+      field: "death_date",
+      suggested_value: c.death.date,
+      confidence: "high",
+      reasoning: `From FamilySearch record ${c.fsId}`,
+      source_title: `FamilySearch — ${c.name}`,
+      source_url: c.url,
+    });
+  }
+  if (c.death?.place) {
+    findings.push({
+      field: "death_place",
+      suggested_value: c.death.place,
+      confidence: "high",
+      reasoning: `From FamilySearch record ${c.fsId}`,
+      source_title: `FamilySearch — ${c.name}`,
+      source_url: c.url,
+    });
+  }
+  return findings;
+}
+
+function FamilySearchRecords({
+  person,
+  update,
+  unlocked,
+}: {
+  person: Person;
+  update: (patch: PersonPatch) => void;
+  unlocked: boolean;
+}) {
+  const { passcode, pending } = useEdit();
+  const { toast } = useToast();
+
+  const [fsEnabled, setFsEnabled] = useState<boolean | null>(null);
+  const [candidates, setCandidates] = useState<FsCandidate[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Check whether FamilySearch is configured on this server.
+  useEffect(() => {
+    let cancelled = false;
+    const ctrl = new AbortController();
+    familySearchStatus(ctrl.signal).then((ok) => {
+      if (!cancelled) setFsEnabled(ok);
+    });
+    return () => {
+      cancelled = true;
+      ctrl.abort();
+    };
+  }, []);
+
+  async function runSearch() {
+    if (!passcode) {
+      setError("Unlock edit mode (lock icon, top right) to search FamilySearch.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const input = personToFsInput(person);
+      const results = await searchFamilySearch(input, passcode);
+      setCandidates(results);
+      setSearched(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Search failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function applyCandidate(c: FsCandidate) {
+    const findings = candidateToFindings(c);
+    if (findings.length === 0) return;
+    const base = pending[person.id] || {};
+    const patch = buildFindingsPatch(person, base, findings);
+    update(patch);
+    toast({
+      title: "Facts staged",
+      description: `${findings.length} field${findings.length === 1 ? "" : "s"} from FamilySearch staged — review in the save bar.`,
+    });
+  }
+
+  // Don't render anything until we know whether FS is enabled.
+  if (fsEnabled === null) return null;
+
+  return (
+    <Card className="border-card-border">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <h2 className="font-display text-base font-semibold flex items-center gap-1.5">
+            <Database className="h-4 w-4 text-primary" />
+            Matching records (FamilySearch)
+          </h2>
+          {fsEnabled && (
+            <button
+              type="button"
+              onClick={runSearch}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 min-h-9 text-xs hover-elevate active-elevate-2 disabled:opacity-60"
+              data-testid="fs-search-button"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Searching…
+                </>
+              ) : searched ? (
+                <>
+                  <RotateCw className="h-3.5 w-3.5" />
+                  Re-search
+                </>
+              ) : (
+                <>
+                  <Database className="h-3.5 w-3.5" />
+                  Search FamilySearch
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        {!fsEnabled ? (
+          <div className="rounded-md border border-card-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+            FamilySearch integration is not configured on this server. Add{" "}
+            <code className="font-mono">FAMILYSEARCH_CLIENT_ID</code>,{" "}
+            <code className="font-mono">FAMILYSEARCH_CLIENT_SECRET</code>, and{" "}
+            <code className="font-mono">FAMILYSEARCH_REFRESH_TOKEN</code> to enable it.
+          </div>
+        ) : (
+          <>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Search the FamilySearch Tree for records that may match this person. Results come
+              directly from the FamilySearch API — no web scraping. Applying a record stages
+              the birth/death date and place for your review before saving.
+            </p>
+
+            {error && (
+              <div className="mb-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive break-words">
+                {error}
+              </div>
+            )}
+
+            {!searched && !loading && (
+              <p className="text-xs text-muted-foreground italic">
+                {unlocked
+                  ? "Click "Search FamilySearch" to find matching records."
+                  : "Unlock edit mode to search FamilySearch records."}
+              </p>
+            )}
+
+            {searched && candidates.length === 0 && !loading && (
+              <p className="text-xs text-muted-foreground italic">
+                No matching records found in FamilySearch for this person.
+              </p>
+            )}
+
+            {candidates.length > 0 && (
+              <ul className="space-y-2">
+                {candidates.map((c) => {
+                  const birthStr = fmtEvent(c.birth);
+                  const deathStr = fmtEvent(c.death);
+                  const hasApplyable = candidateToFindings(c).length > 0;
+                  return (
+                    <li
+                      key={c.fsId}
+                      className="rounded-md border border-card-border bg-background px-3 py-2.5 text-xs"
+                      data-testid={`fs-candidate-${c.fsId}`}
+                    >
+                      <div className="flex items-start justify-between gap-2 flex-wrap">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-sm text-foreground break-words">
+                            {c.name}
+                            {c.sex && c.sex !== "U" && (
+                              <span className="ml-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                                {c.sex === "M" ? "Male" : "Female"}
+                              </span>
+                            )}
+                          </div>
+                          {birthStr && (
+                            <div className="text-muted-foreground mt-0.5">
+                              <span className="text-foreground/70">b.</span> {birthStr}
+                            </div>
+                          )}
+                          {deathStr && (
+                            <div className="text-muted-foreground mt-0.5">
+                              <span className="text-foreground/70">d.</span> {deathStr}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                          <a
+                            href={`https://www.familysearch.org/tree/person/details/${c.fsId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
+                            data-testid={`fs-link-${c.fsId}`}
+                          >
+                            <ExternalLink className="h-3 w-3 shrink-0" />
+                            View on FS
+                          </a>
+                          {unlocked && hasApplyable && (
+                            <button
+                              type="button"
+                              onClick={() => applyCandidate(c)}
+                              className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 min-h-8 text-[11px] text-primary hover-elevate active-elevate-2"
+                              data-testid={`fs-apply-${c.fsId}`}
+                            >
+                              <Check className="h-3 w-3" />
+                              Apply dates &amp; places
+                            </button>
+                          )}
+                          {!unlocked && hasApplyable && (
+                            <span className="text-[10px] text-muted-foreground">
+                              Unlock to apply
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }

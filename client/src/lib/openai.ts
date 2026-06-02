@@ -26,6 +26,9 @@ import {
   type Person,
 } from "@/lib/family";
 import { linksFor } from "@/lib/researchLinks";
+import type { FsCandidate } from "@/lib/familysearch";
+
+
 
 /** How an AI request authenticates. */
 export type AiAuth =
@@ -479,10 +482,17 @@ export async function researchPerson(opts: {
   nameById: Map<string, string>;
   /** Full archive — used to build duplicate/relationship candidates. */
   allPeople?: Person[];
+  /**
+   * Optional FamilySearch candidates fetched before calling this function.
+   * When provided they are injected into the system prompt as verified records
+   * so the model can ground its findings in real data instead of web search
+   * alone. The FamilySearch URLs are included as citations.
+   */
+  fsCandidates?: FsCandidate[];
   model?: string;
   signal?: AbortSignal;
 }): Promise<PersonWebFinding> {
-  const { auth, person, nameById, allPeople = [], model = DEFAULT_MODEL, signal } = opts;
+  const { auth, person, nameById, allPeople = [], fsCandidates = [], model = DEFAULT_MODEL, signal } = opts;
   const gaps = coreGaps(person);
   const anchors = personAnchors(person, nameById);
   const getP = (id: string) => allPeople.find((p) => p.id === id);
@@ -496,6 +506,22 @@ export async function researchPerson(opts: {
     .map((l) => `  ${l.label}: ${l.url}`)
     .join("\n");
 
+  // Build a FamilySearch block when candidates were pre-fetched.
+  const fsBlock =
+    fsCandidates.length > 0
+      ? fsCandidates
+          .map((c) => {
+            const parts: string[] = [`  ${c.name} (${c.fsId})`];
+            if (c.birth?.date || c.birth?.place)
+              parts.push(`    Birth: ${[c.birth.date, c.birth.place].filter(Boolean).join(", ")}`);
+            if (c.death?.date || c.death?.place)
+              parts.push(`    Death: ${[c.death.date, c.death.place].filter(Boolean).join(", ")}`);
+            parts.push(`    URL: ${c.url}`);
+            return parts.join("\n");
+          })
+          .join("\n")
+      : null;
+
   const userMsg = [
     "PERSON TO RESEARCH:",
     anchors,
@@ -508,6 +534,13 @@ export async function researchPerson(opts: {
     "",
     "PRE-BUILT RECORD SEARCHES (solid starting points for web_search):",
     recordUrls || "  (none)",
+    ...(fsBlock
+      ? [
+          "",
+          "FAMILYSEARCH RECORDS (verified via API — treat these as primary sources; cite the URL):",
+          fsBlock,
+        ]
+      : []),
     "",
     `Detected gaps for job 1: ${gaps.join(", ") || "(use your judgment)"}`,
     "",
@@ -525,6 +558,7 @@ export async function researchPerson(opts: {
     text: { format: PERSON_SCHEMA },
     temperature: 0.2,
   };
+
   const resp = await callWithWebSearch(auth, body, signal);
   const text = extractText(resp);
   if (!text) {

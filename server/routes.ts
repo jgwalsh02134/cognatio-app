@@ -14,6 +14,11 @@ import {
   listNotes,
   markHelpful,
 } from "./community";
+import {
+  familySearchEnabled,
+  searchPersons,
+  getPerson as fsPerson,
+} from "./familysearch";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
 // so this becomes `<root>/client/src/data.json`. The endpoint only writes when
@@ -288,6 +293,86 @@ export async function registerRoutes(
       res.json({ ok: true });
     } catch (e) {
       res.status(500).json({ error: e instanceof Error ? e.message : "Failed" });
+    }
+  });
+
+  // ----- FamilySearch (server-side, tokens never reach the client) ----------
+
+  // Whether FamilySearch integration is configured on this server.
+  app.get("/api/familysearch/status", (_req: Request, res: Response) => {
+    res.json({ enabled: familySearchEnabled() });
+  });
+
+  // Passphrase-gated person search. Proxies to the FamilySearch Tree Search
+  // API and returns normalized candidates — the access token stays on the
+  // server at all times.
+  app.post(
+    "/api/familysearch/search",
+    express.json({ limit: "64kb" }),
+    async (req: Request, res: Response) => {
+      if (!familySearchEnabled()) {
+        return res
+          .status(503)
+          .json({ error: "FamilySearch is not configured on this server." });
+      }
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
+      if (rateLimited(ip)) {
+        return res
+          .status(429)
+          .json({ error: "Too many requests — wait a minute and try again." });
+      }
+      if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+        return res
+          .status(401)
+          .json({ error: "Invalid or missing family passphrase." });
+      }
+      const body = req.body as {
+        given?: string;
+        surname?: string;
+        birthYear?: number | string;
+        deathYear?: number | string;
+        birthPlace?: string;
+        deathPlace?: string;
+      };
+      try {
+        const candidates = await searchPersons({
+          given: body.given ? String(body.given) : undefined,
+          surname: body.surname ? String(body.surname) : undefined,
+          birthYear: body.birthYear,
+          deathYear: body.deathYear,
+          birthPlace: body.birthPlace ? String(body.birthPlace) : undefined,
+          deathPlace: body.deathPlace ? String(body.deathPlace) : undefined,
+        });
+        res.json({ candidates });
+      } catch (e) {
+        res
+          .status(500)
+          .json({ error: e instanceof Error ? e.message : "FamilySearch search failed" });
+      }
+    },
+  );
+
+  // Optional: fetch a single FamilySearch person by ID.
+  app.get("/api/familysearch/person/:id", async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res
+        .status(503)
+        .json({ error: "FamilySearch is not configured on this server." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res
+        .status(429)
+        .json({ error: "Too many requests — wait a minute and try again." });
+    }
+    try {
+      const person = await fsPerson(String(req.params.id));
+      if (!person) return res.status(404).json({ error: "Person not found." });
+      res.json({ person });
+    } catch (e) {
+      res
+        .status(500)
+        .json({ error: e instanceof Error ? e.message : "FamilySearch fetch failed" });
     }
   });
 
