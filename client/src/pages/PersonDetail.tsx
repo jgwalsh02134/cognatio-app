@@ -29,6 +29,7 @@ import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
 import { cn } from "@/lib/utils";
 import { EditableText, EventEditorPopover } from "@/components/Editable";
 import { NameFixChips } from "@/components/NameFixChips";
+import { CommunityNotes } from "@/components/CommunityNotes";
 import { FindMissingInfo } from "@/components/FindMissingInfo";
 import {
   ArrowDown,
@@ -46,6 +47,7 @@ import {
   Plus,
   Printer,
   GitMerge,
+  MessageSquare,
   Route,
   Sparkles,
   StickyNote,
@@ -131,6 +133,7 @@ export default function PersonDetail() {
     jumpTargets.push({ id: "section-notes", label: "Notes", icon: <StickyNote className="h-3.5 w-3.5" /> });
   if (sources.length > 0 || unlocked)
     jumpTargets.push({ id: "section-sources", label: "Sources", icon: <BookOpen className="h-3.5 w-3.5" /> });
+  jumpTargets.push({ id: "section-community", label: "Community", icon: <MessageSquare className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-research", label: "Research", icon: <Compass className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-pedigree", label: "Ancestors", icon: <GitBranch className="h-3.5 w-3.5" /> });
   if (person.family_spouse_ids.length > 0)
@@ -364,6 +367,9 @@ export default function PersonDetail() {
           </section>
           <section id="section-sources" className="scroll-mt-24">
             <SourcesEditor sources={sources} update={update} unlocked={unlocked} />
+          </section>
+          <section id="section-community" className="scroll-mt-24">
+            <CommunityNotes person={person} />
           </section>
           <section id="section-research" className="scroll-mt-24">
             <ResearchCard person={person} />

@@ -37,6 +37,15 @@ function client(): ReturnType<typeof postgres> | null {
   return sql;
 }
 
+/**
+ * Shared Postgres client (or null when DATABASE_URL is unset). Exposed so
+ * sibling features (e.g. community notes) reuse this single connection pool
+ * instead of opening their own.
+ */
+export function getSqlClient(): ReturnType<typeof postgres> | null {
+  return client();
+}
+
 async function ensureReady(db: ReturnType<typeof postgres>): Promise<void> {
   if (!ready) {
     ready = db`

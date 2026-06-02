@@ -7,6 +7,13 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { storage } from "./storage";
 import { archiveEnabled, getOverlay, mergeOverlay } from "./archive";
+import {
+  addNote,
+  communityNotesEnabled,
+  deleteNote,
+  listNotes,
+  markHelpful,
+} from "./community";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
 // so this becomes `<root>/client/src/data.json`. The endpoint only writes when
@@ -209,6 +216,80 @@ export async function registerRoutes(
       }
     },
   );
+
+  // ----- Community notes (Postgres) --------------------------------------
+
+  app.use("/api/notes", express.json({ limit: "64kb" }));
+
+  // Whether community notes can be persisted on this server.
+  app.get("/api/notes/status", (_req: Request, res: Response) => {
+    res.json({ enabled: communityNotesEnabled() });
+  });
+
+  // Public read: all notes for a person, newest first.
+  app.get("/api/notes", async (req: Request, res: Response) => {
+    const person = String(req.query.person || "");
+    if (!person) return res.json({ notes: [] });
+    const notes = await listNotes(person);
+    res.json({ notes });
+  });
+
+  // Passphrase-gated write: add a note to a person.
+  app.post("/api/notes", async (req: Request, res: Response) => {
+    if (!communityNotesEnabled()) {
+      return res
+        .status(503)
+        .json({ error: "Community notes are not configured on this server." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing family passphrase." });
+    }
+    const body = req.body as { personId?: string; author?: string; body?: string };
+    if (!body || !body.personId || !body.body || !body.body.trim()) {
+      return res.status(400).json({ error: "personId and a non-empty body are required." });
+    }
+    try {
+      const note = await addNote({
+        personId: String(body.personId),
+        author: String(body.author || "Anonymous"),
+        body: String(body.body),
+      });
+      res.json({ ok: true, note });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Failed to add note" });
+    }
+  });
+
+  // Public, rate-limited: mark a note helpful (+1).
+  app.post("/api/notes/:id/helpful", async (req: Request, res: Response) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    try {
+      const helpful = await markHelpful(String(req.params.id));
+      res.json({ ok: true, helpful });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Failed" });
+    }
+  });
+
+  // Passphrase-gated: delete a note (moderation).
+  app.delete("/api/notes/:id", async (req: Request, res: Response) => {
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing family passphrase." });
+    }
+    try {
+      await deleteNote(String(req.params.id));
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Failed" });
+    }
+  });
 
   // Keep referencing storage so the import isn't tree-shaken / linted away.
   void storage;
