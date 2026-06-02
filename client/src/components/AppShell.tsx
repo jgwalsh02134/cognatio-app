@@ -108,6 +108,7 @@ function isActivePath(location: string, href: string): boolean {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const isTreePage = location === "/tree";
   const { theme, toggle } = useTheme();
   const { unlocked, unlock, lock, count, hasChanges } = useEdit();
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -431,7 +432,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      <footer className="border-t mt-12 py-6 px-4 sm:px-5 pb-24 md:pb-6">
+      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-6", isTreePage ? "hidden" : "mt-12")}>
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2.5">
             <Logo className="h-4 w-4 text-primary/70" />

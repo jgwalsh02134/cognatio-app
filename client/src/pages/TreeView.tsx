@@ -22,6 +22,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import { searchPeople } from "@/lib/family";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Direction = "ancestors" | "descendants" | "both";
 
@@ -41,12 +42,18 @@ interface EdgeLayout {
   kind: "parent" | "spouse";
 }
 
-const NODE_W = 200;
-const NODE_H = 70;
-const GEN_GAP_X = 70;
-const SIBLING_GAP = 18;
+// Desktop defaults; mobile/compact sizes are computed inside TreeView and passed in.
+const NODE_W = 188;
+const NODE_H = 64;
+const GEN_GAP_X = 58;
+const SIBLING_GAP = 16;
 
-function buildAncestorLayout(rootId: string, depth: number) {
+function buildAncestorLayout(rootId: string, depth: number, sizes?: { w?: number; h?: number; g?: number; s?: number }) {
+  const NW = sizes?.w ?? NODE_W;
+  const NH = sizes?.h ?? NODE_H;
+  const GG = sizes?.g ?? GEN_GAP_X;
+  const SG = sizes?.s ?? SIBLING_GAP;
+
   // Pedigree-style: root on left, ancestors expand to the right.
   // Wait — convention for ancestors: root on left, parents to right.
   // We'll do top-down: root at top, parents above.
@@ -96,22 +103,27 @@ function buildAncestorLayout(rootId: string, depth: number) {
     return node;
   }
 
-  // Total slots = 2^depth × NODE_W (with gap)
+  // Total slots = 2^depth × NW (with gap)
   const slotCount = Math.pow(2, depth);
-  const totalWidth = slotCount * (NODE_W + SIBLING_GAP);
+  const totalWidth = slotCount * (NW + SG);
   place(rootId, 0, 0, totalWidth);
 
   // Convert grid coords (x in pixels, y in generations) to screen coords
   const positionedNodes = nodes.map((n) => ({
     ...n,
     x: n.x,
-    y: -n.y * (NODE_H + GEN_GAP_X),
+    y: -n.y * (NH + GG),
   }));
 
   return { nodes: positionedNodes, edges };
 }
 
-function buildDescendantLayout(rootId: string, depth: number) {
+function buildDescendantLayout(rootId: string, depth: number, sizes?: { w?: number; h?: number; g?: number; s?: number }) {
+  const NW = sizes?.w ?? NODE_W;
+  const NH = sizes?.h ?? NODE_H;
+  const GG = sizes?.g ?? GEN_GAP_X;
+  const SG = sizes?.s ?? SIBLING_GAP;
+
   const nodes: NodeLayout[] = [];
   const edges: EdgeLayout[] = [];
   let cursor = 0;
@@ -121,8 +133,8 @@ function buildDescendantLayout(rootId: string, depth: number) {
     if (!p) return null;
     if (gen >= depth) {
       const x = cursor;
-      cursor += NODE_W + SIBLING_GAP;
-      const node: NodeLayout = { id: p.id, person: p, generation: gen, x, y: gen * (NODE_H + GEN_GAP_X) };
+      cursor += NW + SG;
+      const node: NodeLayout = { id: p.id, person: p, generation: gen, x, y: gen * (NH + GG) };
       nodes.push(node);
       return { id: p.id, centerX: x };
     }
@@ -156,27 +168,27 @@ function buildDescendantLayout(rootId: string, depth: number) {
       centerX = (childCenters[0].centerX + childCenters[childCenters.length - 1].centerX) / 2;
     } else {
       centerX = cursor;
-      cursor += NODE_W + SIBLING_GAP;
+      cursor += NW + SG;
     }
-    const node: NodeLayout = { id: p.id, person: p, generation: gen, x: centerX, y: gen * (NODE_H + GEN_GAP_X) };
+    const node: NodeLayout = { id: p.id, person: p, generation: gen, x: centerX, y: gen * (NH + GG) };
     nodes.push(node);
 
     // Place spouses next to person (offset slightly)
     for (let gi = 0; gi < groups.length; gi++) {
       const grp = groups[gi];
       if (grp.spouse) {
-        const offsetX = centerX + (NODE_W + 24) * (gi + 1);
+        const offsetX = centerX + (NW + 20) * (gi + 1);
         const spouseNode: NodeLayout = {
           id: `${p.id}::spouse::${grp.spouse.id}::${grp.familyId}`,
           person: grp.spouse,
           generation: gen,
           x: offsetX,
-          y: gen * (NODE_H + GEN_GAP_X),
+          y: gen * (NH + GG),
           isUnion: true,
           unionWith: p.id,
         };
         // Move cursor past spouse
-        if (offsetX + NODE_W + SIBLING_GAP > cursor) cursor = offsetX + NODE_W + SIBLING_GAP;
+        if (offsetX + NW + SG > cursor) cursor = offsetX + NW + SG;
         nodes.push(spouseNode);
         edges.push({ from: p.id, to: spouseNode.id, kind: "spouse" });
       }
@@ -238,15 +250,29 @@ export default function TreeView() {
   useEffect(() => { panRef.current = pan; }, [pan]);
   useEffect(() => { zoomRef.current = zoom; }, [zoom]);
 
+  const isMobile = useIsMobile();
+  // Compact mode for phones/tablets: smaller nodes + tighter spacing so fit-zoom keeps labels legible.
+  const compact = !!isMobile || (typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches);
+  const NODE_W = compact ? 124 : 188;
+  const NODE_H = compact ? 48 : 64;
+  const GEN_GAP_X = compact ? 40 : 58;
+  const SIBLING_GAP = compact ? 8 : 16;
+
+  // React to orientation / viewport changes: prefer lower depth on mobile but don't fight user choice.
+  useEffect(() => {
+    if (compact && depth > 3) setDepth(3);
+  }, [compact]);
+
   const focusPerson = getPerson(focusId);
 
   const layout = useMemo(() => {
     if (!focusPerson) return { nodes: [], edges: [] };
-    if (direction === "ancestors") return buildAncestorLayout(focusPerson.id, depth);
-    if (direction === "descendants") return buildDescendantLayout(focusPerson.id, depth);
+    const sizes = { w: NODE_W, h: NODE_H, g: GEN_GAP_X, s: SIBLING_GAP };
+    if (direction === "ancestors") return buildAncestorLayout(focusPerson.id, depth, sizes);
+    if (direction === "descendants") return buildDescendantLayout(focusPerson.id, depth, sizes);
     // both: combine
-    const a = buildAncestorLayout(focusPerson.id, depth);
-    const d = buildDescendantLayout(focusPerson.id, depth);
+    const a = buildAncestorLayout(focusPerson.id, depth, sizes);
+    const d = buildDescendantLayout(focusPerson.id, depth, sizes);
     // shift descendants below the root
     const shifted = {
       nodes: d.nodes.map((n) => ({ ...n, id: n.id === focusPerson.id ? `${n.id}::dup` : n.id })),
@@ -267,7 +293,7 @@ export default function TreeView() {
       nodes: [...a.nodes, ...filteredNodes],
       edges: [...a.edges, ...reroutedEdges],
     };
-  }, [focusPerson, direction, depth]);
+  }, [focusPerson, direction, depth, compact]);
 
   const bounds = useMemo(() => {
     if (layout.nodes.length === 0) return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
@@ -279,7 +305,7 @@ export default function TreeView() {
       maxY = Math.max(maxY, n.y + NODE_H);
     }
     return { minX, maxX, minY, maxY };
-  }, [layout.nodes]);
+  }, [layout.nodes, NODE_W, NODE_H]);
 
   // Auto-fit when layout changes (focus, direction, or depth)
   useEffect(() => {
@@ -290,17 +316,17 @@ export default function TreeView() {
     const w = bounds.maxX - bounds.minX;
     const h = bounds.maxY - bounds.minY;
     if (w === 0 || h === 0) return;
-    // More horizontal padding on small screens so cards don't kiss the edge.
-    const padX = cw < 640 ? 40 : 120;
-    const padY = cw < 640 ? 40 : 120;
-    const z = Math.max(0.32, Math.min(cw / (w + padX), ch / (h + padY), 1.2));
+    // Tighter pad + higher min zoom on compact so text stays legible; don't force tiny "see everything".
+    const padX = compact ? 20 : (cw < 640 ? 32 : 80);
+    const padY = compact ? 20 : (cw < 640 ? 32 : 80);
+    const z = Math.max(compact ? 0.58 : 0.32, Math.min(cw / (w + padX), ch / (h + padY), 1.15));
     setZoom(z);
     setPan({
       x: cw / 2 - (bounds.minX + w / 2) * z,
       y: ch / 2 - (bounds.minY + h / 2) * z,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusId, direction, depth, layout.nodes.length]);
+  }, [focusId, direction, depth, layout.nodes.length, compact]);
 
   const TAP_SLOP = 6; // px — pointer movement under this counts as a tap, not a drag.
   const Z_MIN = 0.2;
@@ -427,7 +453,8 @@ export default function TreeView() {
     const w = bounds.maxX - bounds.minX;
     const h = bounds.maxY - bounds.minY;
     if (w === 0 || h === 0) return;
-    const z = Math.max(0.3, Math.min(cw / (w + 80), ch / (h + 80), 1.4));
+    const pad = compact ? 18 : 60;
+    const z = Math.max(compact ? 0.58 : 0.30, Math.min(cw / (w + pad), ch / (h + pad), 1.3));
     setZoom(z);
     setPan({
       x: cw / 2 - (bounds.minX + w / 2) * z,
@@ -438,33 +465,33 @@ export default function TreeView() {
   const searchResults = useMemo(() => searchPeople(searchQuery, 8), [searchQuery]);
 
   return (
-    <div className="h-[calc(100dvh-7rem)] md:h-[calc(100vh-4rem)] flex flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       {/* Toolbar */}
       <div className="border-b bg-card/60 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3">
+        <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5">
           <button
             onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-2 rounded-md border bg-background px-2.5 sm:px-3 py-1.5 text-sm hover-elevate active-elevate-2 w-full sm:w-auto sm:min-w-[14rem] min-w-0"
+            className="flex items-center gap-2 rounded-md border bg-background px-2 sm:px-3 py-1 sm:py-1.5 text-sm hover-elevate active-elevate-2 w-full sm:w-auto sm:min-w-[12rem] min-w-0"
             data-testid="button-tree-focus"
           >
             <SearchIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             <span className="truncate">{focusPerson ? fullDisplayName(focusPerson) : "Choose…"}</span>
           </button>
 
-          <div className="flex gap-1 rounded-md border bg-card p-1">
+          <div className="flex gap-1 rounded-md border bg-card p-0.5">
             <DirBtn label="Ancestors" icon={<ArrowUpToLine className="h-3.5 w-3.5" />} active={direction === "ancestors"} onClick={() => setDirection("ancestors")} />
             <DirBtn label="Descendants" icon={<ArrowDownToLine className="h-3.5 w-3.5" />} active={direction === "descendants"} onClick={() => setDirection("descendants")} />
             <DirBtn label="Both" active={direction === "both"} onClick={() => setDirection("both")} />
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <span className="hidden sm:inline">Depth</span>
             <div className="flex rounded-md border bg-card overflow-hidden">
               {[2, 3, 4, 5].map((d) => (
                 <button
                   key={d}
                   onClick={() => setDepth(d)}
-                  className={`px-2.5 py-1 text-xs hover-elevate active-elevate-2 ${depth === d ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                  className={`px-2 py-0.5 text-[10px] sm:text-xs sm:px-2.5 sm:py-1 hover-elevate active-elevate-2 ${depth === d ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
                   data-testid={`depth-${d}`}
                 >
                   {d}
@@ -474,14 +501,14 @@ export default function TreeView() {
           </div>
 
           <div className="flex items-center gap-1 ml-auto">
-            <Button variant="outline" size="icon" onClick={() => setZoom((z) => Math.max(0.25, z / 1.15))} aria-label="Zoom out" data-testid="zoom-out" className="h-8 w-8">
+            <Button variant="outline" size="icon" onClick={() => setZoom((z) => Math.max(0.25, z / 1.15))} aria-label="Zoom out" data-testid="zoom-out" className="h-7 w-7 sm:h-8 sm:w-8">
               <ZoomOut className="h-4 w-4" />
             </Button>
-            <span className="text-xs text-muted-foreground tabular-nums w-9 sm:w-10 text-center">{Math.round(zoom * 100)}%</span>
-            <Button variant="outline" size="icon" onClick={() => setZoom((z) => Math.min(2, z * 1.15))} aria-label="Zoom in" data-testid="zoom-in" className="h-8 w-8">
+            <span className="text-[10px] text-muted-foreground tabular-nums w-7 sm:w-9 text-center">{Math.round(zoom * 100)}%</span>
+            <Button variant="outline" size="icon" onClick={() => setZoom((z) => Math.min(2, z * 1.15))} aria-label="Zoom in" data-testid="zoom-in" className="h-7 w-7 sm:h-8 sm:w-8">
               <ZoomIn className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={fit} aria-label="Fit to screen" data-testid="zoom-fit" className="h-8 w-8">
+            <Button variant="outline" size="icon" onClick={fit} aria-label="Fit to screen" data-testid="zoom-fit" className="h-7 w-7 sm:h-8 sm:w-8">
               <Maximize2 className="h-4 w-4" />
             </Button>
           </div>
@@ -574,6 +601,9 @@ export default function TreeView() {
               node={n}
               isFocus={n.person?.id === focusId}
               onSelect={(p) => setFocusId(p.id)}
+              nodeW={NODE_W}
+              nodeH={NODE_H}
+              compact={compact}
             />
           ))}
         </div>
@@ -655,7 +685,7 @@ function DirBtn({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs hover-elevate active-elevate-2 ${
+      className={`flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-xs hover-elevate active-elevate-2 ${
         active ? "bg-primary text-primary-foreground" : "text-muted-foreground"
       }`}
       data-testid={`dir-${label.toLowerCase()}`}
@@ -670,17 +700,24 @@ function TreeNode({
   node,
   isFocus,
   onSelect,
+  nodeW = NODE_W,
+  nodeH = NODE_H,
+  compact = false,
 }: {
   node: NodeLayout;
   isFocus: boolean;
   onSelect: (p: Person) => void;
+  nodeW?: number;
+  nodeH?: number;
+  compact?: boolean;
 }) {
+  const isCompact = compact || nodeW < 150;
   if (!node.person) {
     return (
       <div
         data-tree-node
-        style={{ left: node.x, top: node.y, width: NODE_W, height: NODE_H, position: "absolute" }}
-        className="rounded-md border border-dashed border-border/50 bg-card/40 flex items-center justify-center text-[11px] text-muted-foreground/60"
+        style={{ left: node.x, top: node.y, width: nodeW, height: nodeH, position: "absolute" }}
+        className="rounded-md border border-dashed border-border/50 bg-card/40 flex items-center justify-center text-[10px] text-muted-foreground/60"
       >
         unknown
       </div>
@@ -706,32 +743,32 @@ function TreeNode({
   return (
     <div
       data-tree-node
-      style={{ left: node.x, top: node.y, width: NODE_W, height: NODE_H, position: "absolute" }}
-      className={`relative overflow-hidden rounded-md border bg-card px-2.5 py-1.5 pl-3 cursor-pointer transition-shadow shadow-sm hover:shadow-md ${
+      style={{ left: node.x, top: node.y, width: nodeW, height: nodeH, position: "absolute" }}
+      className={`relative overflow-hidden rounded-md border bg-card px-1.5 py-1 pl-2 cursor-pointer transition-shadow shadow-sm hover:shadow-md ${
         isFocus ? "ring-2 ring-primary border-primary" : "border-card-border"
       }`}
       onClick={() => onSelect(p)}
       data-testid={`tree-node-${p.id}`}
     >
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${stripe}`} aria-hidden="true" />
-      <div className="flex items-start gap-2 h-full">
-        <div className={`shrink-0 mt-0.5 h-7 w-7 rounded-full ${chip} flex items-center justify-center text-[10px] font-semibold`}>
+      <div className={`absolute left-0 top-0 bottom-0 w-0.5 ${stripe}`} aria-hidden="true" />
+      <div className="flex items-start gap-1.5 h-full">
+        <div className={`shrink-0 mt-0.5 rounded-full ${chip} flex items-center justify-center font-semibold ${isCompact ? "h-5 w-5 text-[8px]" : "h-6 w-6 text-[9px]"}`}>
           {initials(p)}
         </div>
         <div className="min-w-0 flex-1 leading-tight">
-          <div className="text-xs font-semibold truncate text-foreground">{fullDisplayName(p)}</div>
-          <div className="text-[10px] text-foreground/80 truncate tabular-nums">
+          <div className={`${isCompact ? "text-[10px]" : "text-[11px]"} font-semibold truncate text-foreground`}>{fullDisplayName(p)}</div>
+          <div className={`${isCompact ? "text-[8px]" : "text-[9px]"} text-foreground/80 truncate tabular-nums`}>
             {by || "?"}{by || dy ? " – " : ""}{dy || (by && !p.death?.date ? "" : "?")}
           </div>
-          {p.birth?.place && (
-            <div className="text-[9px] text-foreground/65 truncate">{p.birth.place}</div>
+          {!isCompact && p.birth?.place && (
+            <div className="text-[8px] text-foreground/60 truncate">{p.birth.place}</div>
           )}
         </div>
       </div>
       <Link
         href={`/person/${encodeURIComponent(p.id)}`}
         onClick={(e) => e.stopPropagation()}
-        className="absolute right-1.5 top-1.5 text-[10px] text-foreground/60 hover:text-foreground"
+        className="absolute right-0.5 top-0.5 p-1 -m-1 text-[9px] text-foreground/60 hover:text-foreground"
         data-testid={`tree-node-link-${p.id}`}
       >
         ↗
