@@ -248,7 +248,7 @@ export async function registerRoutes(
     if (!editPasscodeOk(req.header("x-edit-passcode"))) {
       return res.status(401).json({ error: "Invalid or missing family passphrase." });
     }
-    const body = req.body as { personId?: string; author?: string; body?: string };
+    const body = req.body as { personId?: string; author?: string; body?: string; color?: string };
     if (!body || !body.personId || !body.body || !body.body.trim()) {
       return res.status(400).json({ error: "personId and a non-empty body are required." });
     }
@@ -257,6 +257,7 @@ export async function registerRoutes(
         personId: String(body.personId),
         author: String(body.author || "Anonymous"),
         body: String(body.body),
+        color: typeof body.color === "string" ? body.color : undefined,
       });
       res.json({ ok: true, note });
     } catch (e) {

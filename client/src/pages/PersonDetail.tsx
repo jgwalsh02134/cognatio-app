@@ -133,7 +133,7 @@ export default function PersonDetail() {
     jumpTargets.push({ id: "section-notes", label: "Notes", icon: <StickyNote className="h-3.5 w-3.5" /> });
   if (sources.length > 0 || unlocked)
     jumpTargets.push({ id: "section-sources", label: "Sources", icon: <BookOpen className="h-3.5 w-3.5" /> });
-  jumpTargets.push({ id: "section-community", label: "Community", icon: <MessageSquare className="h-3.5 w-3.5" /> });
+  jumpTargets.push({ id: "section-community", label: "Stickies", icon: <MessageSquare className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-research", label: "Research", icon: <Compass className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-pedigree", label: "Ancestors", icon: <GitBranch className="h-3.5 w-3.5" /> });
   if (person.family_spouse_ids.length > 0)

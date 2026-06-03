@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Lock, MessageSquare, Send, ThumbsUp, Trash2 } from "lucide-react";
+import { Check, Loader2, Lock, Send, StickyNote, ThumbsUp, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +14,14 @@ import {
   deleteCommunityNote,
   listCommunityNotes,
   markCommunityNoteHelpful,
+  NEON_COLORS,
   type CommunityNote,
 } from "@/lib/communityNotes";
 
-// Remember the contributor's name across people for the session (no storage —
-// the deployed site runs in a sandbox that blocks it).
+// Remember the contributor's name + last color across people for the session
+// (no storage — the deployed site runs in a sandbox that blocks it).
 let lastAuthor = "";
+let lastColor: string = NEON_COLORS[1]; // default yellow
 
 function timeAgo(iso: string): string {
   const t = new Date(iso).getTime();
@@ -41,6 +43,22 @@ function initials(name: string): string {
   return ((parts[0][0] || "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
+// Deterministic slight tilt per note id so stickies look hand-placed but don't
+// jump around on re-render.
+function tilt(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return (h % 5) - 2; // -2deg … +2deg
+}
+
+const COLOR_LABELS: Record<string, string> = {
+  "#FF10F0": "Pink",
+  "#FFF01F": "Yellow",
+  "#FF5E00": "Orange",
+  "#39FF14": "Green",
+  "#04D9FF": "Blue",
+};
+
 /**
  * Community notes for a person — shared, attributed observations that anyone can
  * read. Contributing is gated behind the family passphrase (the editor unlock),
@@ -56,6 +74,7 @@ export function CommunityNotes({ person }: { person: Person }) {
   const [loading, setLoading] = useState(true);
   const [author, setAuthor] = useState(lastAuthor);
   const [body, setBody] = useState("");
+  const [color, setColor] = useState<string>(lastColor);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const helpfulDone = useRef<Set<string>>(new Set());
@@ -96,12 +115,14 @@ export function CommunityNotes({ person }: { person: Person }) {
         personId: person.id,
         author: author.trim() || "Anonymous",
         body: text,
+        color,
         passcode,
       });
       lastAuthor = author.trim();
+      lastColor = color;
       setNotes((prev) => [note, ...prev]);
       setBody("");
-      toast({ title: "Note posted", description: "Your community note is now visible to the family." });
+      toast({ title: "Sticky posted", description: "Your note is now pinned to this profile for the family." });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not post note");
     } finally {
@@ -126,7 +147,7 @@ export function CommunityNotes({ person }: { person: Person }) {
 
   async function remove(note: CommunityNote) {
     if (!passcode) return;
-    if (!window.confirm("Delete this community note?")) return;
+    if (!window.confirm("Delete this sticky note?")) return;
     const prev = notes;
     setNotes((cur) => cur.filter((n) => n.id !== note.id));
     try {
@@ -146,8 +167,8 @@ export function CommunityNotes({ person }: { person: Person }) {
       <CardContent className="p-4 sm:p-5">
         <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
           <h2 className="font-display text-base font-semibold flex items-center gap-1.5">
-            <MessageSquare className="h-4 w-4 text-primary" />
-            Community notes
+            <StickyNote className="h-4 w-4 text-primary" />
+            Sticky notes
             {notes.length > 0 && (
               <span className="text-xs font-normal text-muted-foreground tabular-nums">
                 ({notes.length})
@@ -156,8 +177,8 @@ export function CommunityNotes({ person }: { person: Person }) {
           </h2>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-          Shared family observations, corrections, memories, and source tips for this person.
-          Anyone can read them; contributing uses the family passphrase.
+          Pin a colorful note to this profile — observations, corrections, memories, or source
+          tips. Everyone can read the stickies; posting uses the family passphrase.
         </p>
 
         {loading ? (
@@ -166,25 +187,30 @@ export function CommunityNotes({ person }: { person: Person }) {
           </div>
         ) : enabled === false ? (
           <div className="rounded-md border border-card-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
-            Community notes are stored on the live site's server and aren't available on this
+            Sticky notes are stored on the live site's server and aren't available on this
             offline build.
           </div>
         ) : (
           <>
             {notes.length > 0 ? (
-              <ul className="space-y-3">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                 {notes.map((n) => (
                   <li
                     key={n.id}
-                    className="rounded-md border border-card-border bg-background px-3 py-2.5"
+                    className="rounded-[3px] p-3 text-neutral-900"
+                    style={{
+                      backgroundColor: n.color,
+                      transform: `rotate(${tilt(n.id)}deg)`,
+                      boxShadow: `0 1px 2px rgba(0,0,0,0.25), 0 6px 16px ${n.color}66`,
+                    }}
                     data-testid={`community-note-${n.id}`}
                   >
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-semibold">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-neutral-900 text-[10px] font-bold">
                         {initials(n.author)}
                       </span>
-                      <span className="text-xs font-medium text-foreground truncate">{n.author}</span>
-                      <span className="text-[10px] text-muted-foreground tabular-nums">
+                      <span className="text-xs font-semibold truncate">{n.author}</span>
+                      <span className="text-[10px] text-neutral-900/60 tabular-nums">
                         {timeAgo(n.created_at)}
                       </span>
                       {unlocked && (
@@ -192,26 +218,26 @@ export function CommunityNotes({ person }: { person: Person }) {
                           type="button"
                           onClick={() => remove(n)}
                           aria-label="Delete note"
-                          className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:text-destructive hover-elevate active-elevate-2 shrink-0"
+                          className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded text-neutral-900/55 hover:text-neutral-900 hover:bg-black/10 shrink-0"
                           data-testid={`community-note-delete-${n.id}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       )}
                     </div>
-                    <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line break-words">
+                    <p className="text-sm font-medium leading-relaxed whitespace-pre-line break-words">
                       {n.body}
                     </p>
-                    <div className="mt-2">
+                    <div className="mt-2.5">
                       <button
                         type="button"
                         onClick={() => helpful(n)}
                         disabled={helpfulDone.current.has(n.id)}
                         className={cn(
-                          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 min-h-8 text-[11px] hover-elevate active-elevate-2 disabled:opacity-60",
+                          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 min-h-9 text-[11px] font-medium disabled:opacity-70",
                           helpfulDone.current.has(n.id)
-                            ? "border-primary/40 bg-primary/10 text-primary"
-                            : "border-card-border text-muted-foreground",
+                            ? "bg-black/25 text-neutral-900"
+                            : "bg-black/10 text-neutral-900/80 hover:bg-black/20",
                         )}
                         data-testid={`community-note-helpful-${n.id}`}
                       >
@@ -224,7 +250,7 @@ export function CommunityNotes({ person }: { person: Person }) {
               </ul>
             ) : (
               <p className="text-sm text-muted-foreground py-1">
-                No community notes yet — be the first to add one.
+                No sticky notes yet — be the first to pin one.
               </p>
             )}
 
@@ -245,11 +271,42 @@ export function CommunityNotes({ person }: { person: Person }) {
                     onKeyDown={(e) => {
                       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
                     }}
-                    placeholder="Add a note, correction, memory, or source tip…"
+                    placeholder="Write a note, correction, memory, or source tip…"
                     rows={3}
                     className="text-sm resize-none"
                     data-testid="community-note-body"
                   />
+                  {/* Neon color picker — wraps so 5 swatches never overflow narrow phones */}
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                    <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      Color
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {NEON_COLORS.map((c) => {
+                        const active = color === c;
+                        return (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setColor(c)}
+                            aria-label={COLOR_LABELS[c] ?? c}
+                            aria-pressed={active}
+                            title={COLOR_LABELS[c] ?? c}
+                            className={cn(
+                              "relative h-9 w-9 rounded-full ring-offset-2 ring-offset-background transition-transform hover:scale-110 active:scale-95",
+                              active ? "ring-2 ring-foreground" : "ring-1 ring-black/10",
+                            )}
+                            style={{ backgroundColor: c }}
+                            data-testid={`community-note-color-${c.replace("#", "")}`}
+                          >
+                            {active && (
+                              <Check className="absolute inset-0 m-auto h-4 w-4 text-neutral-900" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                   {error && <p className="text-xs text-destructive break-words">{error}</p>}
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] text-muted-foreground">⌘/Ctrl + Enter to post</span>
@@ -266,7 +323,7 @@ export function CommunityNotes({ person }: { person: Person }) {
                         </>
                       ) : (
                         <>
-                          <Send className="h-3.5 w-3.5 mr-1.5" /> Post note
+                          <Send className="h-3.5 w-3.5 mr-1.5" /> Post sticky
                         </>
                       )}
                     </Button>
@@ -276,7 +333,7 @@ export function CommunityNotes({ person }: { person: Person }) {
                 <div className="flex items-start gap-2 text-xs text-muted-foreground">
                   <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                   <span>
-                    Unlock edit mode (the lock icon, top right) to contribute a community note.
+                    Unlock edit mode (the lock icon, top right) to pin a sticky note.
                   </span>
                 </div>
               )}
