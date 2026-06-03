@@ -78,6 +78,7 @@ const AFFILIATION_PRESETS: { key: string; name: string }[] = [
   { key: "westminster_college", name: "Westminster College" },
   { key: "southern_pacific", name: "Southern Pacific Railroad" },
   { key: "nys_public_service_commission", name: "NYS Public Service Commission" },
+  { key: "nys_courts", name: "New York Unified Court System" },
   { key: "us_house", name: "U.S. House of Representatives" },
   { key: "smom", name: "Sovereign Military Order of Malta" },
 ];

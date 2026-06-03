@@ -15,6 +15,7 @@ import usHouseSeal from "@/assets/affiliations/us_house_seal.svg";
 import manhattanCollegeSeal from "@/assets/affiliations/manhattan_college_seal.svg";
 import westminsterSeal from "@/assets/affiliations/westminster_seal.png";
 import manhattanvilleSeal from "@/assets/affiliations/manhattanville_seal.svg";
+import nyCourtsSeal from "@/assets/affiliations/nys_courts_seal.svg";
 
 const AFFILIATION_LOGOS: Record<string, string> = {
   harvard: harvardShield,
@@ -54,6 +55,15 @@ const AFFILIATION_LOGOS: Record<string, string> = {
   manhattanville: manhattanvilleSeal,
   manhattanville_college: manhattanvilleSeal,
   manhattanville_university: manhattanvilleSeal,
+  nys_courts: nyCourtsSeal,
+  ny_courts: nyCourtsSeal,
+  new_york_unified_court_system: nyCourtsSeal,
+  nys_unified_court_system: nyCourtsSeal,
+  ny_unified_court_system: nyCourtsSeal,
+  unified_court_system: nyCourtsSeal,
+  new_york_courts: nyCourtsSeal,
+  ny_judiciary: nyCourtsSeal,
+  nys_judiciary: nyCourtsSeal,
 };
 
 function logoFor(key: string): string | null {
