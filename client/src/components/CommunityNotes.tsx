@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Info, Loader2, Lock, Plus, Send, StickyNote, ThumbsUp, Trash2 } from "lucide-react";
+import { Check, Info, Loader2, Lock, Send, StickyNote, ThumbsUp, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { useEdit } from "@/components/EditContext";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import type { Person } from "@/lib/family";
+import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import {
   addCommunityNote,
   communityNotesStatus,
@@ -17,6 +18,7 @@ import {
   NEON_COLORS,
   type CommunityNote,
 } from "@/lib/communityNotes";
+import memoAnimation from "@/assets/lottie/memo.json";
 
 // Remember the contributor's name + last color across people for the session
 // (no storage — the deployed site runs in a sandbox that blocks it).
@@ -80,6 +82,14 @@ export function CommunityNotes({ person }: { person: Person }) {
   const [error, setError] = useState<string | null>(null);
   const helpfulDone = useRef<Set<string>>(new Set());
   const [, force] = useState(0);
+  const memoRef = useRef<LottieRefCurrentProps | null>(null);
+
+  // Replay the memo animation on each click, then toggle the composer.
+  function toggleComposer() {
+    memoRef.current?.stop();
+    memoRef.current?.play();
+    setComposerOpen((o) => !o);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -190,16 +200,28 @@ export function CommunityNotes({ person }: { person: Person }) {
             )}
           </h2>
           {!loading && (
-            <Button
-              size="sm"
-              variant={composerOpen ? "outline" : "default"}
-              onClick={() => setComposerOpen((o) => !o)}
-              className="min-h-9 gap-1.5"
+            <button
+              type="button"
+              onClick={toggleComposer}
+              aria-expanded={composerOpen}
+              className="group inline-flex items-center gap-1.5 rounded-md px-3 min-h-10 text-sm font-bold text-neutral-900 transition-transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              style={{
+                backgroundColor: "#FFF01F",
+                boxShadow:
+                  "0 1px 2px rgba(0,0,0,0.3), 0 6px 18px rgba(255,240,31,0.55), inset 0 0 0 1px rgba(0,0,0,0.08)",
+              }}
               data-testid="add-sticky-toggle"
             >
-              <Plus className={cn("h-3.5 w-3.5 transition-transform", composerOpen && "rotate-45")} />
+              <Lottie
+                lottieRef={memoRef}
+                animationData={memoAnimation}
+                loop={false}
+                autoplay={false}
+                className="h-6 w-6 shrink-0"
+                aria-hidden="true"
+              />
               {composerOpen ? "Close" : "Add a sticky"}
-            </Button>
+            </button>
           )}
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">
