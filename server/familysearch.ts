@@ -12,30 +12,62 @@
  *   FAMILYSEARCH_REDIRECT_URI   (must be registered with FamilySearch)
  *
  * Optional:
- *   FAMILYSEARCH_ENV            "production" (default) or "integration"
- *   FAMILYSEARCH_SCOPES         default "fhir"
+ *   FAMILYSEARCH_ENV            "production" (default), "beta", or "integration"
+ *   FAMILYSEARCH_SCOPES         OAuth scopes (optional; omitted when unset —
+ *                               "openid" requires a realm on your app key)
  *   FAMILYSEARCH_STATE_SECRET   HMAC key for state param (falls back to DATA_WRITE_PASSCODE)
+ *
+ * FamilySearch splits across three hosts, which we must NOT conflate:
+ *   - Identity / OAuth:  ident[beta|int].familysearch.org/cis-web/oauth2/v3/*
+ *   - Platform API:      api[beta|-integ].familysearch.org/platform/*
+ *   - Human web UI:      [www|beta|integration].familysearch.org (clickable links)
  */
 import crypto from "node:crypto";
 import { getSqlClient } from "./archive";
 
 // ---------------------------------------------------------------------------
-// FamilySearch API base URLs
+// FamilySearch base URLs (three distinct hosts — see header note)
 // ---------------------------------------------------------------------------
 
-function fsBase(): string {
-  const env = process.env.FAMILYSEARCH_ENV || "production";
-  return env === "integration"
-    ? "https://integration.familysearch.org"
-    : "https://www.familysearch.org";
+function fsEnv(): "production" | "beta" | "integration" {
+  const env = (process.env.FAMILYSEARCH_ENV || "production").toLowerCase();
+  return env === "beta" || env === "integration" ? env : "production";
+}
+
+/** Identity host for the OAuth2 authorize/token endpoints. */
+function identBase(): string {
+  switch (fsEnv()) {
+    case "beta": return "https://identbeta.familysearch.org";
+    case "integration": return "https://identint.familysearch.org";
+    default: return "https://ident.familysearch.org";
+  }
+}
+
+/** Platform API host (tree/records/users). */
+function apiBase(): string {
+  switch (fsEnv()) {
+    case "beta": return "https://apibeta.familysearch.org";
+    case "integration": return "https://api-integ.familysearch.org";
+    default: return "https://api.familysearch.org";
+  }
+}
+
+/** Human-facing web host for clickable person links. */
+function webBase(): string {
+  switch (fsEnv()) {
+    case "beta": return "https://beta.familysearch.org";
+    case "integration": return "https://integration.familysearch.org";
+    default: return "https://www.familysearch.org";
+  }
 }
 
 function tokenEndpoint(): string {
-  return `${fsBase()}/platform/oauth2/token`;
+  return `${identBase()}/cis-web/oauth2/v3/token`;
 }
 
-function authorizeEndpoint(): string {
-  return `${fsBase()}/platform/oauth2/authorize`;
+/** Authorize page URL (used by the connect-url route). */
+export function authorizeEndpoint(): string {
+  return `${identBase()}/cis-web/oauth2/v3/authorization`;
 }
 
 // ---------------------------------------------------------------------------
@@ -320,8 +352,7 @@ export async function deleteToken(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function fetchFsUser(accessToken: string): Promise<string> {
-  const base = fsBase();
-  const resp = await fetch(`${base}/platform/users/current`, {
+  const resp = await fetch(`${apiBase()}/platform/users/current`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/json",
@@ -423,14 +454,22 @@ export async function searchPersons(
     const params = new URLSearchParams();
     if (anchors.givenName) params.set("q.givenName", anchors.givenName);
     if (anchors.surname) params.set("q.surname", anchors.surname);
-    if (anchors.birthYear) params.set("q.birthLikeDate.years", String(anchors.birthYear));
+    // FamilySearch wants a date RANGE as q.<event>LikeDate.from/.to, each value
+    // prefixed with "+YYYY" (URLSearchParams encodes the + as %2B). A ±2-year
+    // window keeps the right person without dropping near-miss records.
+    if (anchors.birthYear) {
+      params.set("q.birthLikeDate.from", `+${anchors.birthYear - 2}`);
+      params.set("q.birthLikeDate.to", `+${anchors.birthYear + 2}`);
+    }
     if (anchors.birthPlace) params.set("q.birthLikePlace", anchors.birthPlace);
-    if (anchors.deathYear) params.set("q.deathLikeDate.years", String(anchors.deathYear));
+    if (anchors.deathYear) {
+      params.set("q.deathLikeDate.from", `+${anchors.deathYear - 2}`);
+      params.set("q.deathLikeDate.to", `+${anchors.deathYear + 2}`);
+    }
     if (anchors.deathPlace) params.set("q.deathLikePlace", anchors.deathPlace);
     params.set("count", String(Math.min(max, 20)));
 
-    const base = fsBase();
-    const url = `${base}/platform/tree/search?${params.toString()}`;
+    const url = `${apiBase()}/platform/tree/search?${params.toString()}`;
     const resp = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -453,7 +492,7 @@ export async function searchPersons(
       for (const p of persons as Array<Record<string, unknown>>) {
         const c = normalizeCandidate(
           { ...p, score: entry.score ?? 0 },
-          base,
+          webBase(),
         );
         if (c) candidates.push(c);
       }
@@ -476,8 +515,7 @@ export async function getPerson(fsId: string): Promise<FsCandidate | null> {
   if (!token) return null;
 
   try {
-    const base = fsBase();
-    const url = `${base}/platform/tree/persons/${encodeURIComponent(fsId)}`;
+    const url = `${apiBase()}/platform/tree/persons/${encodeURIComponent(fsId)}`;
     const resp = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -495,7 +533,7 @@ export async function getPerson(fsId: string): Promise<FsCandidate | null> {
     };
     const p = data.persons?.[0];
     if (!p) return null;
-    return normalizeCandidate(p, base);
+    return normalizeCandidate(p, webBase());
   } catch (e) {
     console.error("getPerson error:", e);
     return null;

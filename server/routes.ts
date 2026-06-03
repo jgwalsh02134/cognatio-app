@@ -24,6 +24,7 @@ import {
   getPerson as getFsPerson,
   generateState,
   verifyState,
+  authorizeEndpoint,
   type PersonAnchors,
 } from "./familysearch";
 
@@ -328,20 +329,18 @@ export async function registerRoutes(
       return res.status(401).json({ error: "Invalid or missing edit passphrase." });
     }
     const state = generateState();
-    const scopes = process.env.FAMILYSEARCH_SCOPES || "fhir";
     const params = new URLSearchParams({
       response_type: "code",
       client_id: process.env.FAMILYSEARCH_CLIENT_ID!,
       redirect_uri: process.env.FAMILYSEARCH_REDIRECT_URI!,
-      scope: scopes,
       state,
     });
-    const fsEnv = process.env.FAMILYSEARCH_ENV || "production";
-    const base =
-      fsEnv === "integration"
-        ? "https://integration.familysearch.org"
-        : "https://www.familysearch.org";
-    const url = `${base}/platform/oauth2/authorize?${params.toString()}`;
+    // Scope is optional; only send it when explicitly configured. ("openid"
+    // and identity scopes require a realm on your FamilySearch app key, so we
+    // never default one — sending an unconfigured scope breaks the redirect.)
+    const scopes = process.env.FAMILYSEARCH_SCOPES?.trim();
+    if (scopes) params.set("scope", scopes);
+    const url = `${authorizeEndpoint()}?${params.toString()}`;
     res.json({ url });
   });
 
