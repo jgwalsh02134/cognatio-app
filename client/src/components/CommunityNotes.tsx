@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Loader2, Lock, Send, StickyNote, ThumbsUp, Trash2 } from "lucide-react";
+import { Check, Info, Loader2, Lock, Plus, Send, StickyNote, ThumbsUp, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +75,7 @@ export function CommunityNotes({ person }: { person: Person }) {
   const [author, setAuthor] = useState(lastAuthor);
   const [body, setBody] = useState("");
   const [color, setColor] = useState<string>(lastColor);
+  const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const helpfulDone = useRef<Set<string>>(new Set());
@@ -104,8 +105,12 @@ export function CommunityNotes({ person }: { person: Person }) {
   async function submit() {
     const text = body.trim();
     if (!text || submitting) return;
+    if (enabled === false) {
+      setError("Sticky notes need the live site's database — not available on this offline build.");
+      return;
+    }
     if (!passcode) {
-      setError("Unlock edit mode (lock icon, top right) to contribute.");
+      setError("Unlock edit mode (the lock icon, top right) to post.");
       return;
     }
     setSubmitting(true);
@@ -162,6 +167,15 @@ export function CommunityNotes({ person }: { person: Person }) {
     }
   }
 
+  // Whether a post can actually go through, and why not.
+  const canPost = enabled === true && !!passcode;
+  const postBlockedReason =
+    enabled === false
+      ? "Sticky notes save to the live site's database — they aren't available on this local/offline build."
+      : !passcode
+        ? "Unlock edit mode (the lock icon at the top right) to post — then pick a color and pin your note."
+        : null;
+
   return (
     <Card className="border-card-border">
       <CardContent className="p-4 sm:p-5">
@@ -175,170 +189,187 @@ export function CommunityNotes({ person }: { person: Person }) {
               </span>
             )}
           </h2>
+          {!loading && (
+            <Button
+              size="sm"
+              variant={composerOpen ? "outline" : "default"}
+              onClick={() => setComposerOpen((o) => !o)}
+              className="min-h-9 gap-1.5"
+              data-testid="add-sticky-toggle"
+            >
+              <Plus className={cn("h-3.5 w-3.5 transition-transform", composerOpen && "rotate-45")} />
+              {composerOpen ? "Close" : "Add a sticky"}
+            </Button>
+          )}
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">
           Pin a colorful note to this profile — observations, corrections, memories, or source
           tips. Everyone can read the stickies; posting uses the family passphrase.
         </p>
 
+        {/* Composer — opens in any state and always says what's needed to post. */}
+        {composerOpen && (
+          <div className="mb-5 rounded-md border border-card-border bg-muted/30 p-3 space-y-2">
+            <Input
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Your name (optional)"
+              className="h-9"
+              data-testid="community-note-author"
+            />
+            <Textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              onKeyDown={(e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
+              }}
+              placeholder="Write a note, correction, memory, or source tip…"
+              rows={3}
+              className="text-sm resize-none"
+              data-testid="community-note-body"
+            />
+            {/* Neon color picker — wraps so 5 swatches never overflow narrow phones */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                Color
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {NEON_COLORS.map((c) => {
+                  const active = color === c;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setColor(c)}
+                      aria-label={COLOR_LABELS[c] ?? c}
+                      aria-pressed={active}
+                      title={COLOR_LABELS[c] ?? c}
+                      className={cn(
+                        "relative h-9 w-9 rounded-full ring-offset-2 ring-offset-background transition-transform hover:scale-110 active:scale-95",
+                        active ? "ring-2 ring-foreground" : "ring-1 ring-black/10",
+                      )}
+                      style={{ backgroundColor: c }}
+                      data-testid={`community-note-color-${c.replace("#", "")}`}
+                    >
+                      {active && (
+                        <Check className="absolute inset-0 m-auto h-4 w-4 text-neutral-900" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            {error && <p className="text-xs text-destructive break-words">{error}</p>}
+            {postBlockedReason && (
+              <div className="flex items-start gap-2 rounded-md bg-background/70 px-2.5 py-2 text-[11px] text-muted-foreground">
+                {enabled === false ? (
+                  <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                ) : (
+                  <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                )}
+                <span>{postBlockedReason}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] text-muted-foreground">
+                {canPost ? "⌘/Ctrl + Enter to post" : ""}
+              </span>
+              <Button
+                size="sm"
+                onClick={submit}
+                disabled={submitting || !body.trim() || !canPost}
+                data-testid="community-note-submit"
+                className="min-h-9"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Posting…
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-3.5 w-3.5 mr-1.5" /> Post sticky
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
         {loading ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
             <Loader2 className="h-4 w-4 animate-spin" /> Loading notes…
           </div>
         ) : enabled === false ? (
-          <div className="rounded-md border border-card-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
-            Sticky notes are stored on the live site's server and aren't available on this
-            offline build.
-          </div>
-        ) : (
-          <>
-            {notes.length > 0 ? (
-              <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                {notes.map((n) => (
-                  <li
-                    key={n.id}
-                    className="rounded-[3px] p-3 text-neutral-900"
-                    style={{
-                      backgroundColor: n.color,
-                      transform: `rotate(${tilt(n.id)}deg)`,
-                      boxShadow: `0 1px 2px rgba(0,0,0,0.25), 0 6px 16px ${n.color}66`,
-                    }}
-                    data-testid={`community-note-${n.id}`}
-                  >
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-neutral-900 text-[10px] font-bold">
-                        {initials(n.author)}
-                      </span>
-                      <span className="text-xs font-semibold truncate">{n.author}</span>
-                      <span className="text-[10px] text-neutral-900/60 tabular-nums">
-                        {timeAgo(n.created_at)}
-                      </span>
-                      {unlocked && (
-                        <button
-                          type="button"
-                          onClick={() => remove(n)}
-                          aria-label="Delete note"
-                          className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded text-neutral-900/55 hover:text-neutral-900 hover:bg-black/10 shrink-0"
-                          data-testid={`community-note-delete-${n.id}`}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <p className="text-sm font-medium leading-relaxed whitespace-pre-line break-words">
-                      {n.body}
-                    </p>
-                    <div className="mt-2.5">
-                      <button
-                        type="button"
-                        onClick={() => helpful(n)}
-                        disabled={helpfulDone.current.has(n.id)}
-                        className={cn(
-                          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 min-h-9 text-[11px] font-medium disabled:opacity-70",
-                          helpfulDone.current.has(n.id)
-                            ? "bg-black/25 text-neutral-900"
-                            : "bg-black/10 text-neutral-900/80 hover:bg-black/20",
-                        )}
-                        data-testid={`community-note-helpful-${n.id}`}
-                      >
-                        <ThumbsUp className="h-3 w-3" />
-                        Helpful{n.helpful > 0 ? ` · ${n.helpful}` : ""}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground py-1">
-                No sticky notes yet — be the first to pin one.
-              </p>
-            )}
-
-            {/* Contribute */}
-            <div className="mt-4 pt-4 border-t border-border/60">
-              {unlocked ? (
-                <div className="space-y-2">
-                  <Input
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    placeholder="Your name (optional)"
-                    className="h-9"
-                    data-testid="community-note-author"
-                  />
-                  <Textarea
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    onKeyDown={(e) => {
-                      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
-                    }}
-                    placeholder="Write a note, correction, memory, or source tip…"
-                    rows={3}
-                    className="text-sm resize-none"
-                    data-testid="community-note-body"
-                  />
-                  {/* Neon color picker — wraps so 5 swatches never overflow narrow phones */}
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                    <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                      Color
-                    </span>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {NEON_COLORS.map((c) => {
-                        const active = color === c;
-                        return (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => setColor(c)}
-                            aria-label={COLOR_LABELS[c] ?? c}
-                            aria-pressed={active}
-                            title={COLOR_LABELS[c] ?? c}
-                            className={cn(
-                              "relative h-9 w-9 rounded-full ring-offset-2 ring-offset-background transition-transform hover:scale-110 active:scale-95",
-                              active ? "ring-2 ring-foreground" : "ring-1 ring-black/10",
-                            )}
-                            style={{ backgroundColor: c }}
-                            data-testid={`community-note-color-${c.replace("#", "")}`}
-                          >
-                            {active && (
-                              <Check className="absolute inset-0 m-auto h-4 w-4 text-neutral-900" />
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {error && <p className="text-xs text-destructive break-words">{error}</p>}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] text-muted-foreground">⌘/Ctrl + Enter to post</span>
-                    <Button
-                      size="sm"
-                      onClick={submit}
-                      disabled={submitting || !body.trim()}
-                      data-testid="community-note-submit"
-                      className="min-h-9"
-                    >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Posting…
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-3.5 w-3.5 mr-1.5" /> Post sticky
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                  <span>
-                    Unlock edit mode (the lock icon, top right) to pin a sticky note.
-                  </span>
-                </div>
-              )}
+          !composerOpen && (
+            <div className="rounded-md border border-card-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+              Sticky notes are stored on the live site's server and aren't available on this
+              offline build. Tap <span className="font-medium text-foreground">Add a sticky</span>{" "}
+              to see how it works.
             </div>
-          </>
+          )
+        ) : notes.length > 0 ? (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            {notes.map((n) => (
+              <li
+                key={n.id}
+                className="rounded-[3px] p-3 text-neutral-900"
+                style={{
+                  backgroundColor: n.color,
+                  transform: `rotate(${tilt(n.id)}deg)`,
+                  boxShadow: `0 1px 2px rgba(0,0,0,0.25), 0 6px 16px ${n.color}66`,
+                }}
+                data-testid={`community-note-${n.id}`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/15 text-neutral-900 text-[10px] font-bold">
+                    {initials(n.author)}
+                  </span>
+                  <span className="text-xs font-semibold truncate">{n.author}</span>
+                  <span className="text-[10px] text-neutral-900/60 tabular-nums">
+                    {timeAgo(n.created_at)}
+                  </span>
+                  {unlocked && (
+                    <button
+                      type="button"
+                      onClick={() => remove(n)}
+                      aria-label="Delete note"
+                      className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded text-neutral-900/55 hover:text-neutral-900 hover:bg-black/10 shrink-0"
+                      data-testid={`community-note-delete-${n.id}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                <p className="text-sm font-medium leading-relaxed whitespace-pre-line break-words">
+                  {n.body}
+                </p>
+                <div className="mt-2.5">
+                  <button
+                    type="button"
+                    onClick={() => helpful(n)}
+                    disabled={helpfulDone.current.has(n.id)}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 min-h-9 text-[11px] font-medium disabled:opacity-70",
+                      helpfulDone.current.has(n.id)
+                        ? "bg-black/25 text-neutral-900"
+                        : "bg-black/10 text-neutral-900/80 hover:bg-black/20",
+                    )}
+                    data-testid={`community-note-helpful-${n.id}`}
+                  >
+                    <ThumbsUp className="h-3 w-3" />
+                    Helpful{n.helpful > 0 ? ` · ${n.helpful}` : ""}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !composerOpen && (
+            <p className="text-sm text-muted-foreground py-1">
+              No sticky notes yet — tap{" "}
+              <span className="font-medium text-foreground">Add a sticky</span> to pin the first one.
+            </p>
+          )
         )}
       </CardContent>
     </Card>
