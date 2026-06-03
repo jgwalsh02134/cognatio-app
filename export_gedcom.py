@@ -300,7 +300,9 @@ def main():
         data = json.loads(Path(cfg["data"]).read_text(encoding="utf-8"))
         text = build_gedcom(data, cfg["name"], cfg["sour"])
         out = Path(args.out) if (args.out and len(targets) == 1) else Path(cfg["out"])
-        out.write_text(text, encoding="utf-8", newline="")
+        # Write bytes directly so the CRLF line endings in `text` are preserved
+        # verbatim (Path.write_text's `newline=` kwarg needs Python 3.10+).
+        out.write_bytes(text.encode("utf-8"))
         size = out.stat().st_size
         print(
             f"{key}: wrote {out} — {len(data['individuals'])} individuals, "
