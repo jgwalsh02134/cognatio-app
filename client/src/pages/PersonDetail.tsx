@@ -1425,7 +1425,7 @@ function PedigreeColumns({ root }: { root: PedigreeNode }) {
                   {filled} of {col.length}
                 </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 [&>*]:min-w-0">
                 {col.map((node, ni) => (
                   <PedigreeCell key={`${ci}-${ni}`} node={node} />
                 ))}

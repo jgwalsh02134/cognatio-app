@@ -210,9 +210,9 @@ function FeatureCard({
     <Link
       href={href}
       data-testid={testId}
-      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 hover-elevate active-elevate-2"
+      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 hover-elevate active-elevate-2 min-w-0"
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 min-w-0">
         <div
           className={cn(
             "inline-flex h-9 w-9 items-center justify-center rounded-md",
@@ -639,12 +639,12 @@ export default function Home() {
     <div className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-10">
       {/* ───────── Hero ───────── */}
       <section className="pb-8 sm:pb-10 border-b">
-        <div className="flex items-center gap-3 mb-3 sm:mb-4">
-          <span className="font-display text-sm font-semibold tracking-tight text-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 sm:mb-4">
+          <span className="font-display text-sm font-semibold tracking-tight text-foreground shrink-0">
             Cognatio
           </span>
-          <span className="h-3 w-px bg-border" aria-hidden="true" />
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-primary">
+          <span className="h-3 w-px bg-border shrink-0" aria-hidden="true" />
+          <span className="min-w-0 break-words text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-primary">
             Walsh · Maloy · Cranwell · Dugan Family Archive
           </span>
         </div>
@@ -657,10 +657,10 @@ export default function Home() {
         </p>
 
         {/* Search + primary CTAs — unified row at h-10 */}
-        <div className="mt-5 sm:mt-6 flex flex-col gap-3 md:flex-row md:items-center md:flex-wrap">
+        <div className="mt-5 sm:mt-6 flex flex-col gap-3 md:flex-row md:items-center md:flex-wrap min-w-0">
           <form
             onSubmit={handleSearch}
-            className="flex h-10 items-center gap-2 rounded-md border border-border bg-card pl-3 pr-1 focus-within:ring-2 focus-within:ring-primary/30 md:flex-1 md:min-w-[260px]"
+            className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md border border-border bg-card pl-3 pr-1 focus-within:ring-2 focus-within:ring-primary/30 md:flex-1 md:min-w-[260px]"
           >
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <input
@@ -673,7 +673,7 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="inline-flex h-8 items-center rounded-md bg-primary text-primary-foreground text-xs font-medium px-3 hover-elevate active-elevate-2"
+              className="inline-flex h-8 shrink-0 items-center rounded-md bg-primary text-primary-foreground text-xs font-medium px-3 hover-elevate active-elevate-2"
               data-testid="home-search-submit"
             >
               Search

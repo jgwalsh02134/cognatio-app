@@ -95,7 +95,7 @@ export default function Anomalies() {
       {/* Filter bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-3 mt-1 mb-5">
         <div
-          className="flex min-w-0 flex-1 gap-1 overflow-x-auto scrollbar-none -mx-1.5 px-1.5 snap-x"
+          className="flex min-w-0 flex-1 gap-1 overflow-x-auto scrollbar-none snap-x"
           role="tablist"
         >
           {(["all", "high", "medium", "low"] as SeverityFilter[]).map((s) => {
@@ -127,11 +127,11 @@ export default function Anomalies() {
             );
           })}
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto md:ml-auto md:shrink-0">
           <select
             value={kindFilter}
             onChange={(e) => setKindFilter(e.target.value as AnomalyKind | "all")}
-            className="rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5 text-xs min-h-10 w-full md:w-auto max-w-[12rem]"
+            className="rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5 text-xs min-h-10 w-full sm:w-auto max-w-full sm:max-w-[12rem] min-w-0"
             data-testid="anomaly-kind"
           >
             <option value="all">All issue types</option>

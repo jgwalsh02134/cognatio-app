@@ -210,6 +210,10 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
+    /* Belt-and-suspenders against horizontal overflow on phones. `clip` (not
+       `hidden`) avoids creating a scroll container, so the sticky header keeps
+       working. */
+    overflow-x: clip;
   }
 
   /* The app uses custom hover-elevate/active-elevate states, so suppress the

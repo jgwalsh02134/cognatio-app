@@ -54,7 +54,7 @@ export function PageHero({
           <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             {eyebrow}
           </div>
-          <h1 className="mt-1 font-display font-semibold text-3xl sm:text-4xl leading-[1.1] tracking-tight">
+          <h1 className="mt-1 font-display font-semibold text-3xl sm:text-4xl leading-[1.1] tracking-tight break-words">
             {title}
           </h1>
           <p className="mt-3 max-w-2xl text-sm sm:text-[15px] text-muted-foreground leading-relaxed">
