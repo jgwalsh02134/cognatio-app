@@ -293,6 +293,81 @@ military badges, honor roll), so it's the best one-file overview of the system.
 
 ---
 
+## FamilySearch OAuth2 Integration
+
+The app supports a server-side FamilySearch integration that fetches matching
+genealogy records and grounds AI research in verified data. Tokens are stored
+exclusively in Postgres — they never reach the browser.
+
+### Registering the app with FamilySearch
+
+1. Go to <https://www.familysearch.org/developers/> and sign in.
+2. Create a new app (or use an existing one). Choose **Web App** as the app type.
+3. Under **Redirect URIs**, add your exact callback URL:
+   `https://your-domain.com/api/familysearch/callback`
+   (For local dev: `http://localhost:5000/api/familysearch/callback`)
+4. Note the **Client ID** and **Client Secret** from the app settings page.
+5. Set the environment variables (see `.env.example`):
+   ```
+   FAMILYSEARCH_CLIENT_ID=your-client-id
+   FAMILYSEARCH_CLIENT_SECRET=your-client-secret
+   FAMILYSEARCH_REDIRECT_URI=https://your-domain.com/api/familysearch/callback
+   FAMILYSEARCH_STATE_SECRET=some-long-random-string
+   ```
+6. For the FamilySearch sandbox (integration environment), also set:
+   `FAMILYSEARCH_ENV=integration`
+   and register the redirect URI in the integration app separately.
+
+### Connect / disconnect flow
+
+1. A family editor unlocks edit mode (lock icon, top right).
+2. On any person's profile page, scroll to **Matching records (FamilySearch)**.
+3. Click **Connect FamilySearch** — a popup opens to the FamilySearch authorize page.
+4. The user signs in to FamilySearch and grants access.
+5. FamilySearch redirects to `/api/familysearch/callback`, which exchanges the
+   code for tokens, stores them in Postgres, and shows a "connected" confirmation
+   page. The popup can then be closed.
+6. The client polls `/api/familysearch/status` every 2 seconds until
+   `connected: true` is returned, then updates the UI automatically.
+7. To disconnect, click **Disconnect** (edit mode required). This deletes the
+   token row from Postgres.
+
+### Token storage
+
+- Tokens live in the `familysearch_tokens` table (auto-created on first use).
+- Only one row exists (`id = 'linked'`) — this is a shared family account, not
+  per-user. All editors share the same FamilySearch connection.
+- The access token is refreshed automatically when it is within 5 minutes of
+  expiry. The rotated refresh token is persisted back to Postgres.
+- Tokens are **never** sent to the browser or logged.
+
+### Shared-account caveat
+
+Because the app has no per-user accounts, the FamilySearch connection is shared
+across all family editors. Whoever connects last wins. This is intentional —
+the app is designed for a small, trusted family group. If you need per-user
+isolation, you would need to add user accounts first.
+
+### Security notes
+
+- The OAuth `state` parameter is HMAC-signed (SHA-256, keyed with
+  `FAMILYSEARCH_STATE_SECRET`), includes an expiry timestamp, and is single-use
+  (nonces are tracked in memory). This prevents CSRF on the callback endpoint.
+- The redirect URI must be an exact match of what is registered with FamilySearch.
+- All token-modifying endpoints (`/connect-url`, `/disconnect`) require the
+  family edit passphrase (`x-edit-passcode` header).
+- Rate limiting applies to `/connect-url`, `/callback`, and `/search`.
+
+### AI research grounding
+
+When FamilySearch is connected and a person profile is open, the **Find missing
+info** AI research button will automatically fetch FamilySearch candidates first
+and inject them into the model's prompt under `FAMILYSEARCH RECORDS (verified
+via API)`. The model is instructed to cite these URLs directly and extract
+birth/death data from them before falling back to web search.
+
+---
+
 ## AI Research Assistant (OpenAI, local-only)
 
 This project includes `analyze_archive.py` — a local CLI that uses your

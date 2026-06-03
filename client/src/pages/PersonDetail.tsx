@@ -43,6 +43,7 @@ import {
   Home,
   Info,
   Link2,
+  Loader2,
   MapPin,
   Plus,
   Printer,
@@ -57,8 +58,21 @@ import {
   ExternalLink,
   ListChecks,
   Check,
+  Unlink,
+  Database,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  familySearchStatus,
+  connectFamilySearch,
+  disconnectFamilySearch,
+  searchFamilySearch,
+  type FamilySearchStatus,
+  type FsCandidate,
+} from "@/lib/familysearch";
+import { buildFindingsPatch } from "@/components/WebFindingsCard";
+import type { WebFinding } from "@/components/WebFindingsCard";
+import { useToast } from "@/hooks/use-toast";
 
 const SEX_OPTIONS: { value: string; label: string }[] = [
   { value: "M", label: "Male" },
@@ -134,6 +148,7 @@ export default function PersonDetail() {
   if (sources.length > 0 || unlocked)
     jumpTargets.push({ id: "section-sources", label: "Sources", icon: <BookOpen className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-community", label: "Community", icon: <MessageSquare className="h-3.5 w-3.5" /> });
+  jumpTargets.push({ id: "section-familysearch", label: "FS Records", icon: <Database className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-research", label: "Research", icon: <Compass className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-pedigree", label: "Ancestors", icon: <GitBranch className="h-3.5 w-3.5" /> });
   if (person.family_spouse_ids.length > 0)
@@ -370,6 +385,9 @@ export default function PersonDetail() {
           </section>
           <section id="section-community" className="scroll-mt-24">
             <CommunityNotes person={person} />
+          </section>
+          <section id="section-familysearch" className="scroll-mt-24">
+            <FamilySearchRecords person={person} />
           </section>
           <section id="section-research" className="scroll-mt-24">
             <ResearchCard person={person} />
@@ -1377,6 +1395,290 @@ function ResearchCard({ person }: { person: Person }) {
               ))}
             </ul>
           </section>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// FamilySearch matching records panel
+// ---------------------------------------------------------------------------
+
+function FamilySearchRecords({
+  person,
+}: {
+  person: Person;
+}) {
+  const { unlocked, passcode, setPatch, pending } = useEdit();
+  const { toast } = useToast();
+
+  const [status, setStatus] = useState<FamilySearchStatus | null>(null);
+  const [candidates, setCandidates] = useState<FsCandidate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load status on mount and when person changes.
+  useEffect(() => {
+    let cancelled = false;
+    const ctrl = new AbortController();
+    setLoading(true);
+    setError(null);
+    familySearchStatus(ctrl.signal).then((s) => {
+      if (!cancelled) {
+        setStatus(s);
+        setLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+      ctrl.abort();
+    };
+  }, [person.id]);
+
+  async function handleConnect() {
+    if (!passcode) {
+      setError("Unlock edit mode (lock icon, top right) to connect FamilySearch.");
+      return;
+    }
+    setConnecting(true);
+    setError(null);
+    try {
+      const s = await connectFamilySearch(passcode, (interim) => setStatus(interim));
+      setStatus(s);
+      toast({ title: "FamilySearch connected", description: `Linked as ${s.fsUser ?? "FamilySearch user"}.` });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Connection failed");
+    } finally {
+      setConnecting(false);
+    }
+  }
+
+  async function handleDisconnect() {
+    if (!passcode) return;
+    if (!window.confirm("Disconnect FamilySearch? The stored tokens will be deleted.")) return;
+    try {
+      await disconnectFamilySearch(passcode);
+      setStatus((prev) => prev ? { ...prev, connected: false, fsUser: undefined } : { enabled: true, connected: false });
+      setCandidates([]);
+      toast({ title: "FamilySearch disconnected" });
+    } catch (e) {
+      toast({ title: "Disconnect failed", description: e instanceof Error ? e.message : undefined, variant: "destructive" });
+    }
+  }
+
+  async function handleSearch() {
+    if (!passcode || !status?.connected) return;
+    setSearching(true);
+    setError(null);
+    try {
+      // Build anchors from the person record.
+      const byMatch = (person.birth?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+      const dyMatch = (person.death?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+      const anchors = {
+        givenName: person.given ?? undefined,
+        surname: person.surname ?? undefined,
+        birthYear: byMatch ? parseInt(byMatch[0], 10) : undefined,
+        birthPlace: person.birth?.place ?? undefined,
+        deathYear: dyMatch ? parseInt(dyMatch[0], 10) : undefined,
+        deathPlace: person.death?.place ?? undefined,
+      };
+      const result = await searchFamilySearch(anchors, passcode);
+      if (!result.connected) {
+        setStatus((prev) => prev ? { ...prev, connected: false } : { enabled: true, connected: false });
+        setCandidates([]);
+      } else {
+        setCandidates(result.candidates);
+        if (result.candidates.length === 0) {
+          toast({ title: "No matches found", description: "FamilySearch returned no matching records for this person." });
+        }
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Search failed");
+    } finally {
+      setSearching(false);
+    }
+  }
+
+  function applyCandidate(c: FsCandidate) {
+    const finds: WebFinding[] = [];
+    if (c.birth?.date && !person.birth?.date) {
+      finds.push({ field: "birth_date", suggested_value: c.birth.date, confidence: "high", reasoning: "From FamilySearch record", source_title: `FamilySearch — ${c.name}`, source_url: c.url });
+    }
+    if (c.birth?.place && !person.birth?.place) {
+      finds.push({ field: "birth_place", suggested_value: c.birth.place, confidence: "high", reasoning: "From FamilySearch record", source_title: `FamilySearch — ${c.name}`, source_url: c.url });
+    }
+    if (c.death?.date && !person.death?.date) {
+      finds.push({ field: "death_date", suggested_value: c.death.date, confidence: "high", reasoning: "From FamilySearch record", source_title: `FamilySearch — ${c.name}`, source_url: c.url });
+    }
+    if (c.death?.place && !person.death?.place) {
+      finds.push({ field: "death_place", suggested_value: c.death.place, confidence: "high", reasoning: "From FamilySearch record", source_title: `FamilySearch — ${c.name}`, source_url: c.url });
+    }
+    if (finds.length === 0) {
+      toast({ title: "Nothing new to apply", description: "All available fields are already filled in." });
+      return;
+    }
+    const base = pending[person.id] || {};
+    setPatch(person.id, buildFindingsPatch(person, base, finds));
+    toast({ title: "Fields staged", description: `${finds.length} field${finds.length > 1 ? "s" : ""} from FamilySearch staged for review.` });
+  }
+
+  return (
+    <Card className="border-card-border">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <h2 className="font-display text-base font-semibold flex items-center gap-1.5">
+            <Database className="h-4 w-4 text-primary" />
+            Matching records (FamilySearch)
+          </h2>
+          {status?.connected && (
+            <div className="flex items-center gap-2">
+              {status.fsUser && (
+                <span className="text-[10px] text-muted-foreground truncate max-w-[12rem]">
+                  {status.fsUser}
+                </span>
+              )}
+              {unlocked && (
+                <button
+                  type="button"
+                  onClick={handleDisconnect}
+                  className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-xs text-muted-foreground hover:text-destructive hover-elevate active-elevate-2"
+                  data-testid="fs-disconnect"
+                >
+                  <Unlink className="h-3 w-3" /> Disconnect
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          </div>
+        ) : status?.enabled === false ? (
+          <div className="rounded-md border border-card-border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
+            FamilySearch integration is not configured on this server. Set{" "}
+            <code className="font-mono">FAMILYSEARCH_CLIENT_ID</code>,{" "}
+            <code className="font-mono">FAMILYSEARCH_CLIENT_SECRET</code>, and{" "}
+            <code className="font-mono">FAMILYSEARCH_REDIRECT_URI</code> to enable it.
+          </div>
+        ) : !status?.connected ? (
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Connect a FamilySearch account to search for matching records and pull verified
+              birth/death dates and places directly into the archive.
+            </p>
+            {error && (
+              <p className="text-xs text-destructive break-words" data-testid="fs-error">{error}</p>
+            )}
+            {unlocked ? (
+              <button
+                type="button"
+                onClick={handleConnect}
+                disabled={connecting}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 min-h-9 text-xs font-medium text-primary-foreground hover-elevate active-elevate-2 disabled:opacity-60"
+                data-testid="fs-connect"
+              >
+                {connecting ? (
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Connecting…</>
+                ) : (
+                  <><Database className="h-3.5 w-3.5" /> Connect FamilySearch</>
+                )}
+              </button>
+            ) : (
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                <span>Unlock edit mode (the lock icon, top right) to connect FamilySearch.</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={handleSearch}
+                disabled={searching}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 min-h-9 text-xs font-medium text-primary-foreground hover-elevate active-elevate-2 disabled:opacity-60"
+                data-testid="fs-search"
+              >
+                {searching ? (
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Searching…</>
+                ) : (
+                  <><Database className="h-3.5 w-3.5" /> Search FamilySearch</>
+                )}
+              </button>
+              {candidates.length > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  {candidates.length} match{candidates.length > 1 ? "es" : ""} found
+                </span>
+              )}
+            </div>
+
+            {error && (
+              <p className="text-xs text-destructive break-words" data-testid="fs-error">{error}</p>
+            )}
+
+            {candidates.length > 0 && (
+              <ul className="space-y-2">
+                {candidates.map((c) => (
+                  <li
+                    key={c.fsId}
+                    className="rounded-md border border-card-border bg-background px-3 py-2.5 text-xs"
+                    data-testid={`fs-candidate-${c.fsId}`}
+                  >
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-foreground break-words">{c.name}</div>
+                        <div className="text-muted-foreground mt-0.5 space-y-0.5">
+                          {(c.birth?.date || c.birth?.place) && (
+                            <div>
+                              Born: {c.birth?.date ?? "?"}{c.birth?.place ? ` · ${c.birth.place}` : ""}
+                            </div>
+                          )}
+                          {(c.death?.date || c.death?.place) && (
+                            <div>
+                              Died: {c.death?.date ?? "?"}{c.death?.place ? ` · ${c.death.place}` : ""}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                        <a
+                          href={c.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                          data-testid={`fs-candidate-link-${c.fsId}`}
+                        >
+                          <ExternalLink className="h-3 w-3" /> View
+                        </a>
+                        {unlocked && (
+                          <button
+                            type="button"
+                            onClick={() => applyCandidate(c)}
+                            className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-[11px] text-primary hover-elevate active-elevate-2"
+                            data-testid={`fs-candidate-apply-${c.fsId}`}
+                          >
+                            <Check className="h-3 w-3" /> Apply
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {!searching && candidates.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                Click "Search FamilySearch" to find matching records for this person.
+              </p>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>

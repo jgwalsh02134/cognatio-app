@@ -14,6 +14,19 @@ import {
   listNotes,
   markHelpful,
 } from "./community";
+import {
+  familySearchEnabled,
+  isConnected,
+  getFsUser,
+  exchangeCodeForToken,
+  deleteToken,
+  searchPersons,
+  getPerson as getFsPerson,
+  generateState,
+  verifyState,
+  authorizeEndpoint,
+  type PersonAnchors,
+} from "./familysearch";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
 // so this becomes `<root>/client/src/data.json`. The endpoint only writes when
@@ -288,6 +301,176 @@ export async function registerRoutes(
       res.json({ ok: true });
     } catch (e) {
       res.status(500).json({ error: e instanceof Error ? e.message : "Failed" });
+    }
+  });
+
+  // ----- FamilySearch OAuth2 integration --------------------------------
+
+  app.use("/api/familysearch", express.json({ limit: "64kb" }));
+
+  // Whether FamilySearch integration is configured and connected.
+  app.get("/api/familysearch/status", async (_req: Request, res: Response) => {
+    const enabled = familySearchEnabled();
+    const connected = enabled ? await isConnected() : false;
+    const fsUser = connected ? await getFsUser() : undefined;
+    res.json({ enabled, connected, ...(fsUser ? { fsUser } : {}) });
+  });
+
+  // Generate a signed OAuth authorize URL. Gated by edit passphrase.
+  app.post("/api/familysearch/connect-url", async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing edit passphrase." });
+    }
+    const state = generateState();
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: process.env.FAMILYSEARCH_CLIENT_ID!,
+      redirect_uri: process.env.FAMILYSEARCH_REDIRECT_URI!,
+      state,
+    });
+    // Scope is optional; only send it when explicitly configured. ("openid"
+    // and identity scopes require a realm on your FamilySearch app key, so we
+    // never default one — sending an unconfigured scope breaks the redirect.)
+    const scopes = process.env.FAMILYSEARCH_SCOPES?.trim();
+    if (scopes) params.set("scope", scopes);
+    const url = `${authorizeEndpoint()}?${params.toString()}`;
+    res.json({ url });
+  });
+
+  // OAuth callback — exchanges code for tokens, then shows a self-contained
+  // HTML page the popup can display (no app bundle, no cookies).
+  app.get("/api/familysearch/callback", async (req: Request, res: Response) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).send("<html><body>Too many requests. Close this window and try again.</body></html>");
+    }
+
+    const code = String(req.query.code || "");
+    const state = String(req.query.state || "");
+    const error = String(req.query.error || "");
+
+    if (error) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>FamilySearch authorization failed</h2>` +
+        `<p>${error}: ${String(req.query.error_description || "")}</p>` +
+        `<p>You can close this window.</p></body></html>`,
+      );
+    }
+
+    if (!code || !state) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Missing parameters</h2><p>You can close this window.</p></body></html>`,
+      );
+    }
+
+    const stateCheck = verifyState(state);
+    if (!stateCheck.ok) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Invalid state parameter</h2>` +
+        `<p>${stateCheck.error ?? "CSRF check failed."}</p>` +
+        `<p>You can close this window and try again.</p></body></html>`,
+      );
+    }
+
+    try {
+      await exchangeCodeForToken(code);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      return res.status(500).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Token exchange failed</h2><p>${msg}</p>` +
+        `<p>You can close this window and try again.</p></body></html>`,
+      );
+    }
+
+    res.send(
+      `<!DOCTYPE html>` +
+      `<html lang="en"><head><meta charset="utf-8">` +
+      `<title>FamilySearch connected</title>` +
+      `<style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;` +
+      `justify-content:center;min-height:100vh;margin:0;background:#f8fafc}` +
+      `.card{background:#fff;border-radius:12px;padding:2.5rem 3rem;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center;max-width:420px}` +
+      `h1{font-size:1.25rem;margin:0 0 .75rem;color:#1a1a1a}` +
+      `p{color:#555;margin:0 0 1.5rem;line-height:1.6}` +
+      `.check{font-size:3rem;margin-bottom:1rem}</style></head>` +
+      `<body><div class="card">` +
+      `<div class="check">✅</div>` +
+      `<h1>FamilySearch connected</h1>` +
+      `<p>Your FamilySearch account has been linked to Cognatio.<br>` +
+      `You can close this window and return to the app.</p>` +
+      `</div></body></html>`,
+    );
+  });
+
+  // Disconnect — delete the stored token row.
+  app.post("/api/familysearch/disconnect", async (req: Request, res: Response) => {
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing edit passphrase." });
+    }
+    try {
+      await deleteToken();
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Failed to disconnect" });
+    }
+  });
+
+  // Search FamilySearch for matching persons.
+  app.post("/api/familysearch/search", async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing edit passphrase." });
+    }
+    const connected = await isConnected();
+    if (!connected) {
+      return res.json({ connected: false, candidates: [] });
+    }
+    try {
+      const body = req.body as { anchors?: PersonAnchors };
+      const candidates = await searchPersons(body.anchors ?? {});
+      res.json({ connected: true, candidates });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Search failed" });
+    }
+  });
+
+  // Fetch a single FamilySearch person by FS ID.
+  app.get("/api/familysearch/person/:id", async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
+      return res.status(401).json({ error: "Invalid or missing edit passphrase." });
+    }
+    const connected = await isConnected();
+    if (!connected) {
+      return res.json({ connected: false, person: null });
+    }
+    try {
+      const person = await getFsPerson(String(req.params.id));
+      res.json({ connected: true, person });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Fetch failed" });
     }
   });
 
