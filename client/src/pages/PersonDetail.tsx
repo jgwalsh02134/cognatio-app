@@ -341,6 +341,12 @@ export default function PersonDetail() {
         </nav>
       )}
 
+      {/* Sticky notes — kept near the top of the profile so they're seen and
+          easy to add, above the two-column facts/relationships grid. */}
+      <section id="section-community" className="scroll-mt-24 mt-6 sm:mt-8 print:hidden">
+        <CommunityNotes person={person} />
+      </section>
+
       <div className="grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] mt-6 sm:mt-8">
         {/* Left: facts & life */}
         <div className="space-y-6 min-w-0">
@@ -367,9 +373,6 @@ export default function PersonDetail() {
           </section>
           <section id="section-sources" className="scroll-mt-24">
             <SourcesEditor sources={sources} update={update} unlocked={unlocked} />
-          </section>
-          <section id="section-community" className="scroll-mt-24">
-            <CommunityNotes person={person} />
           </section>
           <section id="section-research" className="scroll-mt-24">
             <ResearchCard person={person} />

@@ -1,8 +1,10 @@
-import armySeal from "@/assets/military/army.svg";
+import armySeal from "@/assets/military/army_mark.png";
 import navySeal from "@/assets/military/navy.svg";
 import airForceSeal from "@/assets/military/air_force.svg";
 import marineCorpsSeal from "@/assets/military/marine_corps.svg";
 import coastGuardSeal from "@/assets/military/coast_guard.svg";
+import foldedFlag from "@/assets/military/folded_flag.png";
+import usFlag from "@/assets/military/us_flag.png";
 
 // Army rank chevrons (modern designs — chevrons are point-up, current spec).
 // We use them as illustrative insignia; period-correct WWI/WWII chevrons were
@@ -32,7 +34,22 @@ import goldStarBanner from "@/assets/military/gold_star_banner.svg";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Star, ScrollText, Award } from "lucide-react";
-import type { MilitaryService as MilitaryServiceType, Person } from "@/lib/family";
+import { parseYear, type MilitaryService as MilitaryServiceType, type Person } from "@/lib/family";
+
+/**
+ * Whether a veteran should receive the folded-flag memorial honor. Beyond an
+ * explicit death/burial record (or KIA), we presume death once the birth year
+ * is 90+ years in the past — historical family veterans without a recorded
+ * death date (e.g. born in 1930) should still be memorialized rather than
+ * shown as living. Living veterans (no death record, born within ~90 years)
+ * get the plain US flag instead.
+ */
+function presumedDeceased(p: Person): boolean {
+  if (p.death?.date || p.burial?.date) return true;
+  if (p.military?.kia) return true;
+  const by = parseYear(p.birth?.date);
+  return by != null && new Date().getFullYear() - by >= 90;
+}
 
 const BRANCH_META: Record<
   MilitaryServiceType["branch"],
@@ -153,6 +170,7 @@ export function MilitaryServiceCard({ person }: { person: Person }) {
   if (!m) return null;
   const meta = BRANCH_META[m.branch] ?? BRANCH_META.other;
   const insignia = rankInsignia(m.branch, m.rank_code);
+  const deceased = presumedDeceased(person);
 
   return (
     <Card className="border-card-border overflow-hidden" data-testid="military-card">
@@ -201,6 +219,16 @@ export function MilitaryServiceCard({ person }: { person: Person }) {
                 >
                   <img src={goldStarBanner} alt="" className="h-3.5 w-auto object-contain" draggable={false} />
                   Killed in Action
+                </span>
+              )}
+              {deceased && (
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-2 py-0.5 text-[11px] font-medium"
+                  title="In honored memory of their service"
+                  data-testid="military-memoriam"
+                >
+                  <img src={foldedFlag} alt="Folded United States flag" className="h-4 w-auto object-contain" draggable={false} />
+                  In memoriam
                 </span>
               )}
             </div>
@@ -329,6 +357,7 @@ export function MilitaryBadge({ person }: { person: Person }) {
   const m = person.military;
   if (!m) return null;
   const meta = BRANCH_META[m.branch] ?? BRANCH_META.other;
+  const deceased = presumedDeceased(person);
   const awardsWithImages = (m.awards ?? [])
     .map((a) => ({ name: a, img: awardImage(a) }))
     .filter((a) => a.img);
@@ -350,6 +379,14 @@ export function MilitaryBadge({ person }: { person: Person }) {
       title={titleText}
       data-testid="military-badge"
     >
+      <img
+        src={deceased ? foldedFlag : usFlag}
+        alt={deceased ? "Folded United States flag — in memoriam" : "United States flag — veteran"}
+        title={deceased ? "In honored memory of their service" : "Served"}
+        className="h-3.5 w-auto shrink-0 object-contain"
+        draggable={false}
+        data-testid={deceased ? "veteran-folded-flag" : "veteran-flag"}
+      />
       <span className="inline-flex items-center gap-1.5 min-w-0">
         {meta.seal ? (
           <img

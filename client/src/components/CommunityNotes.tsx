@@ -225,8 +225,8 @@ export function CommunityNotes({ person }: { person: Person }) {
           )}
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-          Pin a colorful note to this profile — observations, corrections, memories, or source
-          tips. Everyone can read the stickies; posting uses the family passphrase.
+          Observations, corrections, memories, or source tips for this person. Anyone can read
+          them; posting uses the family passphrase.
         </p>
 
         {/* Composer — opens in any state and always says what's needed to post. */}

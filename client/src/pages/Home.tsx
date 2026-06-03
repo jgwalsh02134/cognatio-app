@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import { Link, useLocation } from "wouter";
 import {
   Bar,
@@ -28,7 +28,6 @@ import {
   MessageCircle,
   ScrollText,
   Search,
-  Shield,
   ShieldAlert,
   Shuffle,
   Telescope,
@@ -52,6 +51,7 @@ import {
 import { PersonAvatar } from "@/components/PersonAvatar";
 import { SurnameArms, ARMS_SURNAMES } from "@/components/SurnameArms";
 import { MilitaryBadge } from "@/components/MilitaryService";
+import { MedalIcon } from "@/components/MedalIcon";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAI } from "@/components/AIContext";
 import { downloadGedcom } from "@/lib/gedcomExport";
@@ -289,7 +289,7 @@ function SectionHeader({
   meta,
   description,
 }: {
-  icon?: typeof GitBranch;
+  icon?: ComponentType<{ className?: string }>;
   title: string;
   meta?: string;
   description?: string;
@@ -532,7 +532,18 @@ export default function Home() {
       .slice(0, 8);
   }, []);
 
-  const veterans = useMemo(() => people.filter((p) => p.military), []);
+  // Chronological by birth year (earliest first) so the roll reads WWI → WWII
+  // → Korea, matching the section's narrative. Undated names fall to the end.
+  const veterans = useMemo(
+    () =>
+      people
+        .filter((p) => p.military)
+        .sort(
+          (a, b) =>
+            (parseYear(a.birth?.date) ?? 99999) - (parseYear(b.birth?.date) ?? 99999),
+        ),
+    [],
+  );
   const veteransKIA = useMemo(
     () => veterans.filter((p) => p.military?.kia).length,
     [veterans],
@@ -1181,7 +1192,7 @@ export default function Home() {
       {veterans.length > 0 && (
         <section className="mt-10 sm:mt-12">
           <SectionHeader
-            icon={Shield}
+            icon={MedalIcon}
             title="Those who served"
             meta={`${veterans.length} ${veterans.length === 1 ? "veteran" : "veterans"}${
               veteransKIA > 0 ? ` · ${veteransKIA} KIA` : ""
@@ -1190,23 +1201,28 @@ export default function Home() {
           />
           <Card className="border-card-border">
             <CardContent className="p-4 sm:p-5">
-              <div className="grid gap-2 sm:gap-2.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {veterans.map((p) => (
                   <Link
                     key={p.id}
                     href={`/person/${encodeURIComponent(p.id)}`}
-                    className="flex items-center gap-3 rounded-md border border-card-border bg-card px-3 py-2.5 hover-elevate active-elevate-2 min-w-0"
+                    className={cn(
+                      "flex items-start gap-3 rounded-md border bg-card px-3 py-3 hover-elevate active-elevate-2 min-w-0",
+                      p.military?.kia
+                        ? "border-rose-500/30 ring-1 ring-rose-500/15"
+                        : "border-card-border",
+                    )}
                     data-testid={`veteran-${p.id}`}
                   >
                     <PersonAvatar person={p} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium truncate leading-tight">
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="text-sm font-semibold truncate leading-tight">
                         {fullDisplayName(p)}
                       </div>
-                      <div className="text-[11px] text-muted-foreground truncate leading-tight mt-0.5">
+                      <div className="text-[11px] text-muted-foreground tabular-nums truncate leading-tight">
                         {lifespan(p)}
                       </div>
-                      <div className="mt-1">
+                      <div className="pt-0.5">
                         <MilitaryBadge person={p} />
                       </div>
                     </div>
