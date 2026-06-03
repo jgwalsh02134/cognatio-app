@@ -18,6 +18,7 @@ import {
   Telescope,
   ShieldAlert,
   Combine,
+  Map as MapIcon,
   Lock,
   Unlock,
   Pencil,
@@ -80,6 +81,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { href: "/surnames", icon: ScrollText, label: "Surnames" },
       { href: "/places", icon: MapPin, label: "Places" },
+      { href: "/map", icon: MapIcon, label: "Map" },
       { href: "/roots", icon: Crown, label: "Roots" },
       { href: "/insights", icon: BarChart3, label: "Insights" },
     ],

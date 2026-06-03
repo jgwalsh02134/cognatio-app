@@ -1,0 +1,654 @@
+{
+"Aachen, Stadt Aachen, Nordrhein-Westfalen, Germany": [
+50.77917,
+6.06892
+],
+"Abbey Paisley,Renfrew,Scotland": [
+55.84491,
+-4.42023
+],
+"Alameda, Alameda, California, United States": [
+37.76521,
+-122.24164
+],
+"Albany  New York, USA": [
+42.68404,
+-73.84777
+],
+"Albany , N.y.": [
+42.65117,
+-73.75497
+],
+"Albany County, New York, USA": [
+42.59869,
+-73.9844
+],
+"Albany New York": [
+42.65117,
+-73.75497
+],
+"Albany Ward 01, Albany, New York, United States": [
+39.8283,
+-98.5795
+],
+"Albany Ward 14, Albany, New York": [
+42.65117,
+-73.75497
+],
+"Albany Ward 7, Albany, New York": [
+42.65117,
+-73.75497
+],
+"Albany city, Albany, New York": [
+42.68403,
+-73.82588
+],
+"Albany, Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"Albany; Rensselaer, New York, USA": [
+42.64122,
+-73.74128
+],
+"Ashville, Chautauqua, New York, USA": [
+42.09437,
+-79.37525
+],
+"Baden, Germany": [
+53.00235,
+9.0821
+],
+"Baden-Wuerttemberg, Germany": [
+48.53775,
+9.04117
+],
+"Barrington, Illinois": [
+42.15391,
+-88.13619
+],
+"Bavaria, Germany": [
+48.94676,
+11.40387
+],
+"Bayern, Germany": [
+48.94676,
+11.40387
+],
+"Bennington, Bennington, Vermont, USA": [
+42.87887,
+-73.19682
+],
+"Binghamton, New York, USA": [
+42.0987,
+-75.91252
+],
+"Brooklodge, 5298, Ireland": [
+51.93121,
+-8.38057
+],
+"Brooklyn, New York": [
+40.6526,
+-73.94972
+],
+"Byron, Bayern, Germany": [
+51.1657,
+10.4515
+],
+"California, USA": [
+36.70146,
+-118.756
+],
+"Chatham, Columbia, New York, United States": [
+42.36425,
+-73.59484
+],
+"Chicago, Cook, Illinois, United States": [
+41.87556,
+-87.62442
+],
+"Churchville, Warren, Iowa, United States": [
+41.39666,
+-93.75105
+],
+"Clear Creek": [
+39.67546,
+-105.64353
+],
+"Clear Creek, Johnson, Iowa": [
+41.66877,
+-91.57824
+],
+"Clift, NY": [
+40.78294,
+-73.2
+],
+"Clifton Park, NY": [
+42.86304,
+-73.77476
+],
+"Co, Kilkenny, Ireland": [
+52.65063,
+-7.25144
+],
+"Cohoes, Albany, New York, USA": [
+42.77424,
+-73.70012
+],
+"Colonie, Albany, New York, USA": [
+42.71786,
+-73.83346
+],
+"Connecticut": [
+41.65002,
+-72.73422
+],
+"Cork, Cork, Ireland": [
+51.89851,
+-8.47264
+],
+"County Clare, Ireland": [
+52.85726,
+-8.93744
+],
+"County Mayo, Ireland": [
+53.90871,
+-9.2983
+],
+"County, Meath, Ireland": [
+53.87426,
+-6.80338
+],
+"Dana Point, Orange, California": [
+33.46697,
+-117.69811
+],
+"Denmark": [
+55.67025,
+10.33333
+],
+"Detroit, Michigan": [
+42.33155,
+-83.04664
+],
+"East Greenbush, NY": [
+42.59091,
+-73.70179
+],
+"Eloy, Pinal, Arizona, USA": [
+32.75517,
+-111.55349
+],
+"England": [
+52.53102,
+-1.26491
+],
+"Enniskillen, Ireland": [
+54.34482,
+-7.63891
+],
+"Essex, New Jersey": [
+40.79139,
+-74.24794
+],
+"Floral Park, NY": [
+40.7247,
+-73.7048
+],
+"Glens Falls Ward 03, Warren, New York, United States": [
+39.8283,
+-98.5795
+],
+"Greenwich, Washington, New York, USA": [
+43.09035,
+-73.49939
+],
+"Harris, Texas": [
+29.81198,
+-95.37412
+],
+"Harrison, Westchester, New York, United States": [
+40.96899,
+-73.71263
+],
+"High Market, Lewis, New York, USA": [
+39.8283,
+-98.5795
+],
+"Hillsborough, Florida, United States": [
+27.91845,
+-82.34881
+],
+"Hoosick Falls, Rensselaer, New York, USA": [
+42.90069,
+-73.35161
+],
+"Iowa City, Johnson, Iowa, USA": [
+41.66126,
+-91.52991
+],
+"Iowa, USA": [
+41.92167,
+-93.31227
+],
+"Ireland": [
+52.8652,
+-7.97946
+],
+"Jackson Township, Washington, New York": [
+42.9,
+-75.5
+],
+"Jackson, Jackson, Michigan, United States": [
+42.2465,
+-84.4017
+],
+"Jackson, Washington, New York, USA": [
+43.09722,
+-73.3775
+],
+"Jeffries Hall, New Brunswick, Canada": [
+56.1304,
+-106.3468
+],
+"Johnson, Iowa, USA": [
+41.68618,
+-91.60611
+],
+"Johnsonville, Rensselaer, New York, United States": [
+42.91443,
+-73.51354
+],
+"Kilkenny, Ireland": [
+52.65063,
+-7.25144
+],
+"Kings, New Brunswick, Canada": [
+45.59308,
+-65.76345
+],
+"Kings, New York, USA": [
+43.15091,
+-73.85429
+],
+"Lacona, Warren, Iowa, United States": [
+41.19001,
+-93.38327
+],
+"Lake Summerset, Illinois, USA": [
+42.45068,
+-89.40006
+],
+"Langenleiten, Bayern, Germany": [
+50.32882,
+9.97675
+],
+"Lansingburg Village (Part), Rensselaer, New York": [
+42.9,
+-75.5
+],
+"Lansingburgh, Rensselaer, New York, USA": [
+42.77021,
+-73.67527
+],
+"Larchmont, Westchester, New York, USA": [
+40.92788,
+-73.7518
+],
+"Latham, New York, USA": [
+42.74361,
+-73.74585
+],
+"Lenoir, Caldwell, North Carolina": [
+35.91402,
+-81.53898
+],
+"Limerick, Ireland": [
+52.66125,
+-8.63012
+],
+"London, London, England": [
+51.51562,
+-0.092
+],
+"Loudonville, Albany, New York, USA": [
+42.70324,
+-73.76365
+],
+"Maine, USA": [
+45.7091,
+-68.85902
+],
+"Mamaroneck, Westchester, New York, United States": [
+40.94873,
+-73.73314
+],
+"Manhattan (Districts 501-750), Manhattan, New York, New York, USA": [
+39.8283,
+-98.5795
+],
+"Manhattan Assembly District 13, New York, New York": [
+42.9,
+-75.5
+],
+"Manhattan Assembly District 22, New York, New York": [
+42.9,
+-75.5
+],
+"Manhattan, New York, New York": [
+40.75796,
+-73.98553
+],
+"Menands, Albany, New York USA, California, USA": [
+39.8283,
+-98.5795
+],
+"Menands, Albany, New York, USA": [
+42.69202,
+-73.72456
+],
+"Mengen, Breisgau-Hochschwarzwald, Baden-Wuerttemberg, Germany": [
+47.96098,
+7.71545
+],
+"Minnesota, USA": [
+45.98966,
+-94.61133
+],
+"Montana, USA": [
+47.37527,
+-109.63876
+],
+"Morrisville, Lamoille, Vermont, USA": [
+44.56155,
+-72.5983
+],
+"Munster, Cork, Ireland": [
+52.14623,
+-8.50512
+],
+"Near Amsterdam, NY": [
+40.66353,
+-73.98419
+],
+"New": [
+51.17852,
+6.44163
+],
+"New Bedford, Massachusetts, USA": [
+41.63622,
+-70.93421
+],
+"New Jersey, United States": [
+40.07574,
+-74.40416
+],
+"New Rochelle, Westchester, New York, USA": [
+40.91154,
+-73.78264
+],
+"New York": [
+40.71273,
+-74.00602
+],
+"New York City, New York, New York": [
+40.71273,
+-74.00602
+],
+"New York USA, New York, USA": [
+43.06922,
+-76.17251
+],
+"New York, New York, New York, USA": [
+40.71273,
+-74.00602
+],
+"Ontario, Canada": [
+50.00068,
+-86.00098
+],
+"PA": [
+8.55956,
+-81.13084
+],
+"Palm Desert, Riverside, California, USA": [
+33.72882,
+-116.38257
+],
+"Peterborough, Ontario, Canada": [
+44.3048,
+-78.31995
+],
+"Petersburg, NY": [
+42.63313,
+-74.44903
+],
+"Pinellas, Florida, United States": [
+27.87789,
+-82.73293
+],
+"Pittsfield, Massachusetts, USA": [
+42.44848,
+-73.25411
+],
+"Port Chester, NY": [
+41.00176,
+-73.66568
+],
+"Portland, Dodge, Wisconsin, United States": [
+43.23852,
+-88.94983
+],
+"Providence, Rhode Island, USA": [
+41.82399,
+-71.41283
+],
+"Queens, Queens, New York": [
+40.71351,
+-73.82831
+],
+"Québec, Quebec, Canada": [
+46.81374,
+-71.20841
+],
+"Ravensburg, Ravensburg, Baden-Wuerttemberg, Germany": [
+47.77809,
+9.61657
+],
+"Reiterswiesen, Bad Kissingen, Bayern, Germany": [
+50.18421,
+10.09847
+],
+"Rensselaer, New York": [
+42.70914,
+-73.51077
+],
+"Rhode Island, USA": [
+41.79624,
+-71.59924
+],
+"Richmond, Contra Costa, California, United States": [
+37.93576,
+-122.34775
+],
+"Rockledge, Brevard, Florida, United States": [
+28.33083,
+-80.73492
+],
+"Rosemount, Warren, Iowa, United States": [
+41.24844,
+-93.36799
+],
+"Saint John, Saint John, New Brunswick, Canada": [
+45.2788,
+-66.05852
+],
+"Salt Lake City, Salt Lake, Utah, USA": [
+40.75962,
+-111.8868
+],
+"Salt Lake City, UT": [
+40.75962,
+-111.8868
+],
+"San Bernardino, San Bernardino, California, United States of America": [
+34.10816,
+-117.28946
+],
+"San Francisco": [
+37.78794,
+-122.40752
+],
+"Saratoga Springs, Saratoga, New York, United States": [
+43.08223,
+-73.78537
+],
+"Schaumburg, IL": [
+42.03336,
+-88.08341
+],
+"Scotland": [
+56.78611,
+-4.11405
+],
+"Seefin, Mayo, Ireland": [
+53.64342,
+-9.04027
+],
+"Tarrytown, New York, USA": [
+41.07621,
+-73.85875
+],
+"Troy City, Rensselaer, New York": [
+42.73318,
+-73.65756
+],
+"Troy Ward 02, Rensselaer, New York, United States": [
+39.8283,
+-98.5795
+],
+"Troy Ward 10, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy Ward 11, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy Ward 13, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy Ward 15, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy Ward 16, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy Ward 3, Rensselaer, New York, USA": [
+42.81914,
+-73.47463
+],
+"Troy Ward 7, Rensselaer, New York": [
+42.81822,
+-73.4722
+],
+"Troy, Rensselaer, New York, USA": [
+42.72841,
+-73.69179
+],
+"Troy; Cohoes; Waterford; Watervliet; Green Island, New York, USA": [
+39.8283,
+-98.5795
+],
+"Troy; Watervliet; Green Island; Cohoes; Waterford, New York, USA": [
+39.8283,
+-98.5795
+],
+"UTICA NY": [
+43.1009,
+-75.23266
+],
+"United States": [
+39.78373,
+-100.44588
+],
+"Utica, Oneida, New York, USA": [
+43.1009,
+-75.23266
+],
+"Vandalia, Fayette, Illinois, United States": [
+38.9606,
+-89.09368
+],
+"Vermont": [
+44.59907,
+-72.50026
+],
+"Ward": [
+31.50076,
+-103.07812
+],
+"Warren, Iowa, United States": [
+41.31386,
+-93.56853
+],
+"Washington, DC, US": [
+38.8951,
+-77.03638
+],
+"Waterford, Saratoga, New York, USA": [
+42.79238,
+-73.681
+],
+"Watervliet, Albany, New York, USA": [
+42.73008,
+-73.70123
+],
+"Wetzler, Hess, Germany": [
+51.1657,
+10.4515
+],
+"Wexford, Wexford, Ireland": [
+52.33677,
+-6.46014
+],
+"White Plains, Westchester, New York, USA": [
+41.03399,
+-73.76291
+],
+"Williamsport, Lycoming County, Pennsylvania, USA": [
+41.24116,
+-77.00111
+],
+"Wolcott": [
+43.22062,
+-76.81496
+],
+"Wolcott, Lamoille, Vermont, USA": [
+44.54661,
+-72.45787
+],
+"Wollbach, Germany": [
+50.36384,
+10.21594
+],
+"Wurtemburg": [
+41.89593,
+-73.86708
+],
+"Yonkers Ward 3, Westchester, New York": [
+40.93121,
+-73.89875
+],
+"Yonkers, Westchester, New York": [
+40.93121,
+-73.89875
+],
+"York": [
+53.96566,
+-1.07431
+]
+}

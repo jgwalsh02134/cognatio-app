@@ -26,6 +26,7 @@ import {
   Telescope,
   ShieldAlert,
   Combine,
+  Map as MapIcon,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -133,6 +134,14 @@ export function CommandPalette({
         icon: <MapPin className="h-4 w-4" />,
         keywords: ["places", "geography", "cities", "locations", "towns"],
         perform: go("/places"),
+      },
+      {
+        id: "nav-map",
+        label: "Go to Map",
+        hint: "Origins, immigration & settlement",
+        icon: <MapIcon className="h-4 w-4" />,
+        keywords: ["map", "geography", "immigration", "origins", "settlement", "atlas", "leaflet"],
+        perform: go("/map"),
       },
       {
         id: "nav-relate",

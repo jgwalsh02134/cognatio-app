@@ -24,6 +24,7 @@ import {
   GitMerge,
   Heart,
   ListChecks,
+  Map as MapIcon,
   MapPin,
   MessageCircle,
   ScrollText,
@@ -777,6 +778,14 @@ export default function Home() {
             title="Places"
             description="Towns, parishes, and cities across the archive."
             testId="feature-places"
+          />
+          <FeatureCard
+            href="/map"
+            icon={MapIcon}
+            title="Map"
+            description="Countries of origin, Atlantic crossings, and where the family settled."
+            accent="primary"
+            testId="feature-map"
           />
           <FeatureCard
             href="/research"
