@@ -1197,7 +1197,7 @@ export default function Home() {
             meta={`${veterans.length} ${veterans.length === 1 ? "veteran" : "veterans"}${
               veteransKIA > 0 ? ` · ${veteransKIA} KIA` : ""
             }`}
-            description="Members of the family who answered the call — from the trenches of the First World War, across the European and Pacific theaters of the Second, and into Korea."
+            description="Members of the family who answered the call — from the trenches of the First World War, across the European and Pacific fronts of the Second, and into Korea."
           />
           <Card className="border-card-border">
             <CardContent className="p-4 sm:p-5">
