@@ -203,6 +203,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
       (finding.findings?.length ||
         finding.corrections?.length ||
         finding.connections?.length ||
+        finding.leads?.length ||
         finding.narrative) ? (
         <WebFindingsCard
           person={person}

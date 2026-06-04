@@ -16,6 +16,7 @@ import type {
   WebFindingField,
   WebCorrection,
   WebConnection,
+  WebLead,
 } from "@/components/WebFindingsCard";
 import {
   fullDisplayName,
@@ -205,49 +206,68 @@ reaching back to the 1700s. This archive was merged from TWO Ancestry GEDCOM
 exports, so IDs are namespaced "t0:" and "t1:" and the SAME real person often
 appears twice (once under each prefix). Finding those duplicates is valuable.
 
-You perform THREE jobs in a single pass. Use the web_search tool for job 1;
-jobs 2 and 3 are mostly reasoning over the data you are given.
+Your overriding goal is to be USEFUL. The family historian would rather get a
+handful of real candidate record pages to check by hand than a polite "I
+couldn't confirm a match." So you must ALMOST NEVER come back empty: if
+web_search returns any plausible page for this name + era + place, surface it
+as a LEAD. Returning nothing is only acceptable when the search genuinely
+yields no plausible page at all.
+
+You perform FOUR jobs in a single pass. Use the web_search tool for jobs 1 & 4;
+jobs 2 and 3 are reasoning over the data you are given.
 
 JOB 1 — FIND MISSING FACTS ("findings"):
-- Use web_search to find CONCRETE missing facts about THIS specific person,
-  not a same-named stranger. Search FindAGrave, Ancestry public trees,
-  FamilySearch, obituary sites (legacy.com, dignitymemorial.com, local funeral
-  homes), NYS Historic Newspapers, US census, Catholic parish records, Irish
-  civil records. Try surname-variant spellings.
-- Issue multiple queries. Prefer visiting the actual record/memorial/obituary
-  page over a search-results page. Cite its real URL — NEVER fabricate a URL.
-- Disambiguate using the FAMILY block and anchors (birth/death year, place,
-  spouse, parents). Say which anchors matched in "reasoning".
+- Use web_search to find CONCRETE missing facts. Search FindAGrave, Ancestry
+  public trees, FamilySearch, obituary sites (legacy.com, dignitymemorial.com,
+  local funeral homes), NYS Historic Newspapers, US census, Catholic parish
+  records, Irish civil records. Try surname-variant spellings.
+- Issue multiple queries. Prefer the actual record/memorial/obituary page over
+  a results page. Cite its real URL — NEVER fabricate a URL.
+- A "finding" is a specific value you are reasonably willing to stand behind
+  for THIS person. You do NOT need certainty: if a page is a credible match on
+  name + at least one anchor (year OR place OR a relative), record the value as
+  a finding at "low" or "medium" confidence and say in "reasoning" which
+  anchors matched and which you could not verify. The human reviews before
+  anything is saved, so lean toward including a sourced value over withholding.
+
+JOB 4 — LEADS ("leads"):
+- For every promising page you found but did NOT turn into a finding (because
+  you couldn't tie it tightly enough to this person, or it only partially
+  overlaps), record it as a lead with its real "url", a short "title", the
+  "site" (e.g. "FindAGrave", "Ancestry", "FamilySearch", "Newspapers"), what
+  "matched" (e.g. "name + 1872 + Troy NY"), and what is "missing" to confirm
+  (e.g. "page lists no spouse"). Leads are the safety net that keeps this tool
+  useful — aim for 2–5 whenever the search surfaced anything plausible.
 
 JOB 2 — FLAG ERRORS ("corrections"):
-- Inspect the existing values for internal contradictions or impossibilities
-  and propose fixes. Examples: death before birth; born after a parent's
-  death or before a parent was ~13; child born when the person was <13 or
-  dead; marriage before birth; lifespan > 110 years; a place that is clearly
-  malformed; a year that is an obvious typo (e.g. 1089 for 1809).
-- Only flag things that are actually wrong or near-certainly wrong. Put the
-  current bad value in "current_value" and the fix in "suggested_value", and
-  explain in "issue". A web source is optional here.
+- Inspect existing values for contradictions/impossibilities and propose fixes:
+  death before birth; born after a parent's death or before a parent was ~13;
+  child born when the person was <13 or dead; marriage before birth; lifespan
+  > 110; a malformed place; an obvious year typo (e.g. 1089 for 1809).
+- Only flag genuine problems. Put the bad value in "current_value", the fix in
+  "suggested_value", explain in "issue". A web source is optional here.
 
 JOB 3 — FIND CONNECTIONS ("connections"):
-- Using the CANDIDATE PEOPLE list (all already in this archive), identify
-  likely (a) DUPLICATES — the same real person as THIS one, especially across
-  the t0:/t1: split — and (b) MISSING RELATIONSHIPS — a probable parent,
-  spouse, sibling, or child of THIS person who is in the archive but not yet
-  linked. Reference the candidate by the exact ID shown and put it in
-  "related_id". If you propose someone NOT in the candidate list, leave
-  related_id "" and name them in "related_name".
-- Justify each with shared name/dates/places/relatives in "reasoning".
+- Using the CANDIDATE PEOPLE list (already in this archive), identify likely
+  (a) DUPLICATES — the same real person, especially across the t0:/t1: split —
+  and (b) MISSING RELATIONSHIPS — a probable parent, spouse, sibling, or child
+  already in the archive but not yet linked. Reference the candidate by the
+  exact ID in "related_id". If you propose someone NOT in the list, leave
+  related_id "" and name them in "related_name". Justify with shared
+  name/dates/places/relatives in "reasoning".
 
 Output STRICT JSON matching the schema. No prose outside JSON.
 
 Confidence:
 - "high"   = 3+ matching anchors / an exact record / a near-certain duplicate
 - "medium" = 2 anchors with a credible basis
-- "low"    = a single weak signal but still worth a human look
+- "low"    = a single anchor or a partial match — still worth a human look
 
-NEVER invent facts or URLs. If a job yields nothing, return an empty array for
-it and explain briefly in "narrative".`;
+NEVER invent facts or URLs. The "narrative" must be ACTIONABLE, never a bare
+apology: name the strongest candidate page(s) you found and the ONE piece of
+information (a date, a place, a parent/spouse name) that would let the family
+confirm or rule them out. Only if web_search returned nothing usable may every
+array be empty — and then say exactly which searches you tried.`;
 
 const PERSON_SCHEMA = {
   type: "json_schema" as const,
@@ -313,10 +333,28 @@ const PERSON_SCHEMA = {
           ],
         },
       },
+      leads: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            title: { type: "string" },
+            url: { type: "string" },
+            site: { type: "string" },
+            matched: { type: "string" },
+            missing: { type: "string" },
+            confidence: { type: "string", enum: ["high", "medium", "low"] },
+          },
+          required: ["title", "url", "site", "matched", "missing", "confidence"],
+        },
+      },
       narrative: { type: "string" },
       search_log: { type: "string" },
     },
-    required: ["findings", "corrections", "connections", "narrative", "search_log"],
+    required: [
+      "findings", "corrections", "connections", "leads", "narrative", "search_log",
+    ],
   },
 };
 
@@ -511,9 +549,13 @@ export async function researchPerson(opts: {
     "",
     `Detected gaps for job 1: ${gaps.join(", ") || "(use your judgment)"}`,
     "",
-    "Do all three jobs. For job 1 issue at least 3 web_search queries and cite",
-    "real record pages. For job 2 only flag genuine contradictions. For job 3",
-    "prefer candidates from the list above and fill related_id with their ID.",
+    "Do all four jobs. Issue at least 3 web_search queries. Turn solid matches",
+    "into findings (cite real URLs); turn every other plausible page you find",
+    "into a LEAD with its real URL, what matched, and what's missing to confirm",
+    "— do not discard them. For job 2 only flag genuine contradictions. For job",
+    "3 prefer candidates from the list above and fill related_id with their ID.",
+    "If you cannot confirm a fact, you must still return the candidate pages as",
+    "leads and a concrete next step in the narrative — never come back empty.",
   ].join("\n");
 
   const body = {
@@ -528,7 +570,7 @@ export async function researchPerson(opts: {
   const resp = await callWithWebSearch(auth, body, signal);
   const text = extractText(resp);
   if (!text) {
-    return { findings: [], corrections: [], connections: [], narrative: "No response from model.", search_log: "" };
+    return { findings: [], corrections: [], connections: [], leads: [], narrative: "No response from model.", search_log: "" };
   }
   let parsed: PersonWebFinding;
   try {
@@ -538,6 +580,7 @@ export async function researchPerson(opts: {
       findings: [],
       corrections: [],
       connections: [],
+      leads: [],
       narrative: text.slice(0, 500),
       search_log: "JSON parse failed",
     };
@@ -551,6 +594,11 @@ export async function researchPerson(opts: {
   );
   parsed.connections = ((parsed.connections ?? []) as WebConnection[]).filter(
     (c) => c && (c.related_name || c.related_id),
+  );
+  // Leads only need a real http(s) URL. Drop anything the model couldn't anchor
+  // to an actual page (a fabricated/blank URL is worse than no lead).
+  parsed.leads = ((parsed.leads ?? []) as WebLead[]).filter(
+    (l) => l && /^https?:\/\//i.test((l.url || "").trim()),
   );
   return parsed;
 }
@@ -581,8 +629,13 @@ You help the family historian:
   immigration / military service / parish patterns for the era and place).
 
 Style:
-- Be concrete and concise. Cite source URLs whenever you assert an external
-  fact. Don't speculate; say "I don't know yet" or "no record found" instead.
+- Be concrete, concise, and USEFUL. Cite source URLs whenever you assert an
+  external fact, and never fabricate a fact or a URL.
+- Do not bail out with "no record found." If web_search surfaces any plausible
+  page for this name + era + place, give it to the user as a candidate link and
+  say what matched and what's still needed to confirm it. Distinguish confirmed
+  facts from unconfirmed leads, but always leave the user with a concrete next
+  step or page to check.
 - When referring to someone in the archive, ALWAYS include their ID in
   parentheses so the user can navigate, e.g. "John J. Walsh (t0:I12345)".
 
