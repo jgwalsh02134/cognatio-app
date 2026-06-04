@@ -7,16 +7,44 @@ import {
   Polyline,
   Popup,
   TileLayer,
+  Tooltip,
   useMap,
 } from "react-leaflet";
-import { Map as MapIcon, Ship, MapPin, Anchor } from "lucide-react";
+import { Map as MapIcon, Ship, MapPin, Anchor, ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { cn } from "@/lib/utils";
 import {
   buildImmigrationPaths,
   buildPlaceMarkers,
   type LatLng,
+  type PersonRef,
 } from "@/lib/geo";
+
+/** Scrollable list of people, each linking to their profile. Uses plain hash
+ *  anchors because wouter <Link> does not fire inside a Leaflet popup (the
+ *  popup is rendered in a detached DOM layer). */
+function PeopleLinks({ refs }: { refs: PersonRef[] }) {
+  if (refs.length === 0) return null;
+  return (
+    <ul className="my-1.5 max-h-44 overflow-y-auto space-y-0.5 pr-1">
+      {refs.map((r) => (
+        <li key={r.id}>
+          <a
+            href={`#/person/${encodeURIComponent(r.id)}`}
+            className="flex items-center justify-between gap-2 rounded px-1.5 py-1 no-underline hover:bg-black/5"
+          >
+            <span className="font-medium text-primary truncate">{r.name}</span>
+            {r.years && (
+              <span className="shrink-0 tabular-nums text-muted-foreground">
+                {r.years}
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 const ORIGIN_COLOR = "#f59e0b"; // amber — countries of origin (non-US)
 const SETTLE_COLOR = "#2563eb"; // blue — US settlement
@@ -139,18 +167,26 @@ export default function MapView() {
                   opacity: 0.55,
                 }}
               >
-                <Popup>
+                <Popup maxWidth={280} minWidth={210}>
                   <div className="text-xs">
-                    <div className="font-semibold mb-1">
-                      {p.count} {p.count === 1 ? "person" : "people"}:{" "}
-                      {p.fromCountry} → {p.toPlace.split(",")[0]}
+                    <div className="flex items-center gap-1.5 font-semibold text-[13px]">
+                      <span>{p.fromCountry}</span>
+                      <ArrowRight className="h-3 w-3 shrink-0" />
+                      <span>{p.toPlace.split(",")[0]}</span>
                     </div>
                     <div className="text-muted-foreground">
                       {p.fromPlace.split(",").slice(0, 2).join(", ")} →{" "}
                       {p.toPlace.split(",").slice(0, 2).join(", ")}
                     </div>
-                    {p.sample.length > 0 && (
-                      <div className="mt-1">{p.sample.join(", ")}</div>
+                    <div className="mt-1 font-medium">
+                      {p.count} {p.count === 1 ? "person made" : "people made"} this
+                      crossing
+                    </div>
+                    <PeopleLinks refs={p.sample} />
+                    {p.count > p.sample.length && (
+                      <div className="text-[11px] text-muted-foreground">
+                        + {p.count - p.sample.length} more
+                      </div>
                     )}
                   </div>
                 </Popup>
@@ -172,19 +208,31 @@ export default function MapView() {
                   weight: 1.5,
                 }}
               >
-                <Popup>
+                <Tooltip direction="top" offset={[0, -2]} opacity={1}>
+                  <span className="font-medium">{m.place.split(",")[0]}</span>
+                  {" · "}
+                  {m.count}
+                </Tooltip>
+                <Popup maxWidth={280} minWidth={210}>
                   <div className="text-xs">
-                    <div className="font-semibold">{m.place.split(",")[0]}</div>
+                    <div className="flex items-center gap-1.5 font-semibold text-[13px]">
+                      <span
+                        className="inline-block h-2 w-2 shrink-0 rounded-full"
+                        style={{ background: m.isOrigin ? ORIGIN_COLOR : SETTLE_COLOR }}
+                      />
+                      {m.place.split(",")[0]}
+                    </div>
                     <div className="text-muted-foreground">{m.place}</div>
-                    <div className="mt-1">
+                    <div className="mt-1 font-medium">
                       {m.count} {m.count === 1 ? "person" : "people"} ·{" "}
                       {m.isOrigin ? "Origin" : "Settlement"}
                     </div>
+                    <PeopleLinks refs={m.people} />
                     <a
                       href={`#/places?q=${encodeURIComponent(m.place)}`}
-                      className="text-primary hover:underline mt-1 inline-flex min-h-8 items-center font-medium"
+                      className="mt-1 inline-flex min-h-8 items-center font-medium text-primary hover:underline"
                     >
-                      See people here →
+                      Open in place explorer →
                     </a>
                   </div>
                 </Popup>

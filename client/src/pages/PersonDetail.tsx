@@ -23,6 +23,7 @@ import { MilitaryServiceCard, MilitaryBadge } from "@/components/MilitaryService
 import { AffiliationsCard } from "@/components/Affiliations";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEdit, type EditableSource, type PersonPatch } from "@/components/EditContext";
+import { PersonLinksCard } from "@/components/PersonLinks";
 import { CountryFlag } from "@/components/CountryFlag";
 import { linksFor } from "@/lib/researchLinks";
 import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
@@ -114,6 +115,7 @@ export default function PersonDetail() {
   }
 
   const sources: EditableSource[] = person.sources ?? [];
+  const links = person.links ?? [];
 
   const parents = person.parent_ids.map(getPerson).filter(Boolean) as Person[];
   const siblings = getSiblings(person);
@@ -130,6 +132,8 @@ export default function PersonDetail() {
   if (person.military) jumpTargets.unshift({ id: "section-military", label: "Service", icon: <Sparkles className="h-3.5 w-3.5" /> });
   if ((person.affiliations || []).length > 0 || unlocked)
     jumpTargets.push({ id: "section-affiliations", label: "Affiliations", icon: <Link2 className="h-3.5 w-3.5" /> });
+  if (links.length > 0 || unlocked)
+    jumpTargets.push({ id: "section-links", label: "Links", icon: <Link2 className="h-3.5 w-3.5" /> });
   if ((person.notes || []).length > 0 || unlocked)
     jumpTargets.push({ id: "section-notes", label: "Notes", icon: <StickyNote className="h-3.5 w-3.5" /> });
   if (sources.length > 0 || unlocked)
@@ -368,6 +372,9 @@ export default function PersonDetail() {
           </section>
           <section id="section-affiliations" className="scroll-mt-24">
             <AffiliationsEditor person={person} update={update} unlocked={unlocked} />
+          </section>
+          <section id="section-links" className="scroll-mt-24">
+            <PersonLinksCard links={links} update={update} unlocked={unlocked} />
           </section>
           <section id="section-notes" className="scroll-mt-24">
             <NotesEditor person={person} update={update} unlocked={unlocked} />

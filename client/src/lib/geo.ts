@@ -3,9 +3,20 @@
 // aggregate places + cross-country immigration journeys for plotting.
 
 import coordsRaw from "@/place_coords.json";
-import { people, parseYear, fullDisplayName, type Person } from "@/lib/family";
+import { people, getPerson, parseYear, lifespan, fullDisplayName, type Person } from "@/lib/family";
 
 export type LatLng = [number, number];
+
+/** A lightweight person reference for map popups (links into profiles). */
+export interface PersonRef {
+  id: string;
+  name: string;
+  years: string;
+}
+
+function toRef(p: Person): PersonRef {
+  return { id: p.id, name: fullDisplayName(p), years: lifespan(p) };
+}
 
 const COORDS = coordsRaw as unknown as Record<string, LatLng>;
 
@@ -54,9 +65,15 @@ export function coordsForPlace(place?: string | null): LatLng | null {
 
 /** Best-effort country for a place string. */
 export function placeCountry(place: string): string {
-  const parts = place.toLowerCase().split(",").map((s) => s.trim()).filter(Boolean);
+  const low = place.toLowerCase();
+  const parts = low.split(",").map((s) => s.trim()).filter(Boolean);
   for (const t of parts) {
     if (US_STATES.has(t) || US_MARKERS.has(t)) return "United States";
+  }
+  // Catch un-delimited strings like "Albany New York" or "Troy New York USA"
+  // where the state never appears as its own comma-separated token.
+  for (const st of US_STATES) {
+    if (new RegExp(`\\b${st}\\b`).test(low)) return "United States";
   }
   const last = parts[parts.length - 1] ?? "";
   if (last === "ireland") return "Ireland";
@@ -82,6 +99,7 @@ export interface PlaceMarker {
   count: number; // people connected to this place
   country: string;
   isOrigin: boolean; // non-US (country of origin)
+  people: PersonRef[]; // the actual individuals, for profile links
 }
 
 /** All mappable places with a count of connected people. */
@@ -104,6 +122,11 @@ export function buildPlaceMarkers(): PlaceMarker[] {
     const c = coordsForPlace(place);
     if (!c) continue;
     const country = placeCountry(place);
+    const refs = [...ids]
+      .map((id) => getPerson(id))
+      .filter((p): p is Person => !!p)
+      .map(toRef)
+      .sort((a, b) => a.name.localeCompare(b.name));
     markers.push({
       place,
       lat: c[0],
@@ -111,6 +134,7 @@ export function buildPlaceMarkers(): PlaceMarker[] {
       count: ids.size,
       country,
       isOrigin: country !== "United States",
+      people: refs,
     });
   }
   return markers.sort((a, b) => b.count - a.count);
@@ -124,7 +148,7 @@ export interface ImmigrationPath {
   fromCountry: string;
   toCountry: string;
   count: number;
-  sample: string[]; // a few person names
+  sample: PersonRef[]; // a few of the people who made this journey
 }
 
 /** Settlement place for a person: their (US) death, else latest residence,
@@ -174,7 +198,7 @@ export function buildImmigrationPaths(): ImmigrationPath[] {
     }
     const e = edges.get(key)!;
     e.count += 1;
-    if (e.sample.length < 5) e.sample.push(fullDisplayName(p));
+    if (e.sample.length < 8) e.sample.push(toRef(p));
   }
   return Array.from(edges.values()).sort((a, b) => b.count - a.count);
 }

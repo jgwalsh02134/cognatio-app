@@ -21,6 +21,29 @@ export interface MilitaryService {
   evidence?: string[];
 }
 
+/** Categories for an external link attached to a person profile. */
+export type PersonLinkKind =
+  | "obituary"
+  | "press"
+  | "wedding"
+  | "accomplishment"
+  | "biography"
+  | "photo"
+  | "record"
+  | "social"
+  | "other";
+
+/** A curated external link on a person's profile (obituary, press, wedding
+ *  announcement, accomplishment, biography, etc.). Distinct from `sources`,
+ *  which are dry evidentiary citations. */
+export interface PersonLink {
+  kind: PersonLinkKind;
+  title: string;
+  url: string;
+  date?: string | null;
+  note?: string | null;
+}
+
 export interface Person {
   id: string;
   name: string;
@@ -43,6 +66,7 @@ export interface Person {
   source_count: number;
   military?: MilitaryService;
   affiliations?: Affiliation[];
+  links?: PersonLink[];
 }
 
 export interface Affiliation {
