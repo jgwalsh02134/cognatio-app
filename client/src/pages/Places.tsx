@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useSearch } from "wouter";
 import { MapPin, Search, ArrowLeft, Users } from "lucide-react";
 import { people, fullDisplayName, lifespan, type Person } from "@/lib/family";
 import { PersonAvatar } from "@/components/PersonAvatar";
@@ -56,19 +56,18 @@ function buildPlaceIndex(): PlaceEntry[] {
 }
 
 export default function Places() {
-  const [location] = useLocation();
+  const search = useSearch();
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
 
   // Read ?q= from the hash route.
   useEffect(() => {
-    const match = location.match(/[?&]q=([^&]+)/);
-    if (match) {
-      const decoded = decodeURIComponent(match[1].replace(/\+/g, " "));
-      setQuery(decoded);
-      setExpanded(decoded);
+    const q = new URLSearchParams(search).get("q");
+    if (q) {
+      setQuery(q);
+      setExpanded(q);
     }
-  }, [location]);
+  }, [search]);
 
   const all = useMemo(() => buildPlaceIndex(), []);
 

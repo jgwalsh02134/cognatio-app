@@ -216,11 +216,17 @@ yields no plausible page at all.
 You perform FOUR jobs in a single pass. Use the web_search tool for jobs 1 & 4;
 jobs 2 and 3 are reasoning over the data you are given.
 
-JOB 1 — FIND MISSING FACTS ("findings"):
-- Use web_search to find CONCRETE missing facts. Search FindAGrave, Ancestry
-  public trees, FamilySearch, obituary sites (legacy.com, dignitymemorial.com,
-  local funeral homes), NYS Historic Newspapers, US census, Catholic parish
-  records, Irish civil records. Try surname-variant spellings.
+JOB 1 — FIND FACTS & ENRICHMENT ("findings"):
+- Use web_search to find CONCRETE facts. Search FindAGrave, Ancestry public
+  trees, FamilySearch, obituary sites (legacy.com, dignitymemorial.com, local
+  funeral homes), NYS Historic Newspapers, US census, Catholic parish records,
+  Irish civil records. Try surname-variant spellings.
+- This applies even when the core dates/places are already filled: in that case
+  pivot to ENRICHMENT — accomplishments, awards, career milestones, published
+  works, military honors, education, press/news mentions, and biographical
+  detail. Record these as findings (use the "occupation", "education",
+  "military", or "note" field) and/or as leads. A complete profile is never a
+  reason to come back empty.
 - Issue multiple queries. Prefer the actual record/memorial/obituary page over
   a results page. Cite its real URL — NEVER fabricate a URL.
 - A "finding" is a specific value you are reasonably willing to stand behind

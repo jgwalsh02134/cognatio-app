@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import {
   ArrowLeft,
   ArrowRight,
@@ -190,22 +190,18 @@ function ChainView({ chain }: ChainViewProps) {
 }
 
 export default function Relate() {
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
+  const search = useSearch();
   const [a, setA] = useState<Person | null>(null);
   const [b, setB] = useState<Person | null>(null);
 
   // Read ?a= and ?b= from the hash for shareable deep links.
   useEffect(() => {
-    const matchA = location.match(/[?&]a=([^&]+)/);
-    const matchB = location.match(/[?&]b=([^&]+)/);
-    if (matchA) {
-      const p = peopleById[decodeURIComponent(matchA[1])];
-      if (p) setA(p);
-    }
-    if (matchB) {
-      const p = peopleById[decodeURIComponent(matchB[1])];
-      if (p) setB(p);
-    }
+    const params = new URLSearchParams(search);
+    const aId = params.get("a");
+    const bId = params.get("b");
+    if (aId && peopleById[aId]) setA(peopleById[aId]);
+    if (bId && peopleById[bId]) setB(peopleById[bId]);
     // Only initial read.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

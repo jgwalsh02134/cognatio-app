@@ -89,10 +89,6 @@ export function FindMissingInfo({ person }: { person: Person }) {
     }
   }
 
-  if (gaps.length === 0 && !finding) {
-    return null;
-  }
-
   // Anchorless placeholder (e.g. "Unknown" mother of a known child): we have
   // nothing concrete to send OpenAI — surface the limitation honestly instead
   // of pretending the button will do something useful.
@@ -139,8 +135,9 @@ export function FindMissingInfo({ person }: { person: Person }) {
               </span>
             </p>
           ) : (
-            <p className="text-xs text-muted-foreground mt-1">
-              No major gaps detected, but you can still re-run research.
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Core facts look complete — search the web for accomplishments,
+              press, obituaries, a biography, photos, or anything else.
             </p>
           )}
         </div>
@@ -163,7 +160,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
           ) : aiReady ? (
             <>
               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-              Find missing info
+              {gaps.length > 0 ? "Find missing info" : "Search the web"}
             </>
           ) : (
             <>
@@ -218,7 +215,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
         !isBusy && (
           <p className="text-xs text-muted-foreground leading-relaxed">
             {aiReady
-              ? "Runs three passes for this person: (1) searches the open web (FindAGrave, obituaries, census, parish records) for missing facts with source URLs, (2) checks the existing dates/places for errors and conflicts, and (3) scans the archive for likely duplicates and missing parent / spouse / sibling links — each one applyable or savable as a note."
+              ? "Searches the open web for this person — missing facts AND enrichment like accomplishments, press, obituaries, and biographies (with source URLs) — flags errors or conflicts in the existing data, and scans the archive for likely duplicates and missing parent / spouse / sibling links. Every result is applyable, savable as a note, or a link to check."
               : aiMode === "proxy"
                 ? "Enter the family access passphrase to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
                 : "Provide your OpenAI key once per session to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."}

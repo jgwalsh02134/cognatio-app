@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+import { Link, useSearch } from "wouter";
 import { useMemo, useState } from "react";
 import {
   bySurname,
@@ -19,15 +19,9 @@ import { cn } from "@/lib/utils";
 type Category = "surname" | "country";
 
 export default function PeopleList() {
-  const [location] = useLocation();
-  const initialSurname = (() => {
-    const m = location.match(/[?&]surname=([^&]+)/);
-    return m ? decodeURIComponent(m[1]) : null;
-  })();
-  const initialCountry = (() => {
-    const m = location.match(/[?&]country=([^&]+)/);
-    return m ? decodeURIComponent(m[1]) : null;
-  })();
+  const params = new URLSearchParams(useSearch());
+  const initialSurname = params.get("surname");
+  const initialCountry = params.get("country");
 
   const [filter, setFilter] = useState("");
   const [category, setCategory] = useState<Category>(initialCountry ? "country" : "surname");
