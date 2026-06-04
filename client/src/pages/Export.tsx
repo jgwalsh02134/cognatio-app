@@ -31,7 +31,7 @@ export default function ExportPage() {
   return (
     <div className="container mx-auto px-4 sm:px-5 py-6 sm:py-10 max-w-5xl">
       <header className="mb-6 sm:mb-10">
-        <h1 className="font-display text-xl sm:text-2xl font-semibold mb-2">Export archive</h1>
+        <h1 className="font-display text-xl font-semibold mb-2">Export archive</h1>
         <p className="text-sm text-muted-foreground max-w-2xl">
           Download the entire family archive as a standards-compliant GEDCOM 5.5.1 file. The export
           always reflects the latest state of the site — re-download whenever the archive is

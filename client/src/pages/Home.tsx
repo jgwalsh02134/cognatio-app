@@ -156,7 +156,7 @@ function StatPill({
   return (
     <div className="flex flex-col">
       <div
-        className="font-display text-2xl sm:text-3xl font-semibold tabular-nums leading-none"
+        className="font-display text-xl font-semibold tabular-nums leading-none"
         data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
         {value}
@@ -298,7 +298,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-1 mb-4 sm:mb-5">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-xl sm:text-2xl font-semibold flex items-center gap-2">
+        <h2 className="font-display text-xl font-semibold flex items-center gap-2">
           {Icon && <Icon className="h-5 w-5 text-primary" />}
           {title}
         </h2>
@@ -649,7 +649,7 @@ export default function Home() {
             Walsh · Maloy · Cranwell · Dugan Family Archive
           </span>
         </div>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-3xl">
+        <h1 className="font-display text-xl font-semibold leading-[1.15] tracking-tight max-w-3xl">
           The Walsh, Maloy, Cranwell, and Dugan family tree.
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-3 sm:mt-4 max-w-xl leading-relaxed">

@@ -101,7 +101,7 @@ export default function Places() {
         <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Place explorer
         </p>
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold leading-[1.15] tracking-tight">
+        <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight">
           Where the family lived
         </h1>
         <p className="text-sm text-muted-foreground mt-2.5 max-w-2xl">

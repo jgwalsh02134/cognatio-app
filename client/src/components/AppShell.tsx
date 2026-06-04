@@ -377,7 +377,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main
         className={cn(
-          "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col",
+          // Page roots use `mx-auto`, and auto margins on a flex item disable
+          // align-items:stretch — so the item sized to its content (max-content),
+          // pushing the page wider than the phone viewport and clipping the right
+          // edge. Forcing w-full pins each page root to the container width while
+          // its own max-w-* still caps the line length on desktop.
+          "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col [&>*]:w-full [&>*]:min-w-0",
           editBarVisible
             ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-24"
             : "pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",

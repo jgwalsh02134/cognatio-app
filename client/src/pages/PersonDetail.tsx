@@ -102,7 +102,7 @@ export default function PersonDetail() {
   if (!person) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-16 text-center">
-        <h1 className="font-display text-2xl font-semibold">Person not found</h1>
+        <h1 className="font-display text-xl font-semibold">Person not found</h1>
         <p className="text-sm text-muted-foreground mt-2">
           The id <code className="font-mono text-xs">{id}</code> isn't in this archive.
         </p>
@@ -181,7 +181,7 @@ export default function PersonDetail() {
 
       {/* Hero */}
       <header className="grid gap-5 sm:gap-7 sm:grid-cols-[auto_1fr_auto] sm:items-center pb-7 sm:pb-9 border-b">
-        <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl sm:text-2xl" />
+        <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl" />
         <div className="min-w-0">
           <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2.5">
             <span>{person.surname || "Unknown"} family</span>
@@ -191,7 +191,7 @@ export default function PersonDetail() {
               </span>
             )}
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold leading-[1.15] tracking-tight break-words">
+          <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight break-words">
             {unlocked ? (
               <span className="inline-flex flex-wrap items-baseline gap-2">
                 <EditableText

@@ -335,7 +335,7 @@ export default function Gaps() {
           <Sparkles className="h-3.5 w-3.5" />
           Research helper
         </div>
-        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold">
+        <h1 className="font-display text-lg sm:text-xl font-semibold">
           Fill in the blanks
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-3xl">
@@ -358,7 +358,7 @@ export default function Gaps() {
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground truncate w-full">
             All
           </span>
-          <span className="font-display text-xl sm:text-2xl font-semibold tabular-nums mt-1">
+          <span className="font-display text-xl font-semibold tabular-nums mt-1">
             {all.length}
           </span>
           <span className="text-[10px] text-muted-foreground mt-0.5">people</span>
@@ -376,7 +376,7 @@ export default function Gaps() {
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground truncate w-full">
               {GAP_LABELS[g]}
             </span>
-            <span className="font-display text-xl sm:text-2xl font-semibold tabular-nums mt-1">
+            <span className="font-display text-xl font-semibold tabular-nums mt-1">
               {gapCounts[g]}
             </span>
             <span className="text-[10px] text-muted-foreground mt-0.5">missing</span>

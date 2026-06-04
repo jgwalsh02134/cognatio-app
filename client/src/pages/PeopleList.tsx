@@ -84,7 +84,7 @@ export default function PeopleList() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-5 py-6 sm:py-8">
       <header className="mb-4 sm:mb-6">
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold">All people</h1>
+        <h1 className="font-display text-lg sm:text-xl font-semibold">All people</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {filtered.length} of {allPeople.length} individuals
         </p>

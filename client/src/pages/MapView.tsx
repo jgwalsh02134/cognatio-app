@@ -1,6 +1,5 @@
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "wouter";
 import L from "leaflet";
 import {
   CircleMarker,
@@ -23,12 +22,32 @@ const ORIGIN_COLOR = "#f59e0b"; // amber — countries of origin (non-US)
 const SETTLE_COLOR = "#2563eb"; // blue — US settlement
 const PATH_COLOR = "#e11d48"; // rose — immigration journeys
 
-function FitBounds({ points }: { points: LatLng[] }) {
+function MapController({ points }: { points: LatLng[] }) {
   const map = useMap();
   useEffect(() => {
-    if (points.length === 0) return;
-    const bounds = L.latLngBounds(points.map((p) => L.latLng(p[0], p[1])));
-    map.fitBounds(bounds, { padding: [36, 36], maxZoom: 9 });
+    const apply = () => {
+      // invalidateSize fixes the common mobile/responsive bug where Leaflet
+      // measures the container before it has its final size and renders grey
+      // gaps / only part of the map.
+      map.invalidateSize();
+      if (points.length) {
+        map.fitBounds(L.latLngBounds(points.map((p) => L.latLng(p[0], p[1]))), {
+          padding: [28, 28],
+          maxZoom: 9,
+        });
+      }
+    };
+    const t1 = window.setTimeout(apply, 80);
+    const t2 = window.setTimeout(() => map.invalidateSize(), 400);
+    const onResize = () => map.invalidateSize();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
   }, [map, points]);
   return null;
 }
@@ -94,7 +113,7 @@ export default function MapView() {
         />
       </div>
 
-      <div className="relative z-0 h-[60vh] sm:h-[68vh] overflow-hidden rounded-lg border border-card-border">
+      <div className="relative z-0 h-[58vh] sm:h-[70vh] overflow-hidden rounded-lg border border-card-border">
         <MapContainer
           center={[45, -40]}
           zoom={3}
@@ -106,7 +125,7 @@ export default function MapView() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <FitBounds points={allPoints} />
+          <MapController points={allPoints} />
 
           {/* Immigration journeys (drawn under the markers) */}
           {showPaths &&
@@ -145,7 +164,7 @@ export default function MapView() {
               <CircleMarker
                 key={m.place}
                 center={[m.lat, m.lng]}
-                radius={Math.min(22, 4 + Math.sqrt(m.count / maxCount) * 18)}
+                radius={Math.max(7, Math.min(24, 5 + Math.sqrt(m.count / maxCount) * 20))}
                 pathOptions={{
                   color: m.isOrigin ? ORIGIN_COLOR : SETTLE_COLOR,
                   fillColor: m.isOrigin ? ORIGIN_COLOR : SETTLE_COLOR,
@@ -161,12 +180,12 @@ export default function MapView() {
                       {m.count} {m.count === 1 ? "person" : "people"} ·{" "}
                       {m.isOrigin ? "Origin" : "Settlement"}
                     </div>
-                    <Link
-                      href={`/places?q=${encodeURIComponent(m.place)}`}
-                      className="text-primary hover:underline mt-1 inline-block"
+                    <a
+                      href={`#/places?q=${encodeURIComponent(m.place)}`}
+                      className="text-primary hover:underline mt-1 inline-flex min-h-8 items-center font-medium"
                     >
                       See people here →
-                    </Link>
+                    </a>
                   </div>
                 </Popup>
               </CircleMarker>

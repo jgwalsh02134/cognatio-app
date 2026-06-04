@@ -497,12 +497,12 @@ function SectionHead({
 }) {
   return (
     <div className="flex items-baseline justify-between gap-3 mb-4">
-      <h2 className="font-display text-base font-semibold flex items-center gap-2">
+      <h2 className="font-display text-base font-semibold flex items-center gap-2 shrink-0">
         {icon}
         {title}
       </h2>
       {hint && (
-        <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">
+        <span className="min-w-0 text-right text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">
           {hint}
         </span>
       )}
