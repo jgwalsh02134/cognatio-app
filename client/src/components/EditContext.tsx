@@ -37,6 +37,8 @@ export type PersonPatch = Partial<{
   notes: string[];
   sources: EditableSource[];
   links: NonNullable<Person["links"]>;
+  photo: Person["photo"];
+  genetics: NonNullable<Person["genetics"]>;
   affiliations: NonNullable<Person["affiliations"]>;
   occupations: string[];
   residences: Person["residences"];

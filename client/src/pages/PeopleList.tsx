@@ -17,6 +17,75 @@ import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Category = "surname" | "country";
+type SortKey = "surname" | "given" | "birth-asc" | "birth-desc";
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "surname", label: "Surname A–Z" },
+  { key: "given", label: "First name A–Z" },
+  { key: "birth-asc", label: "Birth year — oldest" },
+  { key: "birth-desc", label: "Birth year — newest" },
+];
+
+interface PeopleSection {
+  key: string;
+  label: string;
+  items: Person[];
+}
+
+function firstLetter(s: string): string {
+  const c = (s || "").trim().charAt(0).toUpperCase();
+  return /[A-Z]/.test(c) ? c : "#";
+}
+
+/** Sort the pool and split it into labelled sections (alphabetical letters for
+ *  name sorts, birth decades for chronological sorts) so the long list reads
+ *  like a directory instead of an undifferentiated grid. */
+function buildSections(pool: Person[], sort: SortKey): PeopleSection[] {
+  if (sort === "birth-asc" || sort === "birth-desc") {
+    const sorted = [...pool].sort((a, b) => {
+      const ya = parseYear(a.birth?.date);
+      const yb = parseYear(b.birth?.date);
+      if (ya == null && yb == null) return fullDisplayName(a).localeCompare(fullDisplayName(b));
+      if (ya == null) return 1;
+      if (yb == null) return -1;
+      return sort === "birth-asc" ? ya - yb : yb - ya;
+    });
+    const groups = new Map<string, Person[]>();
+    for (const p of sorted) {
+      const y = parseYear(p.birth?.date);
+      const label = y == null ? "No birth year" : `${Math.floor(y / 10) * 10}s`;
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label)!.push(p);
+    }
+    return [...groups.entries()].map(([label, items]) => ({ key: label, label, items }));
+  }
+
+  const keyOf = (p: Person) => (sort === "given" ? p.given || p.name : p.surname || "");
+  const sorted = [...pool].sort((a, b) => {
+    const ka = keyOf(a);
+    const kb = keyOf(b);
+    if (!ka && kb) return 1;
+    if (ka && !kb) return -1;
+    const c = ka.localeCompare(kb);
+    return c !== 0 ? c : fullDisplayName(a).localeCompare(fullDisplayName(b));
+  });
+  const groups = new Map<string, Person[]>();
+  for (const p of sorted) {
+    const k = keyOf(p);
+    const letter = k ? firstLetter(k) : "—";
+    if (!groups.has(letter)) groups.set(letter, []);
+    groups.get(letter)!.push(p);
+  }
+  // A–Z first, then "#" (non-letter), then "—" (no surname).
+  const rank = (l: string) => (l === "—" ? 2 : l === "#" ? 1 : 0);
+  return [...groups.entries()]
+    .sort((a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]))
+    .map(([letter, items]) => ({
+      key: letter === "—" ? "none" : letter,
+      label: letter === "—" ? "No surname" : letter,
+      items,
+    }));
+}
 
 export default function PeopleList() {
   const params = new URLSearchParams(useSearch());
@@ -28,6 +97,7 @@ export default function PeopleList() {
   const [activeSurname, setActiveSurname] = useState<string | null>(initialSurname);
   const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry);
   const [livingFilter, setLivingFilter] = useState<"all" | "living" | "deceased">("all");
+  const [sort, setSort] = useState<SortKey>("surname");
   // Mobile-only: the long surname/country browser is collapsed by default so the
   // results sit near the top of the screen. On md+ the full sidebar always shows.
   const [facetsOpen, setFacetsOpen] = useState(false);
@@ -69,11 +139,10 @@ export default function PeopleList() {
     } else if (livingFilter === "deceased") {
       pool = pool.filter((p) => p.death?.date);
     }
-    return [...pool].sort((a, b) => {
-      if (a.surname !== b.surname) return a.surname.localeCompare(b.surname);
-      return a.given.localeCompare(b.given);
-    });
+    return pool;
   }, [filter, activeSurname, activeCountry, livingFilter]);
+
+  const sections = useMemo(() => buildSections(filtered, sort), [filtered, sort]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-5 py-6 sm:py-8">
@@ -254,31 +323,87 @@ export default function PeopleList() {
 
         {/* List */}
         <div className="min-w-0">
+          {/* Toolbar: result count + sort */}
+          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+            <div className="text-xs text-muted-foreground tabular-nums">
+              {filtered.length} {filtered.length === 1 ? "person" : "people"}
+            </div>
+            <label className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="uppercase tracking-[0.16em] text-[10px]">Sort</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                className="rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                data-testid="select-sort"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.key} value={o.key}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {/* Jump strip: hop to a letter / decade section */}
+          {sections.length > 1 && (
+            <div className="flex flex-wrap gap-1 mb-4">
+              {sections.map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() =>
+                    document
+                      .getElementById(`grp-${s.key}`)
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                  }
+                  className="inline-flex h-7 min-w-7 items-center justify-center rounded px-1.5 text-[11px] font-medium text-muted-foreground hover-elevate active-elevate-2"
+                  data-testid={`jump-${s.key}`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           {filtered.length === 0 ? (
             <div className="rounded-md border border-dashed p-12 text-center text-sm text-muted-foreground">
               No matches.
             </div>
           ) : (
-            <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((p) => (
-                <li key={p.id} className="min-w-0">
-                  <Link
-                    href={`/person/${encodeURIComponent(p.id)}`}
-                    className="flex items-center gap-3 rounded-md border border-card-border bg-card p-2.5 sm:p-3 hover-elevate active-elevate-2 min-w-0 min-h-[3rem]"
-                    data-testid={`person-row-${p.id}`}
-                  >
-                    <PersonAvatar person={p} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium truncate">{fullDisplayName(p)}</div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {lifespan(p)}
-                        {p.birth?.place ? ` · ${p.birth.place}` : ""}
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            sections.map((sec) => (
+              <section key={sec.key} className="mb-5 last:mb-0">
+                <div
+                  id={`grp-${sec.key}`}
+                  className="scroll-mt-28 sticky top-14 z-10 -mx-1 mb-2 flex items-baseline gap-2 border-b border-border/60 bg-background/90 px-1 py-1.5 backdrop-blur"
+                >
+                  <span className="font-display text-sm font-semibold">{sec.label}</span>
+                  <span className="text-[11px] tabular-nums text-muted-foreground">
+                    {sec.items.length}
+                  </span>
+                </div>
+                <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                  {sec.items.map((p) => (
+                    <li key={p.id} className="min-w-0">
+                      <Link
+                        href={`/person/${encodeURIComponent(p.id)}`}
+                        className="flex items-center gap-3 rounded-md border border-card-border bg-card p-2.5 sm:p-3 hover-elevate active-elevate-2 min-w-0 min-h-[3rem]"
+                        data-testid={`person-row-${p.id}`}
+                      >
+                        <PersonAvatar person={p} size="sm" />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium truncate">{fullDisplayName(p)}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {lifespan(p)}
+                            {p.birth?.place ? ` · ${p.birth.place}` : ""}
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
           )}
         </div>
       </div>

@@ -50,11 +50,34 @@ const US_STATES = new Set([
 ]);
 const US_MARKERS = new Set(["usa", "u.s.a.", "u.s.", "us", "united states", "united states of america", "america", "mass.", "ny"]);
 
+// Two-letter US state abbreviations → rough state centroid. Bare codes like
+// "PA" geocode to Panama / "OR" to nowhere useful, so we resolve them here
+// instead of trusting the place_coords table for these ambiguous tokens.
+const US_STATE_ABBR: Record<string, LatLng> = {
+  al: [32.8, -86.8], ak: [64.0, -152.0], az: [34.3, -111.7], ar: [34.8, -92.4],
+  ca: [37.2, -119.3], co: [39.0, -105.5], ct: [41.6, -72.7], de: [39.0, -75.5],
+  fl: [28.6, -82.4], ga: [32.6, -83.4], hi: [20.3, -156.4], id: [44.4, -114.6],
+  il: [40.0, -89.2], in: [39.9, -86.3], ia: [42.0, -93.5], ks: [38.5, -98.4],
+  ky: [37.5, -85.3], la: [31.0, -92.0], me: [45.4, -69.2], md: [39.0, -76.8],
+  ma: [42.3, -71.8], mi: [44.3, -85.4], mn: [46.3, -94.3], ms: [32.7, -89.7],
+  mo: [38.4, -92.5], mt: [47.0, -109.6], ne: [41.5, -99.8], nv: [39.3, -116.6],
+  nh: [43.7, -71.6], nj: [40.2, -74.7], nm: [34.4, -106.1], ny: [42.9, -75.5],
+  nc: [35.5, -79.4], nd: [47.4, -100.5], oh: [40.3, -82.8], ok: [35.6, -97.5],
+  or: [43.9, -120.6], pa: [40.9, -77.6], ri: [41.7, -71.6], sc: [33.9, -80.9],
+  sd: [44.4, -100.2], tn: [35.9, -86.4], tx: [31.5, -99.3], ut: [39.3, -111.7],
+  vt: [44.0, -72.7], va: [37.5, -78.9], wa: [47.4, -120.5], wv: [38.6, -80.6],
+  wi: [44.6, -89.9], wy: [43.0, -107.5], dc: [38.9, -77.0],
+};
+
 /** Coordinates for a place string, or null. Exact match first, then a coarse
  *  country/state centroid fallback. */
 export function coordsForPlace(place?: string | null): LatLng | null {
   if (!place) return null;
   const key = place.trim();
+  // A bare two-letter state code ("PA", "NY") — resolve to the state centroid
+  // before the geocoded table, which mis-maps e.g. "PA" → Panama.
+  const abbr = US_STATE_ABBR[key.toLowerCase()];
+  if (abbr && key.length <= 2) return abbr;
   if (COORDS[key]) return COORDS[key];
   const parts = key.toLowerCase().split(",").map((s) => s.trim()).filter(Boolean);
   for (const t of [...parts].reverse()) {
@@ -68,7 +91,9 @@ export function placeCountry(place: string): string {
   const low = place.toLowerCase();
   const parts = low.split(",").map((s) => s.trim()).filter(Boolean);
   for (const t of parts) {
-    if (US_STATES.has(t) || US_MARKERS.has(t)) return "United States";
+    if (US_STATES.has(t) || US_MARKERS.has(t) || US_STATE_ABBR[t]) {
+      return "United States";
+    }
   }
   // Catch un-delimited strings like "Albany New York" or "Troy New York USA"
   // where the state never appears as its own comma-separated token.

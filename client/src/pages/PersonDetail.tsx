@@ -24,6 +24,8 @@ import { AffiliationsCard } from "@/components/Affiliations";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEdit, type EditableSource, type PersonPatch } from "@/components/EditContext";
 import { PersonLinksCard } from "@/components/PersonLinks";
+import { GeneticsCard } from "@/components/GeneticsCard";
+import { PhotoEditor } from "@/components/PhotoEditor";
 import { CountryFlag } from "@/components/CountryFlag";
 import { linksFor } from "@/lib/researchLinks";
 import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
@@ -38,6 +40,8 @@ import {
   BookOpen,
   Briefcase,
   Calendar,
+  Camera,
+  Dna,
   GitBranch,
   GraduationCap,
   Heart,
@@ -94,6 +98,7 @@ export default function PersonDetail() {
   const original = getPerson(id);
   const { unlocked, merge, setPatch, pending } = useEdit();
   const person = original ? (merge(original) as PersonWithSources) : null;
+  const [photoEditorOpen, setPhotoEditorOpen] = useState(false);
 
   function update(patch: PersonPatch) {
     if (!original) return;
@@ -134,6 +139,8 @@ export default function PersonDetail() {
     jumpTargets.push({ id: "section-affiliations", label: "Affiliations", icon: <Link2 className="h-3.5 w-3.5" /> });
   if (links.length > 0 || unlocked)
     jumpTargets.push({ id: "section-links", label: "Links", icon: <Link2 className="h-3.5 w-3.5" /> });
+  if ((person.genetics && Object.keys(person.genetics).length > 0) || unlocked)
+    jumpTargets.push({ id: "section-genetics", label: "DNA", icon: <Dna className="h-3.5 w-3.5" /> });
   if ((person.notes || []).length > 0 || unlocked)
     jumpTargets.push({ id: "section-notes", label: "Notes", icon: <StickyNote className="h-3.5 w-3.5" /> });
   if (sources.length > 0 || unlocked)
@@ -185,7 +192,33 @@ export default function PersonDetail() {
 
       {/* Hero */}
       <header className="grid gap-5 sm:gap-7 sm:grid-cols-[auto_1fr_auto] sm:items-center pb-7 sm:pb-9 border-b">
-        <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl" />
+        <div className="relative w-20 sm:w-24 shrink-0">
+          <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl" />
+          {unlocked && (
+            <>
+              <button
+                type="button"
+                onClick={() => setPhotoEditorOpen(true)}
+                className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover-elevate active-elevate-2"
+                aria-label={person.photo ? "Change photo" : "Add photo"}
+                data-testid="button-edit-photo"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
+              {person.photo && (
+                <button
+                  type="button"
+                  onClick={() => update({ photo: null })}
+                  className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm hover-elevate active-elevate-2"
+                  aria-label="Remove photo"
+                  data-testid="button-remove-photo"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              )}
+            </>
+          )}
+        </div>
         <div className="min-w-0">
           <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2.5">
             <span>{person.surname || "Unknown"} family</span>
@@ -312,6 +345,17 @@ export default function PersonDetail() {
         )}
       </header>
 
+      <PhotoEditor
+        open={photoEditorOpen}
+        initial={person.photo}
+        name={fullDisplayName(person)}
+        onClose={() => setPhotoEditorOpen(false)}
+        onSave={(dataUri) => {
+          update({ photo: dataUri });
+          setPhotoEditorOpen(false);
+        }}
+      />
+
       {!isRoot && chain && chain.length > 1 && (
         <RelationshipChainCard chain={chain} root={root} relationship={relationship} />
       )}
@@ -375,6 +419,9 @@ export default function PersonDetail() {
           </section>
           <section id="section-links" className="scroll-mt-24">
             <PersonLinksCard links={links} update={update} unlocked={unlocked} />
+          </section>
+          <section id="section-genetics" className="scroll-mt-24">
+            <GeneticsCard genetics={person.genetics} update={update} unlocked={unlocked} />
           </section>
           <section id="section-notes" className="scroll-mt-24">
             <NotesEditor person={person} update={update} unlocked={unlocked} />

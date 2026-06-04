@@ -24,6 +24,22 @@ export function PersonAvatar({ person, size = "md", className }: Props) {
     md: "h-11 w-11 text-sm",
     lg: "h-16 w-16 text-lg",
   };
+  // Uploaded portrait wins over the initial avatar.
+  if (person.photo) {
+    return (
+      <img
+        src={person.photo}
+        alt={person.name}
+        loading="lazy"
+        className={cn(
+          "relative shrink-0 rounded-full object-cover ring-1 ring-border bg-muted",
+          sizes[size],
+          className,
+        )}
+        data-testid={`avatar-person-${person.id}`}
+      />
+    );
+  }
   return (
     <div
       className={cn(

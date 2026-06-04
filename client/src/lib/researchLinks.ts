@@ -52,9 +52,9 @@ function fsSearch(p: Person): string {
     params.set("q.deathLikeDate.from", String(dy - 2));
     params.set("q.deathLikeDate.to", String(dy + 2));
   }
-  // FamilySearch's 2025 search overhaul retired "/search/record/results"
-  // (it now 404s); the current records search is "/search/records/results".
-  return `https://www.familysearch.org/search/records/results?${params.toString()}`;
+  // FamilySearch's public record search lives at "/search/record/results"
+  // (singular "record"). The plural "/search/records/results" 404s.
+  return `https://www.familysearch.org/search/record/results?${params.toString()}`;
 }
 
 function fsTreePersonSearch(p: Person): string {
@@ -121,7 +121,7 @@ function usCensusSearch(p: Person): string {
     params.set("q.birthLikeDate.from", String(by - 2));
     params.set("q.birthLikeDate.to", String(by + 2));
   }
-  return `https://www.familysearch.org/search/records/results?${params.toString()}`;
+  return `https://www.familysearch.org/search/record/results?${params.toString()}`;
 }
 
 function irishGenealogySearch(p: Person): string {
