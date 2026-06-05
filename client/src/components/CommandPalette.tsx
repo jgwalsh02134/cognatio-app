@@ -27,6 +27,7 @@ import {
   ShieldAlert,
   Combine,
   Map as MapIcon,
+  Dna,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -142,6 +143,14 @@ export function CommandPalette({
         icon: <MapIcon className="h-4 w-4" />,
         keywords: ["map", "geography", "immigration", "origins", "settlement", "atlas", "leaflet"],
         perform: go("/map"),
+      },
+      {
+        id: "nav-genetics",
+        label: "Go to Genetics",
+        hint: "DNA, haplogroups, heritable traits",
+        icon: <Dna className="h-4 w-4" />,
+        keywords: ["genetics", "dna", "haplogroup", "ancestry", "23andme", "blood type", "health", "heritable"],
+        perform: go("/genetics"),
       },
       {
         id: "nav-relate",

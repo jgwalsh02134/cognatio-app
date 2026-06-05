@@ -307,7 +307,7 @@ export function getSiblings(p: Person): Person[] {
   return Array.from(ids)
     .map((id) => peopleById[id])
     .filter((x): x is Person => Boolean(x))
-    .sort((a, b) => (parseYear(a.birth?.date) ?? 0) - (parseYear(b.birth?.date) ?? 0));
+    .sort((a, b) => (parseYear(a.birth?.date) ?? Infinity) - (parseYear(b.birth?.date) ?? Infinity));
 }
 
 /** Build pedigree map: position by generation. Returns nested ancestor tree. */

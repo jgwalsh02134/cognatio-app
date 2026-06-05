@@ -9,6 +9,7 @@ import {
   getSiblings,
   isLiving,
   lifespan,
+  parseYear,
   relationshipChain,
   type ChainStep,
   type EventInfo,
@@ -92,6 +93,16 @@ interface PersonWithSources extends Person {
   sources?: EditableSource[];
 }
 
+/** Birth-order comparator; people with no known birth year sort last. */
+const byBirthYear = (a: Person, b: Person) =>
+  (parseYear(a.birth?.date) ?? Infinity) - (parseYear(b.birth?.date) ?? Infinity);
+
+/** Father → mother → other, so the parents block is always in a fixed order. */
+function parentRank(p: Person): number {
+  const s = (p.sex || "").toUpperCase();
+  return s === "M" ? 0 : s === "F" ? 1 : 2;
+}
+
 export default function PersonDetail() {
   const params = useParams<{ id: string }>();
   const id = decodeURIComponent(params.id || "");
@@ -122,7 +133,11 @@ export default function PersonDetail() {
   const sources: EditableSource[] = person.sources ?? [];
   const links = person.links ?? [];
 
-  const parents = person.parent_ids.map(getPerson).filter(Boolean) as Person[];
+  // Parents: father first, then mother, then anyone else — a stable hierarchy
+  // rather than raw GEDCOM order.
+  const parents = (person.parent_ids.map(getPerson).filter(Boolean) as Person[]).sort(
+    (a, b) => parentRank(a) - parentRank(b),
+  );
   const siblings = getSiblings(person);
   const pedigree = buildPedigree(person.id, 4);
   const root = getRootPerson();
@@ -1208,12 +1223,20 @@ function SpousesGroup({ person, unlocked }: { person: Person; unlocked: boolean 
           </div>
         )}
         <div className="space-y-5">
-          {person.family_spouse_ids.map((fid) => {
+          {[...person.family_spouse_ids]
+            .sort((fa, fb) => {
+              // Order multiple marriages chronologically by marriage year.
+              const ya = parseYear(familiesById[fa]?.marriage?.date) ?? Infinity;
+              const yb = parseYear(familiesById[fb]?.marriage?.date) ?? Infinity;
+              return ya - yb;
+            })
+            .map((fid) => {
             const fam = familiesById[fid];
             if (!fam) return null;
             const spouseId = fam.husband_id === person.id ? fam.wife_id : fam.husband_id;
             const spouse = spouseId ? getPerson(spouseId) : null;
-            const children = fam.children_ids.map(getPerson).filter(Boolean) as Person[];
+            // Children listed in birth order.
+            const children = (fam.children_ids.map(getPerson).filter(Boolean) as Person[]).sort(byBirthYear);
             return (
               <div key={fid} className="space-y-2">
                 {spouse && (

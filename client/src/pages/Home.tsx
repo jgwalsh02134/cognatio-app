@@ -13,9 +13,11 @@ import {
 import {
   ArrowRight,
   Award,
+  BarChart3,
   Calendar,
   Clock,
   Compass,
+  LayoutGrid,
   Crown,
   Download,
   FileText,
@@ -650,7 +652,7 @@ export default function Home() {
           </span>
         </div>
         <h1 className="font-display text-xl font-semibold leading-[1.15] tracking-tight max-w-3xl">
-          The Walsh, Maloy, Cranwell, and Dugan family tree.
+          Generations gathered in one place.
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-3 sm:mt-4 max-w-xl leading-relaxed">
           A merged record of {stats.total_individuals} ancestors and descendants — assembled
@@ -732,8 +734,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────── Feature discovery ───────── */}
+      {/* ───────── Explore (grouped navigation) ───────── */}
       <section className="mt-10 sm:mt-12">
+        <SectionHeader
+          icon={LayoutGrid}
+          title="Explore the archive"
+          description="Pick a way in. Search and the AI assistant are always in the top bar — start anywhere, nothing here is required reading."
+        />
+
+        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+          Explore
+        </div>
         <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <FeatureCard
             href="/tree"
@@ -752,18 +763,19 @@ export default function Home() {
             testId="feature-people"
           />
           <FeatureCard
+            href="/map"
+            icon={MapIcon}
+            title="Map"
+            description="Countries of origin, Atlantic crossings, and where the family settled."
+            accent="primary"
+            testId="feature-map"
+          />
+          <FeatureCard
             href="/timeline"
             icon={Clock}
             title="Family timeline"
             description="Every dated life event laid out chronologically."
             testId="feature-timeline"
-          />
-          <FeatureCard
-            href="/relate"
-            icon={GitMerge}
-            title="Relationship calculator"
-            description="Pick any two people and see how they connect."
-            testId="feature-relate"
           />
           <FeatureCard
             href="/surnames"
@@ -780,13 +792,25 @@ export default function Home() {
             testId="feature-places"
           />
           <FeatureCard
-            href="/map"
-            icon={MapIcon}
-            title="Map"
-            description="Countries of origin, Atlantic crossings, and where the family settled."
-            accent="primary"
-            testId="feature-map"
+            href="/roots"
+            icon={Crown}
+            title="Deepest roots"
+            description="Direct paternal & maternal lines, ahnentafel, depth by surname."
+            testId="feature-roots"
           />
+          <FeatureCard
+            href="/relate"
+            icon={GitMerge}
+            title="Relationship calculator"
+            description="Pick any two people and see how they connect."
+            testId="feature-relate"
+          />
+        </div>
+
+        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 mt-6 sm:mt-7">
+          Research &amp; tools
+        </div>
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <FeatureCard
             href="/research"
             icon={Compass}
@@ -796,12 +820,12 @@ export default function Home() {
             testId="feature-research"
           />
           <FeatureCard
-            href="/roots"
-            icon={Crown}
-            title="Deepest roots"
-            description="Direct paternal & maternal lines, ahnentafel, depth by surname."
-            accent="primary"
-            testId="feature-roots"
+            href="/gaps"
+            icon={ListChecks}
+            title="Gaps to research"
+            description="People missing key facts — find sources, apply edits."
+            meta={`${peopleWithGaps} · ${totalGaps} gaps`}
+            testId="feature-gaps"
           />
           <FeatureCard
             href="/finder"
@@ -822,16 +846,7 @@ export default function Home() {
             icon={GitMerge}
             title="Find duplicates"
             description="Spot the same person imported twice and merge their records."
-            accent="primary"
             testId="feature-duplicates"
-          />
-          <FeatureCard
-            href="/gaps"
-            icon={ListChecks}
-            title="Gaps to research"
-            description="People missing key facts — find sources, apply edits."
-            meta={`${peopleWithGaps} · ${totalGaps} gaps`}
-            testId="feature-gaps"
           />
           <FeatureCard
             href="/export"
@@ -843,8 +858,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────── Notable people ───────── */}
-      <section className="mt-10 sm:mt-12">
+      {/* ───────── The archive at a glance (analytics) ───────── */}
+      <div
+        className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex items-center gap-3"
+        data-testid="divider-at-a-glance"
+      >
+        <BarChart3 className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+          The archive at a glance
+        </span>
+        <span className="h-px flex-1 bg-border" aria-hidden="true" />
+      </div>
+
+      <section>
         <SectionHeader
           icon={Award}
           title="Notable people"

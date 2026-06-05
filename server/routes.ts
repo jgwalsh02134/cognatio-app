@@ -165,6 +165,92 @@ export async function registerRoutes(
     },
   );
 
+  // Passphrase-gated proxy to the OpenAI Images *edit* API, used only for
+  // restoring / colorizing uploaded family photos. The client sends a data-URL
+  // + a pre-built (identity-locked) prompt; we forward it as multipart with the
+  // server key and return the edited image as a data-URL. gpt-image-2 processes
+  // inputs at high fidelity (best likeness preservation); older models get
+  // input_fidelity=high.
+  app.post(
+    "/api/ai/images/edit",
+    express.json({ limit: "12mb" }),
+    async (req: Request, res: Response) => {
+      const key = process.env.OPENAI_API_KEY;
+      if (!key) {
+        return res
+          .status(503)
+          .json({ error: { message: "AI is not configured on this server." } });
+      }
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
+      if (rateLimited(ip)) {
+        return res.status(429).json({
+          error: { message: "Too many AI requests — wait a minute and try again." },
+        });
+      }
+      if (!passcodeOk(req.header("x-ai-passcode"))) {
+        return res
+          .status(401)
+          .json({ error: { message: "Invalid or missing access passphrase." } });
+      }
+      const body = req.body as { image?: string; prompt?: string };
+      if (!body?.image || !body.image.startsWith("data:") || !body?.prompt) {
+        return res
+          .status(400)
+          .json({ error: { message: "Body must include an image data-URL and a prompt." } });
+      }
+
+      async function callOpenAI(model: string): Promise<globalThis.Response> {
+        const comma = body.image!.indexOf(",");
+        const meta = body.image!.slice(5, comma); // e.g. "image/png;base64"
+        const mime = meta.split(";")[0] || "image/png";
+        const bytes = Buffer.from(body.image!.slice(comma + 1), "base64");
+        const form = new FormData();
+        form.append("model", model);
+        form.append(
+          "image",
+          new Blob([bytes], { type: mime }),
+          mime.includes("png") ? "photo.png" : "photo.jpg",
+        );
+        form.append("prompt", body.prompt!);
+        form.append("size", "1024x1024");
+        form.append("quality", "high");
+        // gpt-image-2 is always high fidelity and rejects this param.
+        if (model.startsWith("gpt-image-1")) form.append("input_fidelity", "high");
+        return fetch("https://api.openai.com/v1/images/edits", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${key}` },
+          body: form,
+        });
+      }
+
+      try {
+        let upstream = await callOpenAI("gpt-image-2");
+        if (!upstream.ok && (upstream.status === 400 || upstream.status === 404)) {
+          // Account may not have gpt-image-2 — fall back to a high-fidelity model.
+          upstream = await callOpenAI("gpt-image-1.5");
+        }
+        const json = (await upstream.json()) as {
+          data?: { b64_json?: string }[];
+          error?: { message?: string };
+        };
+        if (!upstream.ok) {
+          return res
+            .status(upstream.status)
+            .json({ error: { message: json.error?.message || "Image edit failed." } });
+        }
+        const b64 = json.data?.[0]?.b64_json;
+        if (!b64) {
+          return res.status(502).json({ error: { message: "No image returned." } });
+        }
+        res.json({ image: `data:image/png;base64,${b64}` });
+      } catch (e) {
+        res.status(502).json({
+          error: { message: e instanceof Error ? e.message : "Upstream AI error" },
+        });
+      }
+    },
+  );
+
   // ----- Persistent edit overlay (Postgres) ------------------------------
 
   // Tells the client whether server-side permanent saving is available.

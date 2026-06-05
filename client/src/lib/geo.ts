@@ -86,35 +86,107 @@ export function coordsForPlace(place?: string | null): LatLng | null {
   return null;
 }
 
-/** Best-effort country for a place string. */
+// Recognized foreign countries (token → display name).
+const FOREIGN_COUNTRIES: Record<string, string> = {
+  ireland: "Ireland", germany: "Germany", england: "England", scotland: "Scotland",
+  wales: "Wales", canada: "Canada", france: "France", italy: "Italy",
+  denmark: "Denmark", netherlands: "Netherlands", holland: "Netherlands",
+  sweden: "Sweden", norway: "Norway", austria: "Austria", switzerland: "Switzerland",
+  belgium: "Belgium", poland: "Poland", spain: "Spain", "northern ireland": "Northern Ireland",
+};
+
+// Sub-national regions that imply a country even when the country is omitted.
+const REGION_TO_COUNTRY: Record<string, string> = {
+  "nova scotia": "Canada", "new brunswick": "Canada", ontario: "Canada",
+  quebec: "Canada", "british columbia": "Canada", manitoba: "Canada",
+  saskatchewan: "Canada", alberta: "Canada", newfoundland: "Canada",
+  bayern: "Germany", bavaria: "Germany", wurtemburg: "Germany",
+  wurttemberg: "Germany", "württemberg": "Germany", prussia: "Germany",
+  preussen: "Germany", hessen: "Germany", hesse: "Germany", saxony: "Germany",
+  sachsen: "Germany", rhineland: "Germany", baden: "Germany",
+};
+
+/** Best-effort country for a place string; "Unknown" when it can't be classified. */
 export function placeCountry(place: string): string {
   const low = place.toLowerCase();
   const parts = low.split(",").map((s) => s.trim()).filter(Boolean);
+  const noDots = low.replace(/\./g, "");
+  // 1. Exact comma-delimited tokens that name a US state / marker / code.
   for (const t of parts) {
     if (US_STATES.has(t) || US_MARKERS.has(t) || US_STATE_ABBR[t]) {
       return "United States";
     }
   }
-  // Catch un-delimited strings like "Albany New York" or "Troy New York USA"
-  // where the state never appears as its own comma-separated token.
+  // 2. A full state name appearing anywhere ("Albany New York").
   for (const st of US_STATES) {
     if (new RegExp(`\\b${st}\\b`).test(low)) return "United States";
   }
-  const last = parts[parts.length - 1] ?? "";
-  if (last === "ireland") return "Ireland";
-  if (last === "germany") return "Germany";
-  if (last === "england") return "England";
-  if (last === "scotland") return "Scotland";
-  if (last === "wales") return "Wales";
-  if (last === "canada") return "Canada";
-  if (last === "france") return "France";
-  if (last === "italy") return "Italy";
-  // Title-case the last token as a guess.
-  return last ? last.replace(/\b\w/g, (c) => c.toUpperCase()) : "Unknown";
+  // 3. Recognized foreign country / sub-national region (BEFORE the loose
+  //    2-letter scan, so e.g. "Co. Cork, Ireland" isn't read as Colorado).
+  for (const t of parts) {
+    if (REGION_TO_COUNTRY[t]) return REGION_TO_COUNTRY[t];
+  }
+  for (const t of [...parts].reverse()) {
+    if (FOREIGN_COUNTRIES[t]) return FOREIGN_COUNTRIES[t];
+  }
+  // 4. Last resort: an undelimited US code as a whole word ("Utica Ny", "N.Y.").
+  for (const ab of Object.keys(US_STATE_ABBR)) {
+    if (new RegExp(`\\b${ab}\\b`).test(noDots)) return "United States";
+  }
+  return "Unknown";
 }
 
 function isUS(place: string): boolean {
   return placeCountry(place) === "United States";
+}
+
+const US_ABBR_TO_NAME: Record<string, string> = {
+  al: "Alabama", ak: "Alaska", az: "Arizona", ar: "Arkansas", ca: "California",
+  co: "Colorado", ct: "Connecticut", de: "Delaware", fl: "Florida", ga: "Georgia",
+  hi: "Hawaii", id: "Idaho", il: "Illinois", in: "Indiana", ia: "Iowa",
+  ks: "Kansas", ky: "Kentucky", la: "Louisiana", me: "Maine", md: "Maryland",
+  ma: "Massachusetts", mi: "Michigan", mn: "Minnesota", ms: "Mississippi",
+  mo: "Missouri", mt: "Montana", ne: "Nebraska", nv: "Nevada", nh: "New Hampshire",
+  nj: "New Jersey", nm: "New Mexico", ny: "New York", nc: "North Carolina",
+  nd: "North Dakota", oh: "Ohio", ok: "Oklahoma", or: "Oregon", pa: "Pennsylvania",
+  ri: "Rhode Island", sc: "South Carolina", sd: "South Dakota", tn: "Tennessee",
+  tx: "Texas", ut: "Utah", vt: "Vermont", va: "Virginia", wa: "Washington",
+  wv: "West Virginia", wi: "Wisconsin", wy: "Wyoming", dc: "District of Columbia",
+};
+
+function titleCaseWords(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export const UNSPECIFIED_REGION = "Other / unspecified";
+
+/**
+ * Best-effort region for grouping a place under its country: the US state, or
+ * the administrative area just below the country for foreign places. Falls back
+ * to UNSPECIFIED_REGION when the string is too coarse (e.g. bare "Ireland").
+ */
+export function placeRegion(place: string): string {
+  const country = placeCountry(place);
+  const parts = place.split(",").map((s) => s.trim()).filter(Boolean);
+  if (country === "United States") {
+    for (const p of parts) {
+      const l = p.toLowerCase();
+      if (US_STATES.has(l)) return titleCaseWords(l);
+      if (US_STATE_ABBR[l]) return US_ABBR_TO_NAME[l] ?? p.toUpperCase();
+    }
+    const low = place.toLowerCase();
+    for (const st of US_STATES) {
+      if (new RegExp(`\\b${st}\\b`).test(low)) return titleCaseWords(st);
+    }
+    return UNSPECIFIED_REGION;
+  }
+  if (parts.length >= 2) {
+    const before = parts[parts.length - 2];
+    if (before && !/^\d+$/.test(before) && before.toLowerCase() !== country.toLowerCase()) {
+      return titleCaseWords(before);
+    }
+  }
+  return UNSPECIFIED_REGION;
 }
 
 export interface PlaceMarker {

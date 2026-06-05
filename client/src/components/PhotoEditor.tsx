@@ -1,5 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ImagePlus, RotateCcw, Sparkles, Upload, Wand2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  ImagePlus,
+  KeyRound,
+  Loader2,
+  Palette,
+  RotateCcw,
+  Sparkles,
+  Upload,
+  Wand2,
+  X,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAI } from "@/components/AIContext";
+import { enhancePhoto, type EnhanceMode } from "@/lib/photoAI";
 
 /** Square output resolution for the stored portrait — large enough for a crisp
  *  profile photo, small enough to live in the JSON edit overlay (~40–70 KB). */
@@ -68,25 +82,59 @@ export function PhotoEditor({
   const [adjust, setAdjust] = useState<Adjust>(DEFAULT_ADJUST);
   const drag = useRef<{ x: number; y: number } | null>(null);
 
+  const { getAuth, aiReady, aiMode, openKeyDialog } = useAI();
+  const [aiBusy, setAiBusy] = useState<EnhanceMode | null>(null);
+  const [aiBefore, setAiBefore] = useState<string | null>(null);
+  const [aiResult, setAiResult] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  function clearAi() {
+    setAiBusy(null);
+    setAiBefore(null);
+    setAiResult(null);
+    setAiError(null);
+  }
+
+  // Render the current crop + adjustments at an arbitrary square size. Pan is
+  // tracked in OUT-canvas pixels, so scale it by size/OUT for other sizes.
+  const paint = useCallback(
+    (ctx: CanvasRenderingContext2D, size: number) => {
+      const img = imgRef.current;
+      ctx.clearRect(0, 0, size, size);
+      if (!img) return;
+      const natW = img.naturalWidth;
+      const natH = img.naturalHeight;
+      const cover = Math.max(size / natW, size / natH) * zoom;
+      const w = natW * cover;
+      const h = natH * cover;
+      const k = size / OUT;
+      const dx = clamp((size - w) / 2 + pan.x * k, size - w, 0);
+      const dy = clamp((size - h) / 2 + pan.y * k, size - h, 0);
+      ctx.filter = filterString(adjust);
+      ctx.drawImage(img, dx, dy, w, h);
+      ctx.filter = "none";
+    },
+    [zoom, pan, adjust],
+  );
+
   const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    const img = imgRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.clearRect(0, 0, OUT, OUT);
-    if (!img) return;
-    const natW = img.naturalWidth;
-    const natH = img.naturalHeight;
-    const cover = Math.max(OUT / natW, OUT / natH) * zoom;
-    const w = natW * cover;
-    const h = natH * cover;
-    const dx = clamp((OUT - w) / 2 + pan.x, OUT - w, 0);
-    const dy = clamp((OUT - h) / 2 + pan.y, OUT - h, 0);
-    ctx.filter = filterString(adjust);
-    ctx.drawImage(img, dx, dy, w, h);
-    ctx.filter = "none";
-  }, [zoom, pan, adjust]);
+    const ctx = canvasRef.current?.getContext("2d");
+    if (ctx) paint(ctx, OUT);
+  }, [paint]);
+
+  /** Render the current crop to a detached canvas and return a data-URL. */
+  const exportDataUrl = useCallback(
+    (size: number, type = "image/jpeg", quality = 0.85): string | null => {
+      const off = document.createElement("canvas");
+      off.width = size;
+      off.height = size;
+      const ctx = off.getContext("2d");
+      if (!ctx) return null;
+      paint(ctx, size);
+      return off.toDataURL(type, quality);
+    },
+    [paint],
+  );
 
   useEffect(() => {
     draw();
@@ -98,6 +146,7 @@ export function PhotoEditor({
     setZoom(1);
     setPan({ x: 0, y: 0 });
     setAdjust(DEFAULT_ADJUST);
+    clearAi();
     if (initial) {
       loadSrc(initial);
     } else {
@@ -123,9 +172,46 @@ export function PhotoEditor({
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    clearAi();
+    setAdjust(DEFAULT_ADJUST);
     const reader = new FileReader();
     reader.onload = () => loadSrc(reader.result as string);
     reader.readAsDataURL(file);
+  }
+
+  async function runEnhance(mode: EnhanceMode) {
+    const auth = getAuth();
+    if (!auth) {
+      openKeyDialog();
+      return;
+    }
+    const before = exportDataUrl(OUT, "image/jpeg", 0.92);
+    const input = exportDataUrl(1024, "image/png", 1);
+    if (!before || !input) return;
+    setAiError(null);
+    setAiResult(null);
+    setAiBefore(before);
+    setAiBusy(mode);
+    try {
+      const out = await enhancePhoto({ auth, dataUrl: input, mode });
+      setAiResult(out);
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : "Enhancement failed.");
+    } finally {
+      setAiBusy(null);
+    }
+  }
+
+  function acceptAi() {
+    if (aiResult) {
+      // The enhanced image becomes the working image; the crop resets so the
+      // family can re-position before saving. The ORIGINAL upload is gone from
+      // the editor, but nothing is persisted until they press Save.
+      loadSrc(aiResult);
+      setAdjust(DEFAULT_ADJUST);
+    }
+    setAiResult(null);
+    setAiBefore(null);
   }
 
   function ratio(): number {
@@ -154,10 +240,9 @@ export function PhotoEditor({
   }
 
   function save() {
-    const canvas = canvasRef.current;
-    if (!canvas || !hasImage) return;
-    draw();
-    onSave(canvas.toDataURL("image/jpeg", 0.85));
+    if (!hasImage) return;
+    const url = exportDataUrl(OUT, "image/jpeg", 0.85);
+    if (url) onSave(url);
   }
 
   return (
@@ -172,6 +257,60 @@ export function PhotoEditor({
         </DialogHeader>
 
         <div className="space-y-3">
+          {/* AI before/after review — mandatory, identity-safety gate */}
+          {aiResult && aiBefore && (
+            <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-3">
+              <div className="flex items-center gap-1.5 text-sm font-semibold mb-1">
+                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                Compare carefully
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-2.5 leading-relaxed">
+                Look closely at {name}'s face. If the likeness looks even slightly
+                different, keep the original — we never want to change how a
+                relative truly looked.
+              </p>
+              <div className="flex items-start justify-center gap-4">
+                <figure className="text-center">
+                  <img
+                    src={aiBefore}
+                    alt="Original"
+                    className="h-28 w-28 rounded-full object-cover border border-border"
+                  />
+                  <figcaption className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Original
+                  </figcaption>
+                </figure>
+                <figure className="text-center">
+                  <img
+                    src={aiResult}
+                    alt="AI version"
+                    className="h-28 w-28 rounded-full object-cover border border-primary/50"
+                  />
+                  <figcaption className="mt-1 text-[10px] uppercase tracking-wider text-primary">
+                    AI version
+                  </figcaption>
+                </figure>
+              </div>
+              <div className="mt-3 flex justify-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setAiResult(null);
+                    setAiBefore(null);
+                  }}
+                  data-testid="photo-ai-discard"
+                >
+                  <X className="h-4 w-4 mr-1" /> Keep original
+                </Button>
+                <Button type="button" size="sm" onClick={acceptAi} data-testid="photo-ai-accept">
+                  <Check className="h-4 w-4 mr-1" /> Use AI version
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Canvas / dropzone */}
           <div className="flex justify-center">
             <div className="relative">
@@ -272,6 +411,76 @@ export function PhotoEditor({
                 <Slider label="Brightness" min={50} max={150} value={adjust.brightness} onChange={(v) => setAdjust((a) => ({ ...a, brightness: v }))} />
                 <Slider label="Contrast" min={50} max={150} value={adjust.contrast} onChange={(v) => setAdjust((a) => ({ ...a, contrast: v }))} />
                 <Slider label="Saturation" min={0} max={200} value={adjust.saturate} onChange={(v) => setAdjust((a) => ({ ...a, saturate: v }))} />
+              </div>
+
+              {/* AI restore & colorize (OpenAI, identity-locked) */}
+              <div className="rounded-md border border-card-border bg-muted/30 p-2.5">
+                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-1.5">
+                  <Sparkles className="h-3 w-3 text-primary" /> AI restore &amp; colorize
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {aiReady ? (
+                    <>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="text-xs"
+                        disabled={!!aiBusy}
+                        onClick={() => runEnhance("restore")}
+                        data-testid="photo-ai-restore"
+                      >
+                        {aiBusy === "restore" ? (
+                          <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        ) : (
+                          <Wand2 className="h-3.5 w-3.5 mr-1" />
+                        )}
+                        Restore
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="text-xs"
+                        disabled={!!aiBusy}
+                        onClick={() => runEnhance("colorize")}
+                        data-testid="photo-ai-colorize"
+                      >
+                        {aiBusy === "colorize" ? (
+                          <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        ) : (
+                          <Palette className="h-3.5 w-3.5 mr-1" />
+                        )}
+                        Restore + colorize
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="text-xs"
+                      onClick={openKeyDialog}
+                      data-testid="photo-ai-connect"
+                    >
+                      <KeyRound className="h-3.5 w-3.5 mr-1" />
+                      {aiMode === "proxy" ? "Enter passphrase for AI" : "Connect OpenAI for AI"}
+                    </Button>
+                  )}
+                </div>
+                <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-relaxed text-amber-700 dark:text-amber-400">
+                  <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" />
+                  AI can subtly alter a face. You'll review before/after and must
+                  approve it — the original is never changed automatically.
+                </p>
+                {aiBusy && (
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Working… this can take 10–30 seconds.
+                  </p>
+                )}
+                {aiError && (
+                  <p className="mt-1 text-[11px] text-destructive break-words">{aiError}</p>
+                )}
               </div>
             </>
           )}

@@ -69,20 +69,38 @@ function buildSurnames(): SurnameEntry[] {
   });
 }
 
+type SurnameSort = "count" | "alpha" | "earliest";
+
 export default function Surnames() {
   const all = useMemo(() => buildSurnames(), []);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [onlyArms, setOnlyArms] = useState(false);
+  const [sort, setSort] = useState<SurnameSort>("count");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return all.filter((e) => {
+    const list = all.filter((e) => {
       if (onlyArms && !e.hasArms) return false;
       if (!q) return true;
       return e.surname.toLowerCase().includes(q);
     });
-  }, [all, query, onlyArms]);
+    const sorted = [...list];
+    if (sort === "alpha") {
+      sorted.sort((a, b) => a.surname.localeCompare(b.surname));
+    } else if (sort === "earliest") {
+      sorted.sort(
+        (a, b) =>
+          (a.minYear ?? Infinity) - (b.minYear ?? Infinity) ||
+          a.surname.localeCompare(b.surname),
+      );
+    } else {
+      sorted.sort(
+        (a, b) => b.people.length - a.people.length || a.surname.localeCompare(b.surname),
+      );
+    }
+    return sorted;
+  }, [all, query, onlyArms, sort]);
 
   const totalPeople = useMemo(
     () => filtered.reduce((acc, e) => acc + e.people.length, 0),
@@ -141,6 +159,17 @@ export default function Surnames() {
         >
           With coat of arms only
         </button>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SurnameSort)}
+          className="rounded-md border border-border bg-background px-2.5 py-2 min-h-10 text-sm outline-none focus:border-primary"
+          data-testid="select-surnames-sort"
+          aria-label="Sort surnames"
+        >
+          <option value="count">Most people</option>
+          <option value="alpha">A–Z</option>
+          <option value="earliest">Earliest year</option>
+        </select>
         <div className="flex items-center gap-3 text-xs text-muted-foreground tabular-nums">
           <span data-testid="stat-surnames-count">
             <span className="font-medium text-foreground">{filtered.length}</span> surname

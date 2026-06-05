@@ -19,6 +19,7 @@ import {
   ShieldAlert,
   Combine,
   Map as MapIcon,
+  Dna,
   Lock,
   Unlock,
   Pencil,
@@ -83,6 +84,7 @@ const GROUPS: NavGroup[] = [
       { href: "/places", icon: MapPin, label: "Places" },
       { href: "/map", icon: MapIcon, label: "Map" },
       { href: "/roots", icon: Crown, label: "Roots" },
+      { href: "/genetics", icon: Dna, label: "Genetics" },
       { href: "/insights", icon: BarChart3, label: "Insights" },
     ],
   },
@@ -483,7 +485,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-6", isTreePage ? "hidden" : "mt-12")}>
+      {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
+          (bottom-right) so it never covers the footer text. */}
+      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-20", isTreePage ? "hidden" : "mt-12")}>
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2.5">
             <Logo className="h-4 w-4 text-primary/70" />
