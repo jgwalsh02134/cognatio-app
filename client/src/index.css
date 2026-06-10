@@ -426,6 +426,11 @@
   }
 
   /* Does not work on elements with overflow:hidden! */
+  /* ⚠️ These set `position: relative` (so the ::after overlay is contained) at a
+     specificity that BEATS Tailwind's `.absolute` / `.fixed` / `.sticky`. Do NOT
+     put hover-elevate/active-elevate on a `fixed`/`absolute`/`sticky` element —
+     it will silently fall back to relative and break its positioning. For such
+     elements, use a manual hover instead (e.g. `transition hover:bg-accent`). */
   .hover-elevate:not(.no-default-hover-elevate),
   .active-elevate:not(.no-default-active-elevate),
   .hover-elevate-2:not(.no-default-hover-elevate),

@@ -214,7 +214,7 @@ export default function PersonDetail() {
               <button
                 type="button"
                 onClick={() => setPhotoEditorOpen(true)}
-                className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm hover-elevate active-elevate-2"
+                className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-accent active:bg-accent"
                 aria-label={person.photo ? "Change photo" : "Add photo"}
                 data-testid="button-edit-photo"
               >
@@ -224,7 +224,7 @@ export default function PersonDetail() {
                 <button
                   type="button"
                   onClick={() => update({ photo: null })}
-                  className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm hover-elevate active-elevate-2"
+                  className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm transition-colors hover:bg-accent"
                   aria-label="Remove photo"
                   data-testid="button-remove-photo"
                 >

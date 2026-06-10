@@ -330,7 +330,7 @@ export function PhotoEditor({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full border border-dashed border-border bg-muted/40 text-sm text-muted-foreground hover-elevate active-elevate-2"
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full border border-dashed border-border bg-muted/40 text-sm text-muted-foreground transition-colors hover:bg-muted/60 active:bg-muted/70"
                   data-testid="photo-dropzone"
                 >
                   <ImagePlus className="h-7 w-7" />
