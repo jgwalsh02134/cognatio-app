@@ -17,8 +17,15 @@ declare module "http" {
   }
 }
 
+// The app-wide JSON parser runs before every route, so its limit governs ALL
+// requests — including the AI endpoints that declare larger per-route limits
+// (POST /api/ai/responses = 1mb, POST /api/ai/images/edit = 12mb). Express's
+// default (100kb) silently shadowed those, so photo restoration and long chat
+// payloads were rejected with 413 before reaching their handlers. Match the
+// largest declared route limit here so those bodies are accepted.
 app.use(
   express.json({
+    limit: "12mb",
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
