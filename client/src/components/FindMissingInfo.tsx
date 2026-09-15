@@ -19,6 +19,7 @@ import {
   type Person,
 } from "@/lib/family";
 import researchSuggestionsRaw from "@/research_suggestions.json";
+import { familySearchStatus, searchFamilySearch, type FsCandidate } from "@/lib/familysearch";
 
 interface StaticResearch {
   web_findings?: Record<string, PersonWebFinding>;
@@ -36,7 +37,7 @@ const STATIC = researchSuggestionsRaw as StaticResearch;
  */
 export function FindMissingInfo({ person }: { person: Person }) {
   const { aiMode, aiReady, getAuth, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
-  const { unlocked, setPatch, pending } = useEdit();
+  const { unlocked, passcode, setPatch, pending } = useEdit();
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [autoApply, setAutoApply] = useState(false);
@@ -60,7 +61,34 @@ export function FindMissingInfo({ person }: { person: Person }) {
       // Compact id → name lookup so the model can reason about parents/spouses.
       const lookup = new Map<string, string>();
       for (const p of people) lookup.set(p.id, p.name);
-      const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people });
+
+      // Fetch FamilySearch candidates to ground the model in verified records.
+      let fsCandidates: FsCandidate[] | undefined;
+      try {
+        const fsStatus = await familySearchStatus();
+        if (fsStatus.connected && passcode) {
+          const byMatch = (person.birth?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+          const dyMatch = (person.death?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+          const fsResult = await searchFamilySearch(
+            {
+              givenName: person.given ?? undefined,
+              surname: person.surname ?? undefined,
+              birthYear: byMatch ? parseInt(byMatch[0], 10) : undefined,
+              birthPlace: person.birth?.place ?? undefined,
+              deathYear: dyMatch ? parseInt(dyMatch[0], 10) : undefined,
+              deathPlace: person.death?.place ?? undefined,
+            },
+            passcode,
+          );
+          if (fsResult.connected && fsResult.candidates.length > 0) {
+            fsCandidates = fsResult.candidates;
+          }
+        }
+      } catch {
+        // Non-fatal — proceed without FS grounding.
+      }
+
+      const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people, fsCandidates });
       setResearched(person.id, result);
 
       // AI makes the edits: when opted in (and the editor is unlocked), stage
