@@ -9,6 +9,7 @@ import {
   getSiblings,
   isLiving,
   lifespan,
+  parseYear,
   relationshipChain,
   type ChainStep,
   type EventInfo,
@@ -23,6 +24,9 @@ import { MilitaryServiceCard, MilitaryBadge } from "@/components/MilitaryService
 import { AffiliationsCard } from "@/components/Affiliations";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEdit, type EditableSource, type PersonPatch } from "@/components/EditContext";
+import { PersonLinksCard } from "@/components/PersonLinks";
+import { GeneticsCard } from "@/components/GeneticsCard";
+import { PhotoEditor } from "@/components/PhotoEditor";
 import { CountryFlag } from "@/components/CountryFlag";
 import { linksFor } from "@/lib/researchLinks";
 import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
@@ -37,6 +41,8 @@ import {
   BookOpen,
   Briefcase,
   Calendar,
+  Camera,
+  Dna,
   GitBranch,
   GraduationCap,
   Heart,
@@ -92,6 +98,7 @@ const AFFILIATION_PRESETS: { key: string; name: string }[] = [
   { key: "westminster_college", name: "Westminster College" },
   { key: "southern_pacific", name: "Southern Pacific Railroad" },
   { key: "nys_public_service_commission", name: "NYS Public Service Commission" },
+  { key: "nys_courts", name: "New York Unified Court System" },
   { key: "us_house", name: "U.S. House of Representatives" },
   { key: "smom", name: "Sovereign Military Order of Malta" },
 ];
@@ -100,12 +107,23 @@ interface PersonWithSources extends Person {
   sources?: EditableSource[];
 }
 
+/** Birth-order comparator; people with no known birth year sort last. */
+const byBirthYear = (a: Person, b: Person) =>
+  (parseYear(a.birth?.date) ?? Infinity) - (parseYear(b.birth?.date) ?? Infinity);
+
+/** Father → mother → other, so the parents block is always in a fixed order. */
+function parentRank(p: Person): number {
+  const s = (p.sex || "").toUpperCase();
+  return s === "M" ? 0 : s === "F" ? 1 : 2;
+}
+
 export default function PersonDetail() {
   const params = useParams<{ id: string }>();
   const id = decodeURIComponent(params.id || "");
   const original = getPerson(id);
   const { unlocked, merge, setPatch, pending } = useEdit();
   const person = original ? (merge(original) as PersonWithSources) : null;
+  const [photoEditorOpen, setPhotoEditorOpen] = useState(false);
 
   function update(patch: PersonPatch) {
     if (!original) return;
@@ -115,7 +133,7 @@ export default function PersonDetail() {
   if (!person) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-16 text-center">
-        <h1 className="font-display text-2xl font-semibold">Person not found</h1>
+        <h1 className="font-display text-xl font-semibold">Person not found</h1>
         <p className="text-sm text-muted-foreground mt-2">
           The id <code className="font-mono text-xs">{id}</code> isn't in this archive.
         </p>
@@ -127,8 +145,13 @@ export default function PersonDetail() {
   }
 
   const sources: EditableSource[] = person.sources ?? [];
+  const links = person.links ?? [];
 
-  const parents = person.parent_ids.map(getPerson).filter(Boolean) as Person[];
+  // Parents: father first, then mother, then anyone else — a stable hierarchy
+  // rather than raw GEDCOM order.
+  const parents = (person.parent_ids.map(getPerson).filter(Boolean) as Person[]).sort(
+    (a, b) => parentRank(a) - parentRank(b),
+  );
   const siblings = getSiblings(person);
   const pedigree = buildPedigree(person.id, 4);
   const root = getRootPerson();
@@ -143,11 +166,15 @@ export default function PersonDetail() {
   if (person.military) jumpTargets.unshift({ id: "section-military", label: "Service", icon: <Sparkles className="h-3.5 w-3.5" /> });
   if ((person.affiliations || []).length > 0 || unlocked)
     jumpTargets.push({ id: "section-affiliations", label: "Affiliations", icon: <Link2 className="h-3.5 w-3.5" /> });
+  if (links.length > 0 || unlocked)
+    jumpTargets.push({ id: "section-links", label: "Links", icon: <Link2 className="h-3.5 w-3.5" /> });
+  if ((person.genetics && Object.keys(person.genetics).length > 0) || unlocked)
+    jumpTargets.push({ id: "section-genetics", label: "DNA", icon: <Dna className="h-3.5 w-3.5" /> });
   if ((person.notes || []).length > 0 || unlocked)
     jumpTargets.push({ id: "section-notes", label: "Notes", icon: <StickyNote className="h-3.5 w-3.5" /> });
   if (sources.length > 0 || unlocked)
     jumpTargets.push({ id: "section-sources", label: "Sources", icon: <BookOpen className="h-3.5 w-3.5" /> });
-  jumpTargets.push({ id: "section-community", label: "Community", icon: <MessageSquare className="h-3.5 w-3.5" /> });
+  jumpTargets.push({ id: "section-community", label: "Stickies", icon: <MessageSquare className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-familysearch", label: "FS Records", icon: <Database className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-research", label: "Research", icon: <Compass className="h-3.5 w-3.5" /> });
   jumpTargets.push({ id: "section-pedigree", label: "Ancestors", icon: <GitBranch className="h-3.5 w-3.5" /> });
@@ -195,7 +222,33 @@ export default function PersonDetail() {
 
       {/* Hero */}
       <header className="grid gap-5 sm:gap-7 sm:grid-cols-[auto_1fr_auto] sm:items-center pb-7 sm:pb-9 border-b">
-        <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl sm:text-2xl" />
+        <div className="relative w-20 sm:w-24 shrink-0">
+          <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl" />
+          {unlocked && (
+            <>
+              <button
+                type="button"
+                onClick={() => setPhotoEditorOpen(true)}
+                className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-accent active:bg-accent"
+                aria-label={person.photo ? "Change photo" : "Add photo"}
+                data-testid="button-edit-photo"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
+              {person.photo && (
+                <button
+                  type="button"
+                  onClick={() => update({ photo: null })}
+                  className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm transition-colors hover:bg-accent"
+                  aria-label="Remove photo"
+                  data-testid="button-remove-photo"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              )}
+            </>
+          )}
+        </div>
         <div className="min-w-0">
           <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2.5">
             <span>{person.surname || "Unknown"} family</span>
@@ -205,7 +258,7 @@ export default function PersonDetail() {
               </span>
             )}
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold leading-[1.15] tracking-tight break-words">
+          <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight break-words">
             {unlocked ? (
               <span className="inline-flex flex-wrap items-baseline gap-2">
                 <EditableText
@@ -322,6 +375,17 @@ export default function PersonDetail() {
         )}
       </header>
 
+      <PhotoEditor
+        open={photoEditorOpen}
+        initial={person.photo}
+        name={fullDisplayName(person)}
+        onClose={() => setPhotoEditorOpen(false)}
+        onSave={(dataUri) => {
+          update({ photo: dataUri });
+          setPhotoEditorOpen(false);
+        }}
+      />
+
       {!isRoot && chain && chain.length > 1 && (
         <RelationshipChainCard chain={chain} root={root} relationship={relationship} />
       )}
@@ -356,6 +420,12 @@ export default function PersonDetail() {
         </nav>
       )}
 
+      {/* Sticky notes — kept near the top of the profile so they're seen and
+          easy to add, above the two-column facts/relationships grid. */}
+      <section id="section-community" className="scroll-mt-24 mt-6 sm:mt-8 print:hidden">
+        <CommunityNotes person={person} />
+      </section>
+
       <div className="grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] mt-6 sm:mt-8">
         {/* Left: facts & life */}
         <div className="space-y-6 min-w-0">
@@ -377,14 +447,17 @@ export default function PersonDetail() {
           <section id="section-affiliations" className="scroll-mt-24">
             <AffiliationsEditor person={person} update={update} unlocked={unlocked} />
           </section>
+          <section id="section-links" className="scroll-mt-24">
+            <PersonLinksCard links={links} update={update} unlocked={unlocked} />
+          </section>
+          <section id="section-genetics" className="scroll-mt-24">
+            <GeneticsCard genetics={person.genetics} update={update} unlocked={unlocked} />
+          </section>
           <section id="section-notes" className="scroll-mt-24">
             <NotesEditor person={person} update={update} unlocked={unlocked} />
           </section>
           <section id="section-sources" className="scroll-mt-24">
             <SourcesEditor sources={sources} update={update} unlocked={unlocked} />
-          </section>
-          <section id="section-community" className="scroll-mt-24">
-            <CommunityNotes person={person} />
           </section>
           <section id="section-familysearch" className="scroll-mt-24">
             <FamilySearchRecords person={person} />
@@ -1168,12 +1241,20 @@ function SpousesGroup({ person, unlocked }: { person: Person; unlocked: boolean 
           </div>
         )}
         <div className="space-y-5">
-          {person.family_spouse_ids.map((fid) => {
+          {[...person.family_spouse_ids]
+            .sort((fa, fb) => {
+              // Order multiple marriages chronologically by marriage year.
+              const ya = parseYear(familiesById[fa]?.marriage?.date) ?? Infinity;
+              const yb = parseYear(familiesById[fb]?.marriage?.date) ?? Infinity;
+              return ya - yb;
+            })
+            .map((fid) => {
             const fam = familiesById[fid];
             if (!fam) return null;
             const spouseId = fam.husband_id === person.id ? fam.wife_id : fam.husband_id;
             const spouse = spouseId ? getPerson(spouseId) : null;
-            const children = fam.children_ids.map(getPerson).filter(Boolean) as Person[];
+            // Children listed in birth order.
+            const children = (fam.children_ids.map(getPerson).filter(Boolean) as Person[]).sort(byBirthYear);
             return (
               <div key={fid} className="space-y-2">
                 {spouse && (
@@ -1724,7 +1805,7 @@ function PedigreeColumns({ root }: { root: PedigreeNode }) {
                   {filled} of {col.length}
                 </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 [&>*]:min-w-0">
                 {col.map((node, ni) => (
                   <PedigreeCell key={`${ci}-${ni}`} node={node} />
                 ))}

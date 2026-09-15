@@ -21,6 +21,55 @@ export interface MilitaryService {
   evidence?: string[];
 }
 
+/** Categories for an external link attached to a person profile. */
+export type PersonLinkKind =
+  | "obituary"
+  | "press"
+  | "wedding"
+  | "accomplishment"
+  | "biography"
+  | "photo"
+  | "record"
+  | "social"
+  | "other";
+
+/** A curated external link on a person's profile (obituary, press, wedding
+ *  announcement, accomplishment, biography, etc.). Distinct from `sources`,
+ *  which are dry evidentiary citations. */
+export interface PersonLink {
+  kind: PersonLinkKind;
+  title: string;
+  url: string;
+  date?: string | null;
+  note?: string | null;
+}
+
+/** A DNA test kit reference (e.g. a GEDmatch number) so relatives can match. */
+export interface GeneticKitRef {
+  service: string;
+  ref: string;
+}
+
+/** Heritable / DNA information preserved for future generations. This is
+ *  sensitive data — only edited behind the family passphrase. */
+export interface GeneticInfo {
+  tested?: boolean;
+  /** Testing companies, e.g. ["AncestryDNA", "23andMe"]. */
+  companies?: string[];
+  yDnaHaplogroup?: string | null;
+  mtDnaHaplogroup?: string | null;
+  /** Free-text ethnicity / admixture summary. */
+  ethnicity?: string | null;
+  bloodType?: string | null;
+  /** Notable inherited physical traits (eye color, height, etc.). */
+  traits?: string | null;
+  /** Hereditary health notes — handle with care. */
+  health?: string | null;
+  /** Shareable match references (GEDmatch kit #, FTDNA kit, etc.). */
+  kitRefs?: GeneticKitRef[];
+  notes?: string | null;
+}
+
 export interface Person {
   id: string;
   name: string;
@@ -43,6 +92,10 @@ export interface Person {
   source_count: number;
   military?: MilitaryService;
   affiliations?: Affiliation[];
+  links?: PersonLink[];
+  /** Square data-URI portrait (uploaded + cropped) used as the avatar. */
+  photo?: string | null;
+  genetics?: GeneticInfo | null;
 }
 
 export interface Affiliation {
@@ -254,7 +307,7 @@ export function getSiblings(p: Person): Person[] {
   return Array.from(ids)
     .map((id) => peopleById[id])
     .filter((x): x is Person => Boolean(x))
-    .sort((a, b) => (parseYear(a.birth?.date) ?? 0) - (parseYear(b.birth?.date) ?? 0));
+    .sort((a, b) => (parseYear(a.birth?.date) ?? Infinity) - (parseYear(b.birth?.date) ?? Infinity));
 }
 
 /** Build pedigree map: position by generation. Returns nested ancestor tree. */

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import { Link, useLocation } from "wouter";
 import {
   Bar,
@@ -13,9 +13,11 @@ import {
 import {
   ArrowRight,
   Award,
+  BarChart3,
   Calendar,
   Clock,
   Compass,
+  LayoutGrid,
   Crown,
   Download,
   FileText,
@@ -24,11 +26,11 @@ import {
   GitMerge,
   Heart,
   ListChecks,
+  Map as MapIcon,
   MapPin,
   MessageCircle,
   ScrollText,
   Search,
-  Shield,
   ShieldAlert,
   Shuffle,
   Telescope,
@@ -52,6 +54,7 @@ import {
 import { PersonAvatar } from "@/components/PersonAvatar";
 import { SurnameArms, ARMS_SURNAMES } from "@/components/SurnameArms";
 import { MilitaryBadge } from "@/components/MilitaryService";
+import { MedalIcon } from "@/components/MedalIcon";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAI } from "@/components/AIContext";
 import { downloadGedcom } from "@/lib/gedcomExport";
@@ -155,7 +158,7 @@ function StatPill({
   return (
     <div className="flex flex-col">
       <div
-        className="font-display text-2xl sm:text-3xl font-semibold tabular-nums leading-none"
+        className="font-display text-xl font-semibold tabular-nums leading-none"
         data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
         {value}
@@ -210,9 +213,9 @@ function FeatureCard({
     <Link
       href={href}
       data-testid={testId}
-      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 hover-elevate active-elevate-2"
+      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 hover-elevate active-elevate-2 min-w-0"
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 min-w-0">
         <div
           className={cn(
             "inline-flex h-9 w-9 items-center justify-center rounded-md",
@@ -289,7 +292,7 @@ function SectionHeader({
   meta,
   description,
 }: {
-  icon?: typeof GitBranch;
+  icon?: ComponentType<{ className?: string }>;
   title: string;
   meta?: string;
   description?: string;
@@ -297,7 +300,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-1 mb-4 sm:mb-5">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-xl sm:text-2xl font-semibold flex items-center gap-2">
+        <h2 className="font-display text-xl font-semibold flex items-center gap-2">
           {Icon && <Icon className="h-5 w-5 text-primary" />}
           {title}
         </h2>
@@ -532,7 +535,18 @@ export default function Home() {
       .slice(0, 8);
   }, []);
 
-  const veterans = useMemo(() => people.filter((p) => p.military), []);
+  // Chronological by birth year (earliest first) so the roll reads WWI → WWII
+  // → Korea, matching the section's narrative. Undated names fall to the end.
+  const veterans = useMemo(
+    () =>
+      people
+        .filter((p) => p.military)
+        .sort(
+          (a, b) =>
+            (parseYear(a.birth?.date) ?? 99999) - (parseYear(b.birth?.date) ?? 99999),
+        ),
+    [],
+  );
   const veteransKIA = useMemo(
     () => veterans.filter((p) => p.military?.kia).length,
     [veterans],
@@ -628,17 +642,17 @@ export default function Home() {
     <div className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-10">
       {/* ───────── Hero ───────── */}
       <section className="pb-8 sm:pb-10 border-b">
-        <div className="flex items-center gap-3 mb-3 sm:mb-4">
-          <span className="font-display text-sm font-semibold tracking-tight text-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 sm:mb-4">
+          <span className="font-display text-sm font-semibold tracking-tight text-foreground shrink-0">
             Cognatio
           </span>
-          <span className="h-3 w-px bg-border" aria-hidden="true" />
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-primary">
+          <span className="h-3 w-px bg-border shrink-0" aria-hidden="true" />
+          <span className="min-w-0 break-words text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-primary">
             Walsh · Maloy · Cranwell · Dugan Family Archive
           </span>
         </div>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-3xl">
-          The Walsh, Maloy, Cranwell, and Dugan family tree.
+        <h1 className="font-display text-xl font-semibold leading-[1.15] tracking-tight max-w-3xl">
+          Generations gathered in one place.
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-3 sm:mt-4 max-w-xl leading-relaxed">
           A merged record of {stats.total_individuals} ancestors and descendants — assembled
@@ -646,10 +660,10 @@ export default function Home() {
         </p>
 
         {/* Search + primary CTAs — unified row at h-10 */}
-        <div className="mt-5 sm:mt-6 flex flex-col gap-3 md:flex-row md:items-center md:flex-wrap">
+        <div className="mt-5 sm:mt-6 flex flex-col gap-3 md:flex-row md:items-center md:flex-wrap min-w-0">
           <form
             onSubmit={handleSearch}
-            className="flex h-10 items-center gap-2 rounded-md border border-border bg-card pl-3 pr-1 focus-within:ring-2 focus-within:ring-primary/30 md:flex-1 md:min-w-[260px]"
+            className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md border border-border bg-card pl-3 pr-1 focus-within:ring-2 focus-within:ring-primary/30 md:flex-1 md:min-w-[260px]"
           >
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <input
@@ -662,7 +676,7 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="inline-flex h-8 items-center rounded-md bg-primary text-primary-foreground text-xs font-medium px-3 hover-elevate active-elevate-2"
+              className="inline-flex h-8 shrink-0 items-center rounded-md bg-primary text-primary-foreground text-xs font-medium px-3 hover-elevate active-elevate-2"
               data-testid="home-search-submit"
             >
               Search
@@ -720,8 +734,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────── Feature discovery ───────── */}
+      {/* ───────── Explore (grouped navigation) ───────── */}
       <section className="mt-10 sm:mt-12">
+        <SectionHeader
+          icon={LayoutGrid}
+          title="Explore the archive"
+          description="Pick a way in. Search and the AI assistant are always in the top bar — start anywhere, nothing here is required reading."
+        />
+
+        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+          Explore
+        </div>
         <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <FeatureCard
             href="/tree"
@@ -740,18 +763,19 @@ export default function Home() {
             testId="feature-people"
           />
           <FeatureCard
+            href="/map"
+            icon={MapIcon}
+            title="Map"
+            description="Countries of origin, Atlantic crossings, and where the family settled."
+            accent="primary"
+            testId="feature-map"
+          />
+          <FeatureCard
             href="/timeline"
             icon={Clock}
             title="Family timeline"
             description="Every dated life event laid out chronologically."
             testId="feature-timeline"
-          />
-          <FeatureCard
-            href="/relate"
-            icon={GitMerge}
-            title="Relationship calculator"
-            description="Pick any two people and see how they connect."
-            testId="feature-relate"
           />
           <FeatureCard
             href="/surnames"
@@ -768,6 +792,26 @@ export default function Home() {
             testId="feature-places"
           />
           <FeatureCard
+            href="/roots"
+            icon={Crown}
+            title="Deepest roots"
+            description="Direct paternal & maternal lines, ahnentafel, depth by surname."
+            testId="feature-roots"
+          />
+          <FeatureCard
+            href="/relate"
+            icon={GitMerge}
+            title="Relationship calculator"
+            description="Pick any two people and see how they connect."
+            testId="feature-relate"
+          />
+        </div>
+
+        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 mt-6 sm:mt-7">
+          Research &amp; tools
+        </div>
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+          <FeatureCard
             href="/research"
             icon={Compass}
             title="Research workbench"
@@ -776,12 +820,12 @@ export default function Home() {
             testId="feature-research"
           />
           <FeatureCard
-            href="/roots"
-            icon={Crown}
-            title="Deepest roots"
-            description="Direct paternal & maternal lines, ahnentafel, depth by surname."
-            accent="primary"
-            testId="feature-roots"
+            href="/gaps"
+            icon={ListChecks}
+            title="Gaps to research"
+            description="People missing key facts — find sources, apply edits."
+            meta={`${peopleWithGaps} · ${totalGaps} gaps`}
+            testId="feature-gaps"
           />
           <FeatureCard
             href="/finder"
@@ -802,16 +846,7 @@ export default function Home() {
             icon={GitMerge}
             title="Find duplicates"
             description="Spot the same person imported twice and merge their records."
-            accent="primary"
             testId="feature-duplicates"
-          />
-          <FeatureCard
-            href="/gaps"
-            icon={ListChecks}
-            title="Gaps to research"
-            description="People missing key facts — find sources, apply edits."
-            meta={`${peopleWithGaps} · ${totalGaps} gaps`}
-            testId="feature-gaps"
           />
           <FeatureCard
             href="/export"
@@ -823,8 +858,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────── Notable people ───────── */}
-      <section className="mt-10 sm:mt-12">
+      {/* ───────── The archive at a glance (analytics) ───────── */}
+      <div
+        className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex items-center gap-3"
+        data-testid="divider-at-a-glance"
+      >
+        <BarChart3 className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+          The archive at a glance
+        </span>
+        <span className="h-px flex-1 bg-border" aria-hidden="true" />
+      </div>
+
+      <section>
         <SectionHeader
           icon={Award}
           title="Notable people"
@@ -1181,32 +1227,37 @@ export default function Home() {
       {veterans.length > 0 && (
         <section className="mt-10 sm:mt-12">
           <SectionHeader
-            icon={Shield}
+            icon={MedalIcon}
             title="Those who served"
             meta={`${veterans.length} ${veterans.length === 1 ? "veteran" : "veterans"}${
               veteransKIA > 0 ? ` · ${veteransKIA} KIA` : ""
             }`}
-            description="Members of the family who answered the call — from the trenches of the First World War, across the European and Pacific theaters of the Second, and into Korea."
+            description="Members of the family who answered the call — from the trenches of the First World War, across the European and Pacific fronts of the Second, and into Korea."
           />
           <Card className="border-card-border">
             <CardContent className="p-4 sm:p-5">
-              <div className="grid gap-2 sm:gap-2.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {veterans.map((p) => (
                   <Link
                     key={p.id}
                     href={`/person/${encodeURIComponent(p.id)}`}
-                    className="flex items-center gap-3 rounded-md border border-card-border bg-card px-3 py-2.5 hover-elevate active-elevate-2 min-w-0"
+                    className={cn(
+                      "flex items-start gap-3 rounded-md border bg-card px-3 py-3 hover-elevate active-elevate-2 min-w-0",
+                      p.military?.kia
+                        ? "border-rose-500/30 ring-1 ring-rose-500/15"
+                        : "border-card-border",
+                    )}
                     data-testid={`veteran-${p.id}`}
                   >
                     <PersonAvatar person={p} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium truncate leading-tight">
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="text-sm font-semibold truncate leading-tight">
                         {fullDisplayName(p)}
                       </div>
-                      <div className="text-[11px] text-muted-foreground truncate leading-tight mt-0.5">
+                      <div className="text-[11px] text-muted-foreground tabular-nums truncate leading-tight">
                         {lifespan(p)}
                       </div>
-                      <div className="mt-1">
+                      <div className="pt-0.5">
                         <MilitaryBadge person={p} />
                       </div>
                     </div>

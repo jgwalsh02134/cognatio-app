@@ -18,6 +18,8 @@ import {
   Telescope,
   ShieldAlert,
   Combine,
+  Map as MapIcon,
+  Dna,
   Lock,
   Unlock,
   Pencil,
@@ -80,7 +82,9 @@ const GROUPS: NavGroup[] = [
     items: [
       { href: "/surnames", icon: ScrollText, label: "Surnames" },
       { href: "/places", icon: MapPin, label: "Places" },
+      { href: "/map", icon: MapIcon, label: "Map" },
       { href: "/roots", icon: Crown, label: "Roots" },
+      { href: "/genetics", icon: Dna, label: "Genetics" },
       { href: "/insights", icon: BarChart3, label: "Insights" },
     ],
   },
@@ -375,7 +379,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main
         className={cn(
-          "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col",
+          // Page roots use `mx-auto`, and auto margins on a flex item disable
+          // align-items:stretch — so the item sized to its content (max-content),
+          // pushing the page wider than the phone viewport and clipping the right
+          // edge. Forcing w-full pins each page root to the container width while
+          // its own max-w-* still caps the line length on desktop.
+          "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col [&>*]:w-full [&>*]:min-w-0",
           editBarVisible
             ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-24"
             : "pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
@@ -476,7 +485,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </SheetContent>
       </Sheet>
 
-      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-6", isTreePage ? "hidden" : "mt-12")}>
+      {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
+          (bottom-right) so it never covers the footer text. */}
+      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-20", isTreePage ? "hidden" : "mt-12")}>
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2.5">
             <Logo className="h-4 w-4 text-primary/70" />

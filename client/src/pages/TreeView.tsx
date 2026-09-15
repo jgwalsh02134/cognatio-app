@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+import { Link, useSearch } from "wouter";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   familiesById,
@@ -204,11 +204,7 @@ function buildDescendantLayout(rootId: string, depth: number, sizes?: { w?: numb
 }
 
 export default function TreeView() {
-  const [location] = useLocation();
-  const initialFocus = (() => {
-    const m = location.match(/[?&]focus=([^&]+)/);
-    return m ? decodeURIComponent(m[1]) : null;
-  })();
+  const initialFocus = new URLSearchParams(useSearch()).get("focus");
 
   const [focusId, setFocusId] = useState(initialFocus || getRootPerson().id);
   const [direction, setDirection] = useState<Direction>("ancestors");

@@ -40,12 +40,12 @@
       "sex": "F",
       "birth": {
         "date": "May 1872",
-        "place": "New York, USA",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "14 Apr 1956",
-        "place": "New Rochelle, New York, USA",
+        "place": "New Rochelle, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
@@ -368,7 +368,7 @@
       "residences": [
         {
           "date": "1952",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -543,7 +543,7 @@
       "sex": "F",
       "birth": {
         "date": "1837",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
@@ -578,7 +578,7 @@
       "sex": null,
       "birth": {
         "date": "1882",
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -588,7 +588,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, USA",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [],
@@ -616,12 +616,12 @@
       "sex": "F",
       "birth": {
         "date": null,
-        "place": "Peterborough, 1654329, Ontario, Canada",
+        "place": "Peterborough, Ontario, Canada",
         "note": null
       },
       "death": {
         "date": null,
-        "place": "Peterborough, 1654329, Ontario, Canada",
+        "place": "Peterborough, Ontario, Canada",
         "note": null
       },
       "burial": null,
@@ -883,7 +883,7 @@
       },
       "death": {
         "date": "24 Dec 1908",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -913,12 +913,12 @@
       "sex": "M",
       "birth": {
         "date": null,
-        "place": "Peterborough, 1654329, Ontario, Canada",
+        "place": "Peterborough, Ontario, Canada",
         "note": null
       },
       "death": {
         "date": null,
-        "place": "Peterborough, 1654329, Ontario, Canada",
+        "place": "Peterborough, Ontario, Canada",
         "note": null
       },
       "burial": null,
@@ -946,12 +946,12 @@
       "sex": "M",
       "birth": {
         "date": "Dec 1867",
-        "place": "New York, USA",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "12 May 1946",
-        "place": "New Rochelle, New York, USA",
+        "place": "New Rochelle, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1032,7 +1032,7 @@
       },
       "death": {
         "date": "8 Sep 1914",
-        "place": "Utica, Oneida County, New York, United States of America",
+        "place": "Utica, Oneida, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1068,7 +1068,7 @@
       },
       "death": {
         "date": "6 May 2001",
-        "place": "Albany, Albany, New York, United States of America",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1080,12 +1080,12 @@
         },
         {
           "date": "1935",
-          "place": "New Rochelle, Westchester, New York",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New Rochelle, Westchester, New York, United States",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         },
         {
@@ -1095,7 +1095,7 @@
         },
         {
           "date": null,
-          "place": "Albany, NY",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -1164,12 +1164,12 @@
       "sex": "M",
       "birth": {
         "date": "21 Jul 1893",
-        "place": "Utica, New York, USA",
+        "place": "Utica, Oneida, New York, USA",
         "note": null
       },
       "death": {
         "date": "Nov 1957",
-        "place": "New Rochelle, New York, USA",
+        "place": "New Rochelle, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1186,12 +1186,12 @@
         },
         {
           "date": "1935",
-          "place": "New Rochelle, Westchester, New York",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New Rochelle, Westchester, New York, United States",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         },
         {
@@ -1304,7 +1304,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -1404,12 +1404,12 @@
       },
       "death": {
         "date": "13 October 2013",
-        "place": "Loudonville, Albany County, New York, United States of America",
+        "place": "Loudonville, Albany, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -1420,7 +1420,7 @@
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, United States",
+          "place": "New York, New York, New York, USA",
           "note": null
         },
         {
@@ -1494,17 +1494,17 @@
       "sex": "M",
       "birth": {
         "date": "28 Feb 1886",
-        "place": "Albany, New York",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jan 1968",
-        "place": "New York, New York, New York, United States of America",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -1520,7 +1520,7 @@
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, United States",
+          "place": "New York, New York, New York, USA",
           "note": null
         }
       ],
@@ -1576,7 +1576,7 @@
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, United States",
+          "place": "New York, New York, New York, USA",
           "note": null
         }
       ],
@@ -1622,7 +1622,7 @@
         },
         {
           "date": "1902",
-          "place": "Troy, New York, USA",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -1689,7 +1689,7 @@
       "residences": [
         {
           "date": "1947",
-          "place": "Troy, New York, USA",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -1789,7 +1789,7 @@
       "residences": [
         {
           "date": "1910",
-          "place": "Troy Ward 16, Rensselaer, New York",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -1881,17 +1881,17 @@
       "sex": "F",
       "birth": {
         "date": "1886",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "4 Jan 1901",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [],
@@ -1919,12 +1919,12 @@
       "sex": "F",
       "birth": {
         "date": "1886",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "1956",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1957,12 +1957,12 @@
       "sex": "M",
       "birth": {
         "date": "1863",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "17 Oct 1894",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2025,12 +2025,12 @@
       "sex": "M",
       "birth": {
         "date": null,
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "24 Dec 1940",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2094,14 +2094,14 @@
       },
       "death": {
         "date": "6 Dec 1935",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Albany, Albany, New York, United States",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -2165,12 +2165,12 @@
       "sex": "M",
       "birth": {
         "date": "1889",
-        "place": "Troy,New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "13 May 1958",
-        "place": "Troy,New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2204,7 +2204,7 @@
       },
       "death": {
         "date": "1921",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2233,12 +2233,12 @@
       "sex": "M",
       "birth": {
         "date": "1892",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "13 May 1958",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2311,7 +2311,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -2362,7 +2362,7 @@
       "sex": "M",
       "birth": {
         "date": "06/26/1913",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -2414,12 +2414,12 @@
       "sex": "M",
       "birth": {
         "date": "1876",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "20 Apr 1930",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2469,7 +2469,7 @@
         },
         {
           "date": "1983",
-          "place": "Waterford, NY",
+          "place": "Waterford, Saratoga, New York, USA",
           "note": null
         }
       ],
@@ -2537,17 +2537,17 @@
       "sex": "M",
       "birth": {
         "date": "1874",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "1931",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -2558,7 +2558,7 @@
         },
         {
           "date": "1917-1918",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -2605,7 +2605,7 @@
       "sex": "F",
       "birth": {
         "date": "August 8, 1950",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": null,
@@ -2613,7 +2613,7 @@
       "residences": [
         {
           "date": "1972",
-          "place": "Troy, New York, USA",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -2671,12 +2671,12 @@
       "sex": "M",
       "birth": {
         "date": "1893",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "7 Feb 1956",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2806,12 +2806,12 @@
       },
       "death": {
         "date": "1886",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -2888,17 +2888,17 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -3017,7 +3017,7 @@
       },
       "death": {
         "date": "11 Jun 2013",
-        "place": "Loudonville, NY",
+        "place": "Loudonville, Albany, New York, USA",
         "note": "Age: 87"
       },
       "burial": {
@@ -3028,22 +3028,22 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1947",
-          "place": "Troy, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -3095,7 +3095,7 @@
       "residences": [
         {
           "date": "1995",
-          "place": "Troy, NY",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -3128,7 +3128,7 @@
       },
       "death": {
         "date": "9 Mar 1912",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -3184,12 +3184,12 @@
       "birth": null,
       "death": {
         "date": "Died Age 2",
-        "place": "Troy,New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [],
@@ -3222,7 +3222,7 @@
       },
       "death": {
         "date": "11 Dec 1893",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -3270,12 +3270,12 @@
       "sex": "M",
       "birth": {
         "date": "3 Apr 1858",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "1 Nov 1916",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -3336,22 +3336,22 @@
         },
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -3423,22 +3423,22 @@
       "residences": [
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Son"
         },
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -3520,7 +3520,7 @@
       "sex": "M",
       "birth": {
         "date": "26 Dec 1887",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
@@ -3554,12 +3554,12 @@
       "sex": "M",
       "birth": {
         "date": "2 Dec 1854",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "15 Mar 1906",
-        "place": "New York, New York",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -3571,7 +3571,7 @@
         },
         {
           "date": "1880",
-          "place": "Albany, Albany, New York, United States",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -3608,7 +3608,7 @@
       "sex": "M",
       "birth": {
         "date": "27 Aug 1923",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -3624,17 +3624,17 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -3961,14 +3961,14 @@
       },
       "death": {
         "date": "21 Nov 1922",
-        "place": "Troy, Rensselaer, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -3978,12 +3978,12 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4079,7 +4079,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Lansingburgh, Rensselaer County, New York, USA",
+        "place": "Lansingburgh, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [],
@@ -4122,7 +4122,7 @@
       },
       "death": {
         "date": "December 11, 1949",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -4134,12 +4134,12 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4172,12 +4172,12 @@
       "sex": "F",
       "birth": {
         "date": "5 Aug 1890",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "16 Jun 1956",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -4230,17 +4230,17 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Age: 23; Relationship: Daughter"
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4250,17 +4250,17 @@
         },
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -4337,7 +4337,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Lansingburgh, Rensselaer County, New York, USA",
+        "place": "Lansingburgh, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [],
@@ -4375,13 +4375,13 @@
       },
       "burial": {
         "date": null,
-        "place": "Troy, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
         {
           "date": "1910",
-          "place": "Troy Ward 16, Rensselaer, New York",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4396,7 +4396,7 @@
         },
         {
           "date": "1947",
-          "place": "Troy, New York, USA",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4477,17 +4477,17 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 16, Rensselaer, New York",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 16, Rensselaer, New York, United States",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4502,7 +4502,7 @@
         },
         {
           "date": null,
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -4655,7 +4655,7 @@
       "sex": "M",
       "birth": {
         "date": "29 May 1925",
-        "place": "Troy, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -4667,12 +4667,12 @@
       "residences": [
         {
           "date": "1952",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Troy, Renss, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -4722,7 +4722,7 @@
       "sex": "M",
       "birth": {
         "date": null,
-        "place": "Troy, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -4739,12 +4739,12 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4837,7 +4837,7 @@
       "sex": "F",
       "birth": {
         "date": "1845",
-        "place": "Wexford, Ireland",
+        "place": "Wexford, Wexford, Ireland",
         "note": null
       },
       "death": {
@@ -4931,7 +4931,7 @@
       "sex": "F",
       "birth": {
         "date": "June 22. 1889",
-        "place": "Troy, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -4941,7 +4941,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, USA",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -4952,7 +4952,7 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 13, Rensselaer, New York",
+          "place": "Troy Ward 13, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -5004,7 +5004,7 @@
       "sex": "F",
       "birth": {
         "date": "November 20, 1887",
-        "place": "Troy, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -5021,7 +5021,7 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Wife"
         },
         {
@@ -5071,7 +5071,7 @@
       "sex": "M",
       "birth": {
         "date": "24/07/1886",
-        "place": "Troy, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": null,
@@ -5135,7 +5135,7 @@
       },
       "death": {
         "date": "25 Jan 1919",
-        "place": "Iowa City, Allamakee, Iowa, United States",
+        "place": "Iowa City, Johnson, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -5195,7 +5195,7 @@
       },
       "death": {
         "date": null,
-        "place": "Troy, Rensselaer, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -5512,12 +5512,12 @@
       "sex": "F",
       "birth": {
         "date": "Jul 1861",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
         "date": "12 May 1936",
-        "place": "Albany, New York, USA",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -5569,7 +5569,7 @@
       "sex": "M",
       "birth": {
         "date": "1839",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
@@ -5689,12 +5689,12 @@
       "sex": "F",
       "birth": {
         "date": "Feb 1844",
-        "place": "ireland",
+        "place": "Ireland",
         "note": null
       },
       "death": {
         "date": "15 Jan 1927",
-        "place": "New York, USA",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -5804,7 +5804,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -5836,19 +5836,19 @@
       },
       "death": {
         "date": "30 Jul 1915",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Troy Ward 13, Rensselaer, New York",
+          "place": "Troy Ward 13, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -5885,14 +5885,14 @@
       },
       "death": {
         "date": "19 Jul 1950",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -5927,7 +5927,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -5984,7 +5984,7 @@
       "sex": "F",
       "birth": {
         "date": "February 12, 1922",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -6001,12 +6001,12 @@
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6052,19 +6052,19 @@
       },
       "death": {
         "date": "May 13, 1956",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -6098,14 +6098,14 @@
       },
       "death": {
         "date": "8 Jan 2025",
-        "place": "White Plains, NY",
+        "place": "White Plains, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": null,
-          "place": "White Plains, NY",
+          "place": "White Plains, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -6349,19 +6349,19 @@
       "sex": "M",
       "birth": {
         "date": "24 Nov 1856",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": null,
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6400,12 +6400,12 @@
       "sex": "F",
       "birth": {
         "date": "15 Aug 1915",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jan 1984",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -6434,19 +6434,19 @@
       "sex": "F",
       "birth": {
         "date": "4 Jun 1862",
-        "place": "Troy, Rensselaer, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "22 Mar 1949",
-        "place": "Troy, Rensselaer, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6456,17 +6456,17 @@
         },
         {
           "date": "1910",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Troy Ward 15, Rensselaer, New York",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6476,12 +6476,12 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 16, Rensselaer, New York, United States",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -6585,14 +6585,14 @@
       },
       "death": {
         "date": "February 9, 1884",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1870",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6602,12 +6602,12 @@
         },
         {
           "date": "1880",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Lansingburgh, Rensselaer, New York",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -6725,12 +6725,12 @@
       "sex": "F",
       "birth": {
         "date": "14 Feb 1853",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "11 Aug 1920",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -6991,7 +6991,7 @@
       },
       "death": {
         "date": "28 Sep 1879",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -7641,7 +7641,7 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -7651,12 +7651,12 @@
         },
         {
           "date": "1935",
-          "place": "Albany, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Albany, Albany, New York, United States",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -7706,12 +7706,12 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Age: 18; Relation to Head of House: Son"
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -7864,7 +7864,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Lansingburgh, Rensselaer County, New York, USA",
+        "place": "Lansingburgh, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -7875,7 +7875,7 @@
         },
         {
           "date": "1920",
-          "place": "Troy Ward 16, Rensselaer, New York",
+          "place": "Troy Ward 16, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -8108,24 +8108,24 @@
       "sex": "F",
       "birth": {
         "date": "Dec 1871",
-        "place": "Greenwich, Washington, New York, United States",
+        "place": "Greenwich, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "1930",
-        "place": "Lansingburgh, Rensselaer, New York",
+        "place": "Lansingburgh, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1892",
-          "place": "Greenwich, Washington, New York",
+          "place": "Greenwich, Washington, New York, USA",
           "note": null
         },
         {
@@ -8140,17 +8140,17 @@
         },
         {
           "date": "1 June 1915",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Jackson, Washington, New York",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -8231,12 +8231,12 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1959",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -8293,12 +8293,12 @@
         },
         {
           "date": "1930",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Colonie, Albany, New York, United States",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
@@ -8308,12 +8308,12 @@
         },
         {
           "date": "1956",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Colonie, Alb, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         }
       ],
@@ -8387,7 +8387,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, USA",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -8428,17 +8428,17 @@
         },
         {
           "date": "1930",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1935",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Colonie, Albany, New York, United States",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         }
       ],
@@ -8502,7 +8502,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [],
@@ -8538,7 +8538,7 @@
       "residences": [
         {
           "date": "1993",
-          "place": "White Plains, NY",
+          "place": "White Plains, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -8590,12 +8590,12 @@
         },
         {
           "date": "1930",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Colonie, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         }
       ],
@@ -8674,12 +8674,12 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1892",
-          "place": "Jackson, Washington, New York",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
@@ -8694,7 +8694,7 @@
         },
         {
           "date": "1920",
-          "place": "Jackson, Washington, New York",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         }
       ],
@@ -8750,7 +8750,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         }
       ],
@@ -8790,7 +8790,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         }
       ],
@@ -8864,12 +8864,12 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1 Jan 1925",
-          "place": "Johnson, Iowa",
+          "place": "Johnson, Iowa, USA",
           "note": null
         },
         {
@@ -8913,7 +8913,7 @@
       },
       "death": {
         "date": "13 Oct 1917",
-        "place": "Iowa City, Wright, Iowa, USA",
+        "place": "Iowa City, Johnson, Iowa, USA",
         "note": null
       },
       "burial": {
@@ -9028,7 +9028,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
@@ -9101,13 +9101,13 @@
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
         {
           "date": "1892",
-          "place": "Jackson, Washington, New York",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
@@ -9117,7 +9117,7 @@
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 10, Rensselaer, New York, United States",
+          "place": "Troy Ward 10, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Wife"
         },
         {
@@ -9127,12 +9127,12 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Age: 43; Relation to Head of House: Wife"
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -9191,7 +9191,7 @@
         },
         {
           "date": "1930",
-          "place": "Colonie, Albany, New York",
+          "place": "Colonie, Albany, New York, USA",
           "note": null
         }
       ],
@@ -9265,7 +9265,7 @@
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         }
       ],
@@ -9358,7 +9358,7 @@
       },
       "death": {
         "date": "4 May 1952",
-        "place": "Bennington, Bennington, Vermont, United States",
+        "place": "Bennington, Bennington, Vermont, USA",
         "note": null
       },
       "burial": null,
@@ -9395,7 +9395,7 @@
       "sex": "F",
       "birth": {
         "date": "9 Jun 1927",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -9435,7 +9435,7 @@
       "sex": "F",
       "birth": {
         "date": "22 Oct 1922",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -9479,12 +9479,12 @@
       "sex": "F",
       "birth": {
         "date": "1874",
-        "place": "New York, USA",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "14 Apr 1956",
-        "place": "New Rochelle, New York, USA",
+        "place": "New Rochelle, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
@@ -9519,12 +9519,12 @@
       },
       "death": {
         "date": "28 Jan 1892",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [],
@@ -9668,7 +9668,7 @@
       },
       "death": {
         "date": "2 Nov 1907",
-        "place": "Johnson, Iowa, United States",
+        "place": "Johnson, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -9698,7 +9698,7 @@
       "sex": "M",
       "birth": {
         "date": "21 Aug 1872",
-        "place": "Iowa",
+        "place": "Iowa, USA",
         "note": null
       },
       "death": {
@@ -9715,7 +9715,7 @@
         },
         {
           "date": "1 Jan 1925",
-          "place": "Johnson, Iowa",
+          "place": "Johnson, Iowa, USA",
           "note": null
         },
         {
@@ -9754,7 +9754,7 @@
       "sex": "F",
       "birth": {
         "date": "April 25, 1917",
-        "place": "Iowa",
+        "place": "Iowa, USA",
         "note": null
       },
       "death": {
@@ -9771,7 +9771,7 @@
         },
         {
           "date": "1 Jan 1925",
-          "place": "Johnson, Iowa",
+          "place": "Johnson, Iowa, USA",
           "note": null
         },
         {
@@ -9965,7 +9965,7 @@
       "sex": "F",
       "birth": {
         "date": "1812",
-        "place": "Cork, Ireland",
+        "place": "Cork, Cork, Ireland",
         "note": null
       },
       "death": {
@@ -10018,7 +10018,7 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Head"
         },
         {
@@ -10028,7 +10028,7 @@
         },
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -10073,7 +10073,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -10084,7 +10084,7 @@
         },
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Son"
         },
         {
@@ -10134,7 +10134,7 @@
       "residences": [
         {
           "date": "1 June 1925",
-          "place": "Troy Ward 15, Rensselaer, New York, United States",
+          "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Daughter"
         },
         {
@@ -10278,12 +10278,12 @@
       "sex": "M",
       "birth": {
         "date": "10 Jul 1903",
-        "place": "Jackson, Washington, New York, United States",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "13 Sep 1987",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10317,7 +10317,7 @@
       },
       "death": {
         "date": "17 Jun 1904",
-        "place": "Greenwich, Washington, New York, United States",
+        "place": "Greenwich, Washington, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10358,12 +10358,12 @@
       "sex": "M",
       "birth": {
         "date": "15 Feb 1896",
-        "place": "Jackson, Washington, New York, United States",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "17 Apr 1966",
-        "place": "Greenwich, Washington, New York, United States",
+        "place": "Greenwich, Washington, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10398,12 +10398,12 @@
       "sex": "M",
       "birth": {
         "date": "31 Jul 1893",
-        "place": "Jackson, Washington, New York",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "01 Oct 1986",
-        "place": "Greenwich, Washington, New York, United States of America",
+        "place": "Greenwich, Washington, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10420,7 +10420,7 @@
         },
         {
           "date": "1 June 1915",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         }
       ],
@@ -10448,7 +10448,7 @@
       "sex": "M",
       "birth": {
         "date": "1 Aug 1899",
-        "place": "Jackson, Washington, New York, United States",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
@@ -10488,7 +10488,7 @@
       "sex": "F",
       "birth": {
         "date": "7 Jun 1901",
-        "place": "Jackson, Washington, New York, United States",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
@@ -10527,7 +10527,7 @@
       },
       "death": {
         "date": "7 Aug 2008",
-        "place": "Troy, Rensselaer, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10560,12 +10560,12 @@
       "sex": "M",
       "birth": {
         "date": "9 Jul 1894",
-        "place": "Jackson, Washington, New York, United States",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "10 Feb 1953",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10577,12 +10577,12 @@
         },
         {
           "date": "1920",
-          "place": "Jackson, Washington, New York",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -10657,7 +10657,7 @@
       },
       "death": {
         "date": "1 Jan 1976",
-        "place": "Troy, Rensselaer, New York, United States of America",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10806,7 +10806,7 @@
       },
       "death": {
         "date": "12 Apr 1889",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10851,7 +10851,7 @@
       },
       "death": {
         "date": "21 May 1944",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10886,19 +10886,19 @@
       "sex": "F",
       "birth": {
         "date": "5 Feb 1855",
-        "place": "Troy, New York",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "26 Dec 1887",
-        "place": "Albany, New York",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Albany, Albany, New York, United States",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -10940,7 +10940,7 @@
       },
       "death": {
         "date": "7 Apr 1943",
-        "place": "Cohoes, New York",
+        "place": "Cohoes, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10980,7 +10980,7 @@
       },
       "death": {
         "date": "25 Oct 1890",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11016,12 +11016,12 @@
       "sex": "M",
       "birth": {
         "date": "27 Aug 1881",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "9 Nov 1943",
-        "place": "New York, New York",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11076,7 +11076,7 @@
       "sex": "M",
       "birth": {
         "date": "8 Jan 1874",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -11110,7 +11110,7 @@
       "sex": "F",
       "birth": {
         "date": "21 Sep 1875",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": null,
@@ -11140,7 +11140,7 @@
       "sex": "M",
       "birth": {
         "date": "12 Nov 1878",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -11174,12 +11174,12 @@
       "sex": null,
       "birth": {
         "date": "4 Jul 1880",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "4 Jul 1880",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11208,12 +11208,12 @@
       "sex": "M",
       "birth": {
         "date": "20 May 1884",
-        "place": "Troy, NY",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jan 1970",
-        "place": "Waterford, New York",
+        "place": "Waterford, Saratoga, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11385,7 +11385,7 @@
         },
         {
           "date": "1930",
-          "place": "Larchmont, Westchester, New York",
+          "place": "Larchmont, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -11420,14 +11420,14 @@
       },
       "death": {
         "date": "August 6, 1900",
-        "place": "Troy, Albany, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Lansingburgh, Rensselaer, New York, United States",
+          "place": "Lansingburgh, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -11525,7 +11525,7 @@
       "sex": "M",
       "birth": {
         "date": "7 Jul 1870",
-        "place": "New York, New York City, New York",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
@@ -11655,7 +11655,7 @@
       },
       "death": {
         "date": "1876",
-        "place": "New York, New York City, New York",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11689,7 +11689,7 @@
       },
       "death": {
         "date": "Apr 1972",
-        "place": "New Rochelle, Westchester, New York, United States of America",
+        "place": "New Rochelle, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11706,12 +11706,12 @@
         },
         {
           "date": "1935",
-          "place": "New Rochelle, Westchester, New York",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New Rochelle, Westchester, New York, United States",
+          "place": "New Rochelle, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -11813,7 +11813,7 @@
       "sex": "M",
       "birth": {
         "date": "8 Dec 1830",
-        "place": "Cork, Ireland",
+        "place": "Cork, Cork, Ireland",
         "note": null
       },
       "death": {
@@ -12100,12 +12100,12 @@
       "sex": "F",
       "birth": {
         "date": "Dec 1897",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
         "date": "12 Sep 1948",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -12236,12 +12236,12 @@
       "sex": "F",
       "birth": {
         "date": "9 Feb 1895",
-        "place": "Jackson, Washington, NY, US",
+        "place": "Jackson, Washington, New York, USA",
         "note": null
       },
       "death": {
         "date": "18 Oct 1997",
-        "place": "Troy, Rensselaer, New York, United States of America",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": null,
@@ -12473,17 +12473,17 @@
       "sex": "F",
       "birth": {
         "date": "Sep 1898",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "about 1980",
-        "place": "Albany, NY",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -12499,7 +12499,7 @@
         },
         {
           "date": null,
-          "place": "Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -12527,7 +12527,7 @@
       "sex": "F",
       "birth": {
         "date": "Apr 1885",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
@@ -12572,7 +12572,7 @@
       "sex": "F",
       "birth": {
         "date": "Feb 1897",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
@@ -12617,7 +12617,7 @@
       "sex": "F",
       "birth": {
         "date": "14 Dec 1901",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
@@ -12657,7 +12657,7 @@
       "sex": "M",
       "birth": {
         "date": "11 December 1988",
-        "place": "Albany, New York, USA",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": null,
@@ -12734,17 +12734,17 @@
         },
         {
           "date": "1930",
-          "place": "Larchmont, Westchester, New York",
+          "place": "Larchmont, Westchester, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Albany, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Albany, NY, U.S.A.",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -12836,7 +12836,7 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Larchmont, Westchester, New York",
+          "place": "Larchmont, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -12864,17 +12864,17 @@
       "sex": "M",
       "birth": {
         "date": "29 Nov 1856",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "death": {
         "date": "21 Sep 1936",
-        "place": "Albany, Albany, New York, United States",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -12920,17 +12920,17 @@
       "sex": "F",
       "birth": {
         "date": "27 Feb 1887",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jul 1977",
-        "place": "New York, New York, New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [
@@ -12956,7 +12956,7 @@
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, United States",
+          "place": "New York, New York, New York, USA",
           "note": null
         }
       ],
@@ -12991,12 +12991,12 @@
       "sex": "M",
       "birth": {
         "date": "26 Nov 1894",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "31 MAY 1974",
-        "place": "Albany, Albany, New York, United States of America",
+        "place": "Albany, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -13036,7 +13036,7 @@
       "sex": "M",
       "birth": {
         "date": "21 February 1830 ",
-        "place": "Cork, Ireland",
+        "place": "Cork, Cork, Ireland",
         "note": null
       },
       "death": {
@@ -13046,7 +13046,7 @@
       },
       "burial": {
         "date": null,
-        "place": "Menands, Albany County, New York, United States of America",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "residences": [],
@@ -13083,12 +13083,12 @@
       "residences": [
         {
           "date": "1993",
-          "place": "Albany, NY",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -13165,7 +13165,7 @@
         },
         {
           "date": "1960",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],
@@ -13224,12 +13224,12 @@
       },
       "death": {
         "date": "1927",
-        "place": "Troy, Rensselaer, New York, United States",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "burial": {
         "date": null,
-        "place": "Troy, Rensselaer County, New York, USA",
+        "place": "Troy, Rensselaer, New York, USA",
         "note": null
       },
       "residences": [
@@ -13280,14 +13280,14 @@
       },
       "death": {
         "date": "14 May 1918",
-        "place": "New York, United States",
+        "place": "New York, New York, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1880",
-          "place": "Jackson, Washington, New York, United States",
+          "place": "Jackson, Washington, New York, USA",
           "note": null
         },
         {
@@ -13336,12 +13336,12 @@
       "residences": [
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -13382,12 +13382,12 @@
       "residences": [
         {
           "date": "1935",
-          "place": "Troy, Rensselaer, New York",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "Troy, Rensselaer, New York, United States",
+          "place": "Troy, Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -13425,7 +13425,7 @@
       "residences": [
         {
           "date": "1959",
-          "place": "Albany, New York, USA",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         }
       ],

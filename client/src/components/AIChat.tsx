@@ -98,7 +98,10 @@ export function AIChat() {
               ? "bottom-[calc(8rem+env(safe-area-inset-bottom))] md:bottom-20"
               : "bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-6",
             "inline-flex w-fit items-center gap-2 rounded-full bg-primary text-primary-foreground",
-            "px-4 py-2.5 shadow-lg hover-elevate active-elevate-2",
+            // NOTE: do NOT use hover-elevate/active-elevate here — those utilities
+            // force `position: relative`, which overrides `fixed` and drops the
+            // launcher into normal flow (it was rendering bottom-left, clipped).
+            "px-4 py-2.5 shadow-lg transition hover:brightness-110 active:brightness-95",
           )}
           aria-label="Open AI chat"
           data-testid="open-ai-chat"

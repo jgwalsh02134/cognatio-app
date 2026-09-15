@@ -24,7 +24,10 @@ interface FieldDiff {
 
 function fmt(v: unknown): string {
   if (v == null) return "—";
-  if (typeof v === "string") return v || "—";
+  if (typeof v === "string") {
+    if (v.startsWith("data:image")) return "(uploaded photo)";
+    return v || "—";
+  }
   if (Array.isArray(v)) {
     if (v.length === 0) return "(empty)";
     return v

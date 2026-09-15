@@ -186,10 +186,9 @@ function censusUrl(p: Person, year: number, country: string): string {
   if (residencePlace) params.set("q.residencePlace", residencePlace);
   params.set("q.residenceDate.from", String(year - 1));
   params.set("q.residenceDate.to", String(year + 1));
-  // NOTE: FamilySearch overhauled its search in 2025 — the old
-  // "/search/record/results" path now 404s. The current records search lives
-  // at "/search/records/results" and still accepts the same q.* query terms.
-  return `https://www.familysearch.org/search/records/results?${params.toString()}`;
+  // FamilySearch's public record search is "/search/record/results" (singular
+  // "record"); the plural "/search/records/results" 404s.
+  return `https://www.familysearch.org/search/record/results?${params.toString()}`;
 }
 
 function placeForYear(p: Person, year: number): string | null {

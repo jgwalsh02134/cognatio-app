@@ -1,6 +1,6 @@
 import { Switch, Route, Router } from "wouter";
 import { useState } from "react";
-import { useHashLocation } from "wouter/use-hash-location";
+import { useHashLocation, useHashSearch } from "@/lib/hashLocation";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -17,6 +17,8 @@ import TreeView from "@/pages/TreeView";
 import Gaps from "@/pages/Gaps";
 import Insights from "@/pages/Insights";
 import Places from "@/pages/Places";
+import MapView from "@/pages/MapView";
+import Genetics from "@/pages/Genetics";
 import Timeline from "@/pages/Timeline";
 import Surnames from "@/pages/Surnames";
 import Relate from "@/pages/Relate";
@@ -40,6 +42,8 @@ function AppRouter() {
       <Route path="/gaps" component={Gaps} />
       <Route path="/insights" component={Insights} />
       <Route path="/places" component={Places} />
+      <Route path="/map" component={MapView} />
+      <Route path="/genetics" component={Genetics} />
       <Route path="/timeline" component={Timeline} />
       <Route path="/surnames" component={Surnames} />
       <Route path="/relate" component={Relate} />
@@ -80,7 +84,7 @@ function App() {
           <AIProvider>
             <TooltipProvider>
               <Toaster />
-              <Router hook={useHashLocation}>
+              <Router hook={useHashLocation} searchHook={useHashSearch}>
                 <ScrollToTop />
                 <AppShell>
                   <AppRouter />

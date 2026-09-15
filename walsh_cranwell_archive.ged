@@ -1,7 +1,7 @@
 0 HEAD
-1 SOUR WalshMaloyDuganFamilyArchive
+1 SOUR WalshCranwellFamilyArchive
 2 VERS 1.0
-2 NAME Walsh Maloy Dugan Family Archive
+2 NAME Walsh Cranwell Family Archive
 1 DEST ANY
 1 DATE 3 JUN 2026
 1 CHAR UTF-8
@@ -10,7 +10,7 @@
 2 FORM LINEAGE-LINKED
 1 SUBM @SUBM1@
 0 @SUBM1@ SUBM
-1 NAME Walsh Maloy Dugan Family Archive
+1 NAME Walsh Cranwell Family Archive
 0 @T0I19744721613@ INDI
 1 NAME Margaret //
 2 GIVN Margaret

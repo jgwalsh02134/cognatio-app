@@ -6,6 +6,7 @@ import {
   ExternalLink,
   GitMerge,
   Plus,
+  Search,
   TriangleAlert,
   Users,
   Wand2,
@@ -61,10 +62,25 @@ export type WebConnection = {
   confidence: "high" | "medium" | "low";
 };
 
+/** A promising-but-unconfirmed record page found on the web. The AI surfaces
+ *  these when it can't commit to a specific field value — so the family always
+ *  gets real, clickable leads to verify by hand instead of a dead end. */
+export type WebLead = {
+  title: string;
+  url: string;
+  site?: string;
+  /** Which anchors matched, e.g. "name + birth year + Troy NY". */
+  matched?: string;
+  /** What's still needed to confirm, e.g. "no spouse listed on the page". */
+  missing?: string;
+  confidence: "high" | "medium" | "low";
+};
+
 export type PersonWebFinding = {
   findings?: WebFinding[];
   corrections?: WebCorrection[];
   connections?: WebConnection[];
+  leads?: WebLead[];
   narrative?: string;
   search_log?: string;
 };
@@ -176,6 +192,7 @@ export function WebFindingsCard({
   const findings = finding.findings ?? [];
   const corrections = finding.corrections ?? [];
   const connections = finding.connections ?? [];
+  const leads = finding.leads ?? [];
   // Findings + corrections are both directly applyable as field edits.
   const applyable: WebFinding[] = [
     ...findings,
@@ -209,7 +226,8 @@ export function WebFindingsCard({
   const isEmpty =
     findings.length === 0 &&
     corrections.length === 0 &&
-    connections.length === 0;
+    connections.length === 0 &&
+    leads.length === 0;
 
   // Connections can't yet be applied as structural edits (relationships are
   // editor v2), so the actionable move is to record them as a note on this
@@ -485,6 +503,62 @@ export function WebFindingsCard({
                 </li>
               );
             })}
+          </ul>
+        </>
+      )}
+
+      {/* Records to check — promising pages the AI found but couldn't confirm.
+          Always actionable: real links the family can open and verify. */}
+      {leads.length > 0 && (
+        <>
+          <SectionLabel
+            icon={<Search className="h-3 w-3" />}
+            text="Records to check"
+          />
+          <ul className="space-y-2">
+            {leads.map((l, i) => (
+              <li
+                key={i}
+                className="rounded-md border border-card-border bg-background px-2.5 py-2 text-xs"
+                data-testid={`web-lead-${person.id}-${i}`}
+              >
+                <div className="flex items-start gap-2 flex-wrap">
+                  {l.site && (
+                    <span className="inline-flex items-center rounded bg-sky-500/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-sky-700 dark:text-sky-300">
+                      {l.site}
+                    </span>
+                  )}
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] uppercase tracking-wider",
+                      CONFIDENCE_COLORS[l.confidence],
+                    )}
+                  >
+                    {l.confidence} match
+                  </span>
+                </div>
+                <a
+                  href={l.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1.5 inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline break-words"
+                  data-testid={`lead-link-${person.id}-${i}`}
+                >
+                  <ExternalLink className="h-3 w-3 shrink-0" />
+                  <span className="break-words">{l.title || l.url}</span>
+                </a>
+                {l.matched && (
+                  <div className="mt-1 text-[11px] text-emerald-700 dark:text-emerald-300 leading-relaxed break-words">
+                    Matches: {l.matched}
+                  </div>
+                )}
+                {l.missing && (
+                  <div className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed break-words">
+                    To confirm: {l.missing}
+                  </div>
+                )}
+              </li>
+            ))}
           </ul>
         </>
       )}

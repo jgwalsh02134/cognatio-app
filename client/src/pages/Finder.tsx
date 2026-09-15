@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import {
   ArrowDown,
   ArrowRight,
@@ -54,11 +54,14 @@ const DEFAULT_QUERY: FinderQuery = {
 
 export default function Finder() {
   const [location, setLocation] = useLocation();
+  const search = useSearch();
   const initial = useMemo<FinderQuery>(() => {
-    const idx = location.indexOf("?");
-    if (idx === -1) return { ...DEFAULT_QUERY };
-    return { ...DEFAULT_QUERY, ...paramsToFinderQuery(location.slice(idx + 1)) };
-  }, [location]);
+    return search
+      ? { ...DEFAULT_QUERY, ...paramsToFinderQuery(search) }
+      : { ...DEFAULT_QUERY };
+    // Read once on mount; the URL is written from state thereafter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [query, setQuery] = useState<FinderQuery>(initial);
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({
     key: "name",
@@ -66,12 +69,13 @@ export default function Finder() {
   });
   const [advancedOpen, setAdvancedOpen] = useState(true);
 
-  // Push query into the URL hash for shareable searches.
+  // Push query into the URL hash for shareable searches. `location` is the
+  // path only (search lives in `search`), so rebuild the full target here.
   useEffect(() => {
     const params = finderQueryToParams(query);
-    const base = location.split("?")[0];
-    const next = params ? `${base}?${params}` : base;
-    if (next !== location) setLocation(next);
+    const next = params ? `${location}?${params}` : location;
+    const current = search ? `${location}?${search}` : location;
+    if (next !== current) setLocation(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
