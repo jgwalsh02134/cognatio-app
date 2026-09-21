@@ -250,10 +250,10 @@ export function CommandPalette({
       unlocked
         ? {
             id: "lock-edit",
-            label: "Lock edit mode",
-            hint: "Stop editing",
+            label: "Log out",
+            hint: "Lock the editor",
             icon: <Unlock className="h-4 w-4" />,
-            keywords: ["lock", "edit", "stop"],
+            keywords: ["lock", "edit", "stop", "logout", "sign out"],
             perform: () => {
               lock();
               onClose();
@@ -261,10 +261,10 @@ export function CommandPalette({
           }
         : {
             id: "unlock-edit",
-            label: "Unlock edit mode",
-            hint: "Enter passphrase",
+            label: "Log in",
+            hint: "Family passphrase",
             icon: <Lock className="h-4 w-4" />,
-            keywords: ["unlock", "edit", "passphrase"],
+            keywords: ["unlock", "edit", "passphrase", "login", "sign in", "sign up"],
             perform: () => {
               onClose();
               onRequestUnlock();

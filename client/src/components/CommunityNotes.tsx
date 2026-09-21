@@ -68,13 +68,13 @@ const COLOR_LABELS: Record<string, string> = {
  * on builds with no server the section explains the feature is unavailable.
  */
 export function CommunityNotes({ person }: { person: Person }) {
-  const { unlocked, passcode } = useEdit();
+  const { unlocked, passcode, memberName } = useEdit();
   const { toast } = useToast();
 
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [notes, setNotes] = useState<CommunityNote[]>([]);
   const [loading, setLoading] = useState(true);
-  const [author, setAuthor] = useState(lastAuthor);
+  const [author, setAuthor] = useState(lastAuthor || memberName || "");
   const [body, setBody] = useState("");
   const [color, setColor] = useState<string>(lastColor);
   const [composerOpen, setComposerOpen] = useState(false);
@@ -112,6 +112,10 @@ export function CommunityNotes({ person }: { person: Person }) {
     };
   }, [person.id]);
 
+  useEffect(() => {
+    if (memberName && !author) setAuthor(memberName);
+  }, [memberName, author]);
+
   async function submit() {
     const text = body.trim();
     if (!text || submitting) return;
@@ -120,7 +124,7 @@ export function CommunityNotes({ person }: { person: Person }) {
       return;
     }
     if (!passcode) {
-      setError("Unlock edit mode (the lock icon, top right) to post.");
+      setError("Log in with the family passphrase to post.");
       return;
     }
     setSubmitting(true);
@@ -183,7 +187,7 @@ export function CommunityNotes({ person }: { person: Person }) {
     enabled === false
       ? "Sticky notes save to the live site's database — they aren't available on this local/offline build."
       : !passcode
-        ? "Unlock edit mode (the lock icon at the top right) to post — then pick a color and pin your note."
+        ? "Log in with the family passphrase to post — then pick a color and pin your note."
         : null;
 
   return (

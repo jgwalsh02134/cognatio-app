@@ -372,7 +372,7 @@ function MergePanel({
         ) : (
           <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <Lock className="h-3 w-3" />
-            Unlock the editor (lock icon, top right) to stage a merge.
+            Log in with the family passphrase to stage a merge.
           </span>
         )}
         <Link
