@@ -207,8 +207,8 @@ export default function PersonDetail() {
 
       {/* Hero — magazine / Confluence-style banner + overlapping portrait */}
       <header className="relative overflow-hidden rounded-xl border border-card-border bg-card shadow-sm">
-        <div className="h-16 sm:h-24 profile-banner" aria-hidden />
-        <div className="px-4 sm:px-6 pb-6 sm:pb-7 -mt-10 sm:-mt-12 grid gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-end">
+        <div className="h-20 sm:h-28 profile-banner" aria-hidden />
+        <div className="px-4 sm:px-6 pb-6 sm:pb-7 -mt-12 sm:-mt-14 grid gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-end">
           <div className="relative w-20 sm:w-24 shrink-0">
             <PersonAvatar
               person={person}

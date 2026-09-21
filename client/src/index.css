@@ -310,15 +310,15 @@
   /* Soft wash behind profile / magazine headers (Confluence + New Yorker). */
   .profile-banner {
     background-image:
-      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.12), transparent 52%),
-      radial-gradient(ellipse at 92% 20%, hsl(38 60% 70% / 0.12), transparent 48%),
-      linear-gradient(180deg, hsl(var(--muted) / 0.7), transparent);
+      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.28), transparent 58%),
+      radial-gradient(ellipse at 92% 10%, hsl(38 70% 62% / 0.22), transparent 50%),
+      linear-gradient(180deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.35) 70%, transparent);
   }
   .dark .profile-banner {
     background-image:
-      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.18), transparent 55%),
-      radial-gradient(ellipse at 92% 20%, hsl(280 30% 40% / 0.16), transparent 50%),
-      linear-gradient(180deg, hsl(var(--muted) / 0.45), transparent);
+      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.32), transparent 58%),
+      radial-gradient(ellipse at 92% 10%, hsl(280 30% 40% / 0.28), transparent 50%),
+      linear-gradient(180deg, hsl(var(--muted) / 0.85) 0%, hsl(var(--muted) / 0.2) 70%, transparent);
   }
 }
 
