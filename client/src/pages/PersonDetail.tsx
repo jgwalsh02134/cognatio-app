@@ -1491,7 +1491,7 @@ function FamilySearchRecords({
 }: {
   person: Person;
 }) {
-  const { unlocked, passcode, setPatch, pending } = useEdit();
+  const { unlocked, setPatch, pending } = useEdit();
   const { toast } = useToast();
 
   const [status, setStatus] = useState<FamilySearchStatus | null>(null);
@@ -1520,14 +1520,14 @@ function FamilySearchRecords({
   }, [person.id]);
 
   async function handleConnect() {
-    if (!passcode) {
-      setError("Unlock edit mode (lock icon, top right) to connect FamilySearch.");
+    if (!unlocked) {
+      setError("Sign in (top right) to connect FamilySearch.");
       return;
     }
     setConnecting(true);
     setError(null);
     try {
-      const s = await connectFamilySearch(passcode, (interim) => setStatus(interim));
+      const s = await connectFamilySearch((interim) => setStatus(interim));
       setStatus(s);
       toast({ title: "FamilySearch connected", description: `Linked as ${s.fsUser ?? "FamilySearch user"}.` });
     } catch (e) {
@@ -1538,10 +1538,10 @@ function FamilySearchRecords({
   }
 
   async function handleDisconnect() {
-    if (!passcode) return;
+    if (!unlocked) return;
     if (!window.confirm("Disconnect FamilySearch? The stored tokens will be deleted.")) return;
     try {
-      await disconnectFamilySearch(passcode);
+      await disconnectFamilySearch();
       setStatus((prev) => prev ? { ...prev, connected: false, fsUser: undefined } : { enabled: true, connected: false });
       setCandidates([]);
       toast({ title: "FamilySearch disconnected" });
@@ -1551,7 +1551,7 @@ function FamilySearchRecords({
   }
 
   async function handleSearch() {
-    if (!passcode || !status?.connected) return;
+    if (!unlocked || !status?.connected) return;
     setSearching(true);
     setError(null);
     try {
@@ -1566,7 +1566,7 @@ function FamilySearchRecords({
         deathYear: dyMatch ? parseInt(dyMatch[0], 10) : undefined,
         deathPlace: person.death?.place ?? undefined,
       };
-      const result = await searchFamilySearch(anchors, passcode);
+      const result = await searchFamilySearch(anchors);
       if (!result.connected) {
         setStatus((prev) => prev ? { ...prev, connected: false } : { enabled: true, connected: false });
         setCandidates([]);
@@ -1672,7 +1672,7 @@ function FamilySearchRecords({
             ) : (
               <div className="flex items-start gap-2 text-xs text-muted-foreground">
                 <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                <span>Unlock edit mode (the lock icon, top right) to connect FamilySearch.</span>
+                <span>Sign in (top right) to connect FamilySearch.</span>
               </div>
             )}
           </div>

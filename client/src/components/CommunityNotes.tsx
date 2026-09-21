@@ -68,7 +68,7 @@ const COLOR_LABELS: Record<string, string> = {
  * on builds with no server the section explains the feature is unavailable.
  */
 export function CommunityNotes({ person }: { person: Person }) {
-  const { unlocked, passcode } = useEdit();
+  const { unlocked } = useEdit();
   const { toast } = useToast();
 
   const [enabled, setEnabled] = useState<boolean | null>(null);
@@ -119,8 +119,8 @@ export function CommunityNotes({ person }: { person: Person }) {
       setError("Sticky notes need the live site's database — not available on this offline build.");
       return;
     }
-    if (!passcode) {
-      setError("Unlock edit mode (the lock icon, top right) to post.");
+    if (!unlocked) {
+      setError("Sign in (top right) to post.");
       return;
     }
     setSubmitting(true);
@@ -131,7 +131,6 @@ export function CommunityNotes({ person }: { person: Person }) {
         author: author.trim() || "Anonymous",
         body: text,
         color,
-        passcode,
       });
       lastAuthor = author.trim();
       lastColor = color;
@@ -161,12 +160,12 @@ export function CommunityNotes({ person }: { person: Person }) {
   }
 
   async function remove(note: CommunityNote) {
-    if (!passcode) return;
+    if (!unlocked) return;
     if (!window.confirm("Delete this sticky note?")) return;
     const prev = notes;
     setNotes((cur) => cur.filter((n) => n.id !== note.id));
     try {
-      await deleteCommunityNote(note.id, passcode);
+      await deleteCommunityNote(note.id);
     } catch (e) {
       setNotes(prev);
       toast({
@@ -178,12 +177,12 @@ export function CommunityNotes({ person }: { person: Person }) {
   }
 
   // Whether a post can actually go through, and why not.
-  const canPost = enabled === true && !!passcode;
+  const canPost = enabled === true && unlocked;
   const postBlockedReason =
     enabled === false
       ? "Sticky notes save to the live site's database — they aren't available on this local/offline build."
-      : !passcode
-        ? "Unlock edit mode (the lock icon at the top right) to post — then pick a color and pin your note."
+      : !unlocked
+        ? "Sign in (top right) to post — then pick a color and pin your note."
         : null;
 
   return (
@@ -226,7 +225,7 @@ export function CommunityNotes({ person }: { person: Person }) {
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mb-4">
           Observations, corrections, memories, or source tips for this person. Anyone can read
-          them; posting uses the family passphrase.
+          them; posting requires signing in.
         </p>
 
         {/* Composer — opens in any state and always says what's needed to post. */}

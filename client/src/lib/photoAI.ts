@@ -110,9 +110,9 @@ export async function enhancePhoto(opts: {
   if (auth.mode === "proxy") {
     const res = await fetch(PROXY_URL, {
       method: "POST",
+      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        "x-ai-passcode": auth.passcode,
       },
       body: JSON.stringify({ image: dataUrl, prompt, mode }),
       signal,

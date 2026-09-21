@@ -61,24 +61,26 @@ export async function familySearchStatus(
 // ---------------------------------------------------------------------------
 
 /**
- * Open the FamilySearch OAuth popup and poll until connected.
+ * Open the FamilySearch OAuth popup and poll until connected. Requires a
+ * logged-in session (the cookie is sent via credentials:"same-origin").
  *
- * @param passcode  The family edit passphrase (x-edit-passcode header).
  * @param onStatus  Optional callback invoked on each poll result.
  * @returns         The final status (connected:true on success).
  */
 export async function connectFamilySearch(
-  passcode: string,
   onStatus?: (s: FamilySearchStatus) => void,
 ): Promise<FamilySearchStatus> {
   // 1. Get the authorize URL from the server.
   const urlResp = await fetch("/api/familysearch/connect-url", {
     method: "POST",
-    headers: { "x-edit-passcode": passcode },
+    credentials: "same-origin",
   });
   if (!urlResp.ok) {
     const j = (await urlResp.json().catch(() => ({}))) as { error?: string };
-    throw new Error(j.error || `Server responded ${urlResp.status}`);
+    throw new Error(
+      j.error ||
+        (urlResp.status === 401 ? "Please sign in." : `Server responded ${urlResp.status}`),
+    );
   }
   const { url } = (await urlResp.json()) as { url: string };
 
@@ -140,14 +142,16 @@ export async function connectFamilySearch(
 // Disconnect
 // ---------------------------------------------------------------------------
 
-export async function disconnectFamilySearch(passcode: string): Promise<void> {
+export async function disconnectFamilySearch(): Promise<void> {
   const r = await fetch("/api/familysearch/disconnect", {
     method: "POST",
-    headers: { "x-edit-passcode": passcode },
+    credentials: "same-origin",
   });
   if (!r.ok) {
     const j = (await r.json().catch(() => ({}))) as { error?: string };
-    throw new Error(j.error || `Server responded ${r.status}`);
+    throw new Error(
+      j.error || (r.status === 401 ? "Please sign in." : `Server responded ${r.status}`),
+    );
   }
 }
 
@@ -157,15 +161,14 @@ export async function disconnectFamilySearch(passcode: string): Promise<void> {
 
 export async function searchFamilySearch(
   anchors: FsSearchAnchors,
-  passcode: string,
   signal?: AbortSignal,
 ): Promise<{ connected: boolean; candidates: FsCandidate[] }> {
   try {
     const r = await fetch("/api/familysearch/search", {
       method: "POST",
+      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
-        "x-edit-passcode": passcode,
       },
       body: JSON.stringify({ anchors }),
       signal,
