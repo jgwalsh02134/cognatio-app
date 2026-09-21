@@ -287,7 +287,7 @@ export default function PeopleList() {
                   key={opt}
                   onClick={() => setLivingFilter(opt)}
                   className={cn(
-                    "flex-1 text-xs py-1 px-2 rounded capitalize hover-elevate active-elevate-2",
+                    "flex-1 min-h-10 text-xs py-2 px-2 rounded capitalize hover-elevate active-elevate-2",
                     livingFilter === opt
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground",

@@ -348,7 +348,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-1.5">
                 <Link
                   href="/login"
-                  className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                  className="hidden sm:inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
                   data-testid="button-edit-unlock"
                 >
                   Log in
@@ -422,13 +422,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[10.5px] font-medium leading-none hover-elevate active-elevate-2",
+                  "relative basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[11px] font-medium leading-none hover-elevate active-elevate-2",
                   active ? "text-primary" : "text-muted-foreground",
                 )}
                 data-testid={`nav-mobile-${label.toLowerCase()}`}
               >
                 <Icon className="h-5 w-5" />
                 {label}
+                {active && (
+                  <span className="absolute top-0 inset-x-3 h-0.5 rounded-full bg-primary" aria-hidden />
+                )}
               </Link>
             );
           })}
@@ -438,13 +441,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             aria-label="More sections"
             aria-expanded={moreOpen}
             className={cn(
-              "basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[10.5px] font-medium leading-none hover-elevate active-elevate-2",
+              "relative basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[11px] font-medium leading-none hover-elevate active-elevate-2",
               moreActive ? "text-primary" : "text-muted-foreground",
             )}
             data-testid="nav-mobile-more"
           >
             <LayoutGrid className="h-5 w-5" />
             More
+            {moreActive && (
+              <span className="absolute top-0 inset-x-3 h-0.5 rounded-full bg-primary" aria-hidden />
+            )}
           </button>
         </div>
       </nav>
@@ -459,6 +465,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <SheetHeader className="mb-3 text-left">
             <SheetTitle className="font-display text-base">Browse</SheetTitle>
           </SheetHeader>
+          {!unlocked && (
+            <div className="mb-4 grid grid-cols-2 gap-2">
+              <Link
+                href="/login"
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center justify-center rounded-lg border border-card-border px-3 py-2.5 text-sm hover-elevate active-elevate-2"
+                data-testid="nav-sheet-login"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center justify-center rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-primary-foreground hover-elevate active-elevate-2"
+                data-testid="nav-sheet-signup"
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
           <div className="space-y-5">
             {GROUPS.map((group) => (
               <div key={group.title}>
@@ -501,8 +527,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
           (bottom-right) so it never covers the footer text. */}
-      <footer className={cn("border-t py-10 px-4 sm:px-5 pb-24 md:pb-12", isTreePage || isAuthPage ? "hidden" : "mt-16")}>
-        <div className="mx-auto max-w-7xl">
+      <footer className={cn("border-t px-4 sm:px-5", isTreePage || isAuthPage ? "hidden" : "mt-10 md:mt-16")}>
+        <p className="md:hidden py-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-center text-[11px] leading-relaxed text-muted-foreground">
+          Walsh · Maloy · Cranwell · Dugan
+        </p>
+        <div className="mx-auto hidden max-w-7xl py-10 md:block">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-2.5">

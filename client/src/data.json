@@ -33,14 +33,14 @@
     },
     {
       "id": "t0:I19744215649",
-      "name": "Mary E.",
+      "name": "Mary E. McCarthy",
       "given": "Mary E.",
-      "surname": "",
+      "surname": "McCarthy",
       "suffix": "",
       "sex": "F",
       "birth": {
         "date": "May 1872",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
@@ -52,13 +52,15 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Yonkers Ward 3, Westchester, New York",
+          "place": "Yonkers Ward 3, Westchester, New York, USA",
           "note": null
         }
       ],
       "occupations": [],
       "educations": [],
-      "notes": [],
+      "notes": [
+        "A second export gives her birth year as 1874. This record keeps May 1872."
+      ],
       "parent_ids": [],
       "spouse_ids": [
         "t0:I19744215609"
@@ -377,14 +379,12 @@
       "notes": [],
       "parent_ids": [],
       "spouse_ids": [
-        "t0:I29550637901",
-        "t0:I29550637674"
+        "t0:I29550637901"
       ],
       "child_ids": [],
       "family_child_ids": [],
       "family_spouse_ids": [
-        "t0:F5",
-        "t0:F33"
+        "t0:F5"
       ],
       "source_count": 1
     },
@@ -422,7 +422,7 @@
       "sex": "F",
       "birth": {
         "date": "May 12,1955",
-        "place": "Floral Park, NY",
+        "place": "Floral Park, New York, USA",
         "note": null
       },
       "death": null,
@@ -575,7 +575,7 @@
       "given": "May Helen",
       "surname": "Brainard",
       "suffix": "",
-      "sex": null,
+      "sex": "F",
       "birth": {
         "date": "1882",
         "place": "Troy, Rensselaer, New York, USA",
@@ -658,7 +658,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1801",
-        "place": "Gaspreau, Kings, Nova Scotia,",
+        "place": "Gaspereau, Kings, Nova Scotia, Canada",
         "note": null
       },
       "death": {
@@ -683,47 +683,6 @@
       "source_count": 1
     },
     {
-      "id": "t1:I102119268454",
-      "name": "Edith Maud Caldwell",
-      "given": "Edith Maud",
-      "surname": "Caldwell",
-      "suffix": "",
-      "sex": "F",
-      "birth": {
-        "date": "25 Mar 1877",
-        "place": "Rhode Island, USA",
-        "note": null
-      },
-      "death": {
-        "date": "8 Feb 1968",
-        "place": "Pinellas, Florida, United States",
-        "note": "BURIED: New Rochelle, Westchester, New York, USA"
-      },
-      "burial": null,
-      "residences": [],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [
-        "t1:I102119741545",
-        "t1:I102624528667"
-      ],
-      "spouse_ids": [
-        "t0:I19744303987"
-      ],
-      "child_ids": [
-        "t0:I19744709459",
-        "t0:I19744180178"
-      ],
-      "family_child_ids": [
-        "t1:F14"
-      ],
-      "family_spouse_ids": [
-        "t0:F64"
-      ],
-      "source_count": 1
-    },
-    {
       "id": "t0:I19744304033",
       "name": "Edith Maude Caldwell",
       "given": "Edith Maude",
@@ -737,16 +696,19 @@
       },
       "death": {
         "date": "8 Feb 1968",
-        "place": "Pinellas, Florida, United States",
+        "place": "Pinellas, Florida, USA",
         "note": null
       },
       "burial": null,
       "residences": [],
       "occupations": [],
       "educations": [],
-      "notes": [],
+      "notes": [
+        "A second export records her birth as 25 Mar 1877 in Rhode Island, and spells the middle name Maud. This record keeps 26 Mar 1879, Providence, and Maude."
+      ],
       "parent_ids": [
-        "t0:I372535859984"
+        "t0:I372535859984",
+        "t1:I102119741545"
       ],
       "spouse_ids": [
         "t0:I19744303987"
@@ -760,33 +722,6 @@
       ],
       "family_spouse_ids": [
         "t0:F64"
-      ],
-      "source_count": 1
-    },
-    {
-      "id": "t1:I102624528667",
-      "name": "Ella M. Caldwell",
-      "given": "Ella M.",
-      "surname": "Caldwell",
-      "suffix": "",
-      "sex": "F",
-      "birth": null,
-      "death": null,
-      "burial": null,
-      "residences": [],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [],
-      "spouse_ids": [
-        "t1:I102119741545"
-      ],
-      "child_ids": [
-        "t1:I102119268454"
-      ],
-      "family_child_ids": [],
-      "family_spouse_ids": [
-        "t1:F14"
       ],
       "source_count": 1
     },
@@ -808,13 +743,7 @@
         "note": null
       },
       "burial": null,
-      "residences": [
-        {
-          "date": null,
-          "place": "Ward",
-          "note": null
-        }
-      ],
+      "residences": [],
       "occupations": [],
       "educations": [],
       "notes": [],
@@ -822,17 +751,15 @@
         "t1:I102624528692"
       ],
       "spouse_ids": [
-        "t1:I102624528667"
+        "t0:I372535859984"
       ],
       "child_ids": [
-        "t1:I102119268454"
+        "t0:I19744304033"
       ],
       "family_child_ids": [
         "t1:F16"
       ],
-      "family_spouse_ids": [
-        "t1:F14"
-      ],
+      "family_spouse_ids": [],
       "source_count": 1
     },
     {
@@ -878,7 +805,7 @@
       "sex": "F",
       "birth": {
         "date": "31 Jul 1856",
-        "place": "New Jersey, United States",
+        "place": "New Jersey, USA",
         "note": null
       },
       "death": {
@@ -946,7 +873,7 @@
       "sex": "M",
       "birth": {
         "date": "Dec 1867",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
@@ -958,7 +885,7 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Manhattan (Districts 501-750), Manhattan, New York, New York, USA",
+          "place": "Manhattan (Districts 501-750), New York, USA",
           "note": "Marital Status: Married; Relation to Head of House: Head; Occupation: Contractor"
         }
       ],
@@ -992,7 +919,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1907",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -1000,7 +927,7 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Yonkers Ward 3, Westchester, New York",
+          "place": "Yonkers Ward 3, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -1045,8 +972,7 @@
         "t0:I372433897803"
       ],
       "child_ids": [
-        "t0:I19744215609",
-        "t0:I19744180137"
+        "t0:I19744215609"
       ],
       "family_child_ids": [],
       "family_spouse_ids": [
@@ -1063,7 +989,7 @@
       "sex": "F",
       "birth": {
         "date": "8 Nov 1926",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -1075,7 +1001,7 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Queens, Queens, New York",
+          "place": "Queens, Queens, New York, USA",
           "note": null
         },
         {
@@ -1129,7 +1055,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1898",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -1137,7 +1063,7 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Yonkers Ward 3, Westchester, New York",
+          "place": "Yonkers Ward 3, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -1176,12 +1102,12 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Yonkers Ward 3, Westchester, New York",
+          "place": "Yonkers Ward 3, Westchester, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Queens, Queens, New York",
+          "place": "Queens, Queens, New York, USA",
           "note": null
         },
         {
@@ -1196,7 +1122,7 @@
         },
         {
           "date": null,
-          "place": "Yonkers, Westchester, New York",
+          "place": "Yonkers, Westchester, New York, USA",
           "note": null
         }
       ],
@@ -1205,28 +1131,19 @@
       "notes": [],
       "parent_ids": [
         "t0:I19744215609",
-        "t0:I19744215649",
-        "t0:I19744180137",
-        "t1:I102119268425",
-        "t0:I372433897708",
-        "t0:I372433897803"
+        "t0:I19744215649"
       ],
       "spouse_ids": [
-        "t0:I19744180178",
-        "t1:I102119268425"
+        "t0:I19744180178"
       ],
       "child_ids": [
-        "t0:I19744165677",
-        "t0:I19744180137"
+        "t0:I19744165677"
       ],
       "family_child_ids": [
-        "t0:F83",
-        "t1:F10",
-        "t0:F59"
+        "t0:F83"
       ],
       "family_spouse_ids": [
-        "t0:F3",
-        "t1:F10"
+        "t0:F3"
       ],
       "source_count": 3,
       "military": {
@@ -1291,7 +1208,7 @@
       "given": "Betty B.",
       "surname": "Crummey",
       "suffix": "",
-      "sex": null,
+      "sex": "F",
       "birth": {
         "date": "1920",
         "place": null,
@@ -1310,7 +1227,7 @@
       "residences": [
         {
           "date": null,
-          "place": "Albany , N.y.",
+          "place": "Albany, New York, USA",
           "note": null
         }
       ],
@@ -1329,35 +1246,6 @@
       "source_count": 1
     },
     {
-      "id": "t0:I372634356507",
-      "name": "Betty B. Crummey",
-      "given": "Betty B.",
-      "surname": "Crummey",
-      "suffix": "",
-      "sex": "U",
-      "birth": {
-        "date": "1920",
-        "place": null,
-        "note": null
-      },
-      "death": {
-        "date": "7 Dec 2012",
-        "place": null,
-        "note": null
-      },
-      "burial": null,
-      "residences": [],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [],
-      "spouse_ids": [],
-      "child_ids": [],
-      "family_child_ids": [],
-      "family_spouse_ids": [],
-      "source_count": 1
-    },
-    {
       "id": "t0:I372634356545",
       "name": "Catherine A. Crummey",
       "given": "Catherine A.",
@@ -1366,12 +1254,12 @@
       "sex": "F",
       "birth": {
         "date": "24 Jun 1863",
-        "place": "New York USA, New York, USA",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
         "date": "1908",
-        "place": "Menands, Albany, New York USA, California, USA",
+        "place": "Menands, Albany, New York, USA",
         "note": null
       },
       "burial": null,
@@ -1399,7 +1287,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1921",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -1415,27 +1303,17 @@
       "residences": [
         {
           "date": "1930",
-          "place": "Manhattan, New York, New York",
+          "place": "Manhattan, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, USA",
+          "place": "New York, New York, USA",
           "note": null
         },
         {
           "date": null,
-          "place": "Albany , N.y.",
-          "note": null
-        },
-        {
-          "date": null,
-          "place": "New",
-          "note": null
-        },
-        {
-          "date": null,
-          "place": "York",
+          "place": "Albany, New York, USA",
           "note": null
         }
       ],
@@ -1499,7 +1377,7 @@
       },
       "death": {
         "date": "Jan 1968",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": {
@@ -1510,17 +1388,17 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Manhattan Assembly District 13, New York, New York",
+          "place": "Manhattan Assembly District 13, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Manhattan, New York, New York",
+          "place": "Manhattan, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, USA",
+          "place": "New York, New York, USA",
           "note": null
         }
       ],
@@ -1554,7 +1432,7 @@
       "sex": "F",
       "birth": {
         "date": "3 Mar 1914",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -1566,17 +1444,17 @@
       "residences": [
         {
           "date": "1920",
-          "place": "Manhattan Assembly District 13, New York, New York",
+          "place": "Manhattan Assembly District 13, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Manhattan, New York, New York",
+          "place": "Manhattan, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, USA",
+          "place": "New York, New York, USA",
           "note": null
         }
       ],
@@ -1781,7 +1659,7 @@
       "sex": "F",
       "birth": {
         "date": "1884",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -1991,12 +1869,12 @@
       "sex": "F",
       "birth": {
         "date": "30 Apr 1842",
-        "place": "Co, Kilkenny, Ireland",
+        "place": "County Kilkenny, Ireland",
         "note": null
       },
       "death": {
         "date": "29 Mar 1928",
-        "place": "Chatham, Columbia, New York, United States",
+        "place": "Chatham, Columbia, New York, USA",
         "note": null
       },
       "burial": null,
@@ -2089,7 +1967,7 @@
       "sex": "F",
       "birth": {
         "date": "19 Feb 1879",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -2137,7 +2015,7 @@
       "residences": [
         {
           "date": "1993",
-          "place": "East Greenbush, NY",
+          "place": "East Greenbush, New York, USA",
           "note": null
         }
       ],
@@ -2379,7 +2257,7 @@
         },
         {
           "date": null,
-          "place": "Petersburg, NY",
+          "place": "Petersburg, New York, USA",
           "note": null
         }
       ],
@@ -2407,8 +2285,8 @@
     },
     {
       "id": "t0:I29577946350",
-      "name": "JosephP Dugan",
-      "given": "JosephP",
+      "name": "Joseph P Dugan",
+      "given": "Joseph P",
       "surname": "Dugan",
       "suffix": "",
       "sex": "M",
@@ -2464,7 +2342,7 @@
       "residences": [
         {
           "date": "1935-1993",
-          "place": "Clift, NY",
+          "place": "Clift, New York, USA",
           "note": null
         },
         {
@@ -2501,7 +2379,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1874",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -2530,8 +2408,8 @@
     },
     {
       "id": "t0:I29577903368",
-      "name": "Louis. F. Dugan",
-      "given": "Louis. F.",
+      "name": "Louis F. Dugan",
+      "given": "Louis F.",
       "surname": "Dugan",
       "suffix": "",
       "sex": "M",
@@ -2553,7 +2431,7 @@
       "residences": [
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 02, Rensselaer, New York, United States",
+          "place": "Troy Ward 02, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Head"
         },
         {
@@ -2688,7 +2566,7 @@
         },
         {
           "date": "1 June 1915",
-          "place": "Glens Falls Ward 03, Warren, New York, United States",
+          "place": "Glens Falls Ward 03, Warren, New York, USA",
           "note": "Relation to Head of House: Head"
         },
         {
@@ -2766,7 +2644,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1875",
-        "place": "United States",
+        "place": "USA",
         "note": null
       },
       "death": null,
@@ -2774,7 +2652,7 @@
       "residences": [
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 02, Rensselaer, New York, United States",
+          "place": "Troy Ward 02, Rensselaer, New York, USA",
           "note": "Relation to Head of House: Wife"
         }
       ],
@@ -2801,7 +2679,7 @@
       "sex": "F",
       "birth": {
         "date": "1878",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -2880,7 +2758,7 @@
       "sex": "M",
       "birth": {
         "date": "1930",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -2903,7 +2781,7 @@
         },
         {
           "date": "1992",
-          "place": "Clifton Park, NY",
+          "place": "Clifton Park, New York, USA",
           "note": null
         }
       ],
@@ -3057,8 +2935,7 @@
       "notes": [],
       "parent_ids": [
         "t0:I18635890324",
-        "t0:I18635922801",
-        "t1:I102119268177"
+        "t0:I18635922801"
       ],
       "spouse_ids": [
         "t0:I18635645027"
@@ -3070,8 +2947,7 @@
         "t0:I18635657946"
       ],
       "family_child_ids": [
-        "t0:F47",
-        "t1:F5"
+        "t0:F47"
       ],
       "family_spouse_ids": [
         "t0:F11"
@@ -3123,7 +2999,7 @@
       "sex": "M",
       "birth": {
         "date": "8 Jan 1844",
-        "place": "Co, Kilkenny, Ireland",
+        "place": "County Kilkenny, Ireland",
         "note": null
       },
       "death": {
@@ -3282,7 +3158,7 @@
       "residences": [
         {
           "date": "16 Nov 1893",
-          "place": "Rensselaer, New York",
+          "place": "Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -3320,18 +3196,18 @@
       },
       "burial": {
         "date": null,
-        "place": "St. Peter's Cemetery Troy, NY United States",
+        "place": "St. Peter's Cemetery, Troy, New York, USA",
         "note": null
       },
       "residences": [
         {
           "date": "1900",
-          "place": "Troy City, Rensselaer, New York",
+          "place": "Troy City, Rensselaer, New York, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Troy Ward 7, Rensselaer, New York",
+          "place": "Troy Ward 7, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -3360,28 +3236,22 @@
       "notes": [],
       "parent_ids": [
         "t0:I18635953178",
-        "t0:I18635953179",
-        "t0:I18635890324",
-        "t1:I102119268177"
+        "t0:I18635953179"
       ],
       "spouse_ids": [
-        "t0:I18635922801",
-        "t1:I102119268177"
+        "t0:I18635922801"
       ],
       "child_ids": [
         "t0:I19739345719",
         "t0:I18635953181",
         "t0:I18635646682",
-        "t0:I19739345716",
-        "t0:I18635890324"
+        "t0:I19739345716"
       ],
       "family_child_ids": [
-        "t0:F89",
-        "t1:F5"
+        "t0:F89"
       ],
       "family_spouse_ids": [
-        "t0:F47",
-        "t1:F5"
+        "t0:F47"
       ],
       "source_count": 3,
       "military": {
@@ -3411,7 +3281,7 @@
       "sex": "M",
       "birth": {
         "date": "1922",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -3525,8 +3395,8 @@
       },
       "death": {
         "date": "26 Dec 1887",
-        "place": "Albany, New York-Died In Childbirth",
-        "note": null
+        "place": "Albany, New York, USA",
+        "note": "Died in childbirth"
       },
       "burial": null,
       "residences": [],
@@ -3559,7 +3429,7 @@
       },
       "death": {
         "date": "15 Mar 1906",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -3618,7 +3488,7 @@
       },
       "burial": {
         "date": "About Nov 1944",
-        "place": "St. Peter's Cemetery Troy, NY United States",
+        "place": "St. Peter's Cemetery, Troy, New York, USA",
         "note": "St. Peter's Cemetery Oakwood Avenue Troy, NY"
       },
       "residences": [
@@ -3685,7 +3555,7 @@
       "sex": "F",
       "birth": {
         "date": "27 Dec 1806",
-        "place": "Co, Kilkenny, Ireland",
+        "place": "County Kilkenny, Ireland",
         "note": null
       },
       "death": null,
@@ -3715,7 +3585,7 @@
       "sex": "M",
       "birth": {
         "date": "8 Mar 1809",
-        "place": "Co, Kilkenny, Ireland",
+        "place": "County Kilkenny, Ireland",
         "note": null
       },
       "death": {
@@ -3973,7 +3843,7 @@
         },
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4029,7 +3899,7 @@
       "sex": "M",
       "birth": {
         "date": "Jan 1882",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -4041,7 +3911,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -4117,7 +3987,7 @@
       "sex": "M",
       "birth": {
         "date": "Dec 1885",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -4129,7 +3999,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4164,42 +4034,6 @@
       "source_count": 1
     },
     {
-      "id": "t1:I102119268177",
-      "name": "Debora Dorothy Faden",
-      "given": "Debora Dorothy",
-      "surname": "Faden",
-      "suffix": "",
-      "sex": "F",
-      "birth": {
-        "date": "5 Aug 1890",
-        "place": "Troy, Rensselaer, New York, USA",
-        "note": null
-      },
-      "death": {
-        "date": "16 Jun 1956",
-        "place": "Troy, Rensselaer, New York, USA",
-        "note": null
-      },
-      "burial": null,
-      "residences": [],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [],
-      "spouse_ids": [
-        "t0:I18635890324"
-      ],
-      "child_ids": [
-        "t0:I18635890324",
-        "t0:I18635646682"
-      ],
-      "family_child_ids": [],
-      "family_spouse_ids": [
-        "t1:F5"
-      ],
-      "source_count": 1
-    },
-    {
       "id": "t0:I18635922801",
       "name": "Deborah Dorothy Faden",
       "given": "Deborah Dorothy",
@@ -4220,7 +4054,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4245,7 +4079,7 @@
         },
         {
           "date": "1920",
-          "place": "Troy Ward 7, Rensselaer, New York",
+          "place": "Troy Ward 7, Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4365,7 +4199,7 @@
       "sex": "M",
       "birth": {
         "date": "18 Jul 1908",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -4401,7 +4235,7 @@
         },
         {
           "date": null,
-          "place": "Rensselaer, New York",
+          "place": "Rensselaer, New York, USA",
           "note": null
         }
       ],
@@ -4460,19 +4294,19 @@
       "sex": "M",
       "birth": {
         "date": "1884",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
         "date": "1936",
-        "place": "Hillsborough, Florida, United States",
+        "place": "Hillsborough, Florida, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4551,7 +4385,7 @@
       "sex": "F",
       "birth": {
         "date": null,
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -4605,45 +4439,6 @@
         "t0:F91"
       ],
       "family_spouse_ids": [],
-      "source_count": 1
-    },
-    {
-      "id": "t0:I29550637674",
-      "name": "William C Faden",
-      "given": "William C",
-      "surname": "Faden",
-      "suffix": "",
-      "sex": "M",
-      "birth": {
-        "date": "1926",
-        "place": "New York",
-        "note": null
-      },
-      "death": null,
-      "burial": null,
-      "residences": [
-        {
-          "date": "1930",
-          "place": "Troy, Rensselaer, New York, USA",
-          "note": null
-        }
-      ],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [
-        "t0:I18669423251"
-      ],
-      "spouse_ids": [
-        "t0:I29550637806"
-      ],
-      "child_ids": [],
-      "family_child_ids": [
-        "t0:F98"
-      ],
-      "family_spouse_ids": [
-        "t0:F33"
-      ],
       "source_count": 1
     },
     {
@@ -4734,7 +4529,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -4771,16 +4566,14 @@
       ],
       "child_ids": [
         "t0:I29550637785",
-        "t0:I29550637901",
-        "t0:I29550637674"
+        "t0:I29550637901"
       ],
       "family_child_ids": [
         "t0:F91"
       ],
       "family_spouse_ids": [
         "t0:F23",
-        "t0:F18",
-        "t0:F98"
+        "t0:F18"
       ],
       "source_count": 1,
       "military": {
@@ -4808,7 +4601,7 @@
       "given": "Joseph Warren",
       "surname": "Faden, Jr.",
       "suffix": "",
-      "sex": "U",
+      "sex": "M",
       "birth": null,
       "death": null,
       "burial": null,
@@ -4842,7 +4635,7 @@
       },
       "death": {
         "date": "3 Jan 1890",
-        "place": "UTICA NY",
+        "place": "Utica, Oneida, New York, USA",
         "note": null
       },
       "burial": null,
@@ -4855,8 +4648,7 @@
         "t0:I372433897708"
       ],
       "child_ids": [
-        "t0:I19744215609",
-        "t0:I19744180137"
+        "t0:I19744215609"
       ],
       "family_child_ids": [],
       "family_spouse_ids": [
@@ -4962,12 +4754,12 @@
         },
         {
           "date": "1920",
-          "place": "Albany Ward 7, Albany, New York",
+          "place": "Albany Ward 7, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": "Relation to Head of House: Wife"
         }
       ],
@@ -5223,7 +5015,7 @@
       "sex": "F",
       "birth": {
         "date": "May 1868",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5264,7 +5056,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1866",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5349,7 +5141,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1874",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5394,7 +5186,7 @@
       "sex": "F",
       "birth": {
         "date": "Aug 1879",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5465,7 +5257,7 @@
       "sex": "F",
       "birth": {
         "date": "Jul 1869",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5524,12 +5316,12 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         }
       ],
@@ -5694,14 +5486,14 @@
       },
       "death": {
         "date": "15 Jan 1927",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1900",
-          "place": "New York City, New York, New York",
+          "place": "New York City, New York, USA",
           "note": null
         }
       ],
@@ -5880,7 +5672,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1874",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -5919,7 +5711,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1875",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -5989,7 +5781,7 @@
       },
       "death": {
         "date": "16 Aug 1999",
-        "place": "Harris, Texas",
+        "place": "Harris, Texas, USA",
         "note": null
       },
       "burial": null,
@@ -6047,7 +5839,7 @@
       "sex": "M",
       "birth": {
         "date": "1898",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -6093,7 +5885,7 @@
       "sex": "M",
       "birth": {
         "date": "6 Aug 1958",
-        "place": "Port Chester, NY",
+        "place": "Port Chester, New York, USA",
         "note": null
       },
       "death": {
@@ -6267,7 +6059,7 @@
       },
       "death": {
         "date": "23 Nov 1928",
-        "place": "Lacona, Warren, Iowa, United States",
+        "place": "Lacona, Warren, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -6296,7 +6088,7 @@
       },
       "death": {
         "date": "14 Aug 1899",
-        "place": "Rosemount, Warren, Iowa, United States",
+        "place": "Rosemount, Warren, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -6325,7 +6117,7 @@
       },
       "death": {
         "date": "18 Apr 1939",
-        "place": "Richmond, Contra Costa, California, United States",
+        "place": "Richmond, Contra Costa, California, USA",
         "note": null
       },
       "burial": null,
@@ -6349,7 +6141,7 @@
       "sex": "M",
       "birth": {
         "date": "24 Nov 1856",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
@@ -6366,7 +6158,7 @@
         },
         {
           "date": null,
-          "place": "New York",
+          "place": "New York, USA",
           "note": null
         }
       ],
@@ -6451,7 +6243,7 @@
         },
         {
           "date": "1900",
-          "place": "Lansingburg Village (Part), Rensselaer, New York",
+          "place": "Lansingburg Village (Part), Rensselaer, New York, USA",
           "note": null
         },
         {
@@ -6461,11 +6253,6 @@
         },
         {
           "date": "1 June 1915",
-          "place": "Troy Ward 15, Rensselaer, New York, USA",
-          "note": null
-        },
-        {
-          "date": "1920",
           "place": "Troy Ward 15, Rensselaer, New York, USA",
           "note": null
         },
@@ -6527,7 +6314,7 @@
       },
       "death": {
         "date": "25 Jun 1885",
-        "place": "Warren, Iowa, United States",
+        "place": "Warren, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -6672,7 +6459,7 @@
       },
       "death": {
         "date": "27 Jan 1934",
-        "place": "Churchville, Warren, Iowa, United States",
+        "place": "Churchville, Warren, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -6701,7 +6488,7 @@
       },
       "death": {
         "date": "12 Jan 1901",
-        "place": "Rosemount, Warren, Iowa, United States",
+        "place": "Rosemount, Warren, Iowa, USA",
         "note": null
       },
       "burial": null,
@@ -6730,7 +6517,7 @@
       },
       "death": {
         "date": "11 Aug 1920",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -6809,7 +6596,7 @@
       },
       "death": {
         "date": "3 Mar 1899",
-        "place": "Jackson, Jackson, Michigan, United States",
+        "place": "Jackson, Jackson, Michigan, USA",
         "note": null
       },
       "burial": null,
@@ -6877,7 +6664,7 @@
       },
       "death": {
         "date": "7 Jul 1887",
-        "place": "Portland, Dodge, Wisconsin, United States",
+        "place": "Portland, Dodge, Wisconsin, USA",
         "note": null
       },
       "burial": null,
@@ -6906,7 +6693,7 @@
       "sex": "M",
       "birth": {
         "date": "1740",
-        "place": "Brooklodge, 5298, Ireland",
+        "place": "Brooklodge, Ireland",
         "note": null
       },
       "death": {
@@ -7072,7 +6859,7 @@
       },
       "death": {
         "date": "1899",
-        "place": "Chicago, Cook, Illinois, United States",
+        "place": "Chicago, Cook, Illinois, USA",
         "note": null
       },
       "burial": null,
@@ -7539,7 +7326,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1900",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -7582,7 +7369,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1896",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -7618,7 +7405,7 @@
       "sex": "M",
       "birth": {
         "date": "1874",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -7688,7 +7475,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1907",
-        "place": "United States",
+        "place": "USA",
         "note": null
       },
       "death": null,
@@ -7739,7 +7526,7 @@
       "sex": "F",
       "birth": {
         "date": "1895",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -7880,7 +7667,7 @@
         },
         {
           "date": null,
-          "place": "New York",
+          "place": "New York, USA",
           "note": null
         }
       ],
@@ -8061,7 +7848,7 @@
       "educations": [
         {
           "date": "1974",
-          "place": "Albany, NY",
+          "place": "Albany, New York, USA",
           "note": "St. Agnes School"
         },
         {
@@ -8130,7 +7917,7 @@
         },
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": "Marital Status: Married; Relation to Head of House: Wife"
         },
         {
@@ -8282,13 +8069,13 @@
       },
       "burial": {
         "date": "February 11, 2003",
-        "place": "St. Peter's Cemetery Troy, NY",
+        "place": "St. Peter's Cemetery, Troy, New York, USA",
         "note": null
       },
       "residences": [
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": "Relation to Head of House: Son"
         },
         {
@@ -8393,7 +8180,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": null
         },
         {
@@ -8403,22 +8190,22 @@
         },
         {
           "date": "About 1917",
-          "place": "Essex, New Jersey",
+          "place": "Essex, New Jersey, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Albany Ward 7, Albany, New York",
+          "place": "Albany Ward 7, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": "Relation to Head of House: Head"
         },
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": null
         },
         {
@@ -8492,14 +8279,10 @@
       "sex": "M",
       "birth": {
         "date": "3 July 1964",
-        "place": "Albany  New York, USA",
+        "place": "Albany, New York, USA",
         "note": null
       },
-      "death": {
-        "date": "1944",
-        "place": "Albany County, New York, USA",
-        "note": null
-      },
+      "death": null,
       "burial": {
         "date": null,
         "place": "Menands, Albany, New York, USA",
@@ -8573,7 +8356,7 @@
       "sex": "M",
       "birth": {
         "date": "abt 1924",
-        "place": "United States",
+        "place": "USA",
         "note": null
       },
       "death": {
@@ -8585,7 +8368,7 @@
       "residences": [
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": "Relation to Head of House: Son"
         },
         {
@@ -8684,7 +8467,7 @@
         },
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": null
         },
         {
@@ -8716,16 +8499,14 @@
         "t0:I18635838500",
         "t0:I18635838501",
         "t0:I18635810356",
-        "t0:I18635670923",
-        "t0:I18635654544"
+        "t0:I18635670923"
       ],
       "family_child_ids": [
         "t0:F71",
         "t1:F18"
       ],
       "family_spouse_ids": [
-        "t0:F92",
-        "t1:F17"
+        "t0:F92"
       ],
       "source_count": 2
     },
@@ -8738,7 +8519,7 @@
       "sex": "M",
       "birth": {
         "date": "1875",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -8778,7 +8559,7 @@
       "sex": "F",
       "birth": {
         "date": "1879",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -8852,7 +8633,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1878",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -8874,7 +8655,7 @@
         },
         {
           "date": "1930",
-          "place": "Clear Creek, Johnson, Iowa",
+          "place": "Clear Creek, Johnson, Iowa, USA",
           "note": null
         }
       ],
@@ -9091,7 +8872,7 @@
       "sex": "F",
       "birth": {
         "date": "2 Aug 1881",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -9112,7 +8893,7 @@
         },
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": null
         },
         {
@@ -9174,19 +8955,19 @@
       "sex": "F",
       "birth": {
         "date": "abt 1920",
-        "place": "United States",
+        "place": "USA",
         "note": null
       },
       "death": {
         "date": "Mar 1985",
-        "place": "Floral Park, NY",
+        "place": "Floral Park, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1 June 1925",
-          "place": "Albany Ward 01, Albany, New York, United States",
+          "place": "Albany Ward 01, Albany, New York, USA",
           "note": "Relation to Head of House: Daughter"
         },
         {
@@ -9253,7 +9034,7 @@
       "sex": "M",
       "birth": {
         "date": "1873",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -9353,7 +9134,7 @@
       "sex": "M",
       "birth": {
         "date": "23 Apr 1895",
-        "place": "Johnsonville, Rensselaer, New York, United States",
+        "place": "Johnsonville, Rensselaer, New York, USA",
         "note": null
       },
       "death": {
@@ -9400,7 +9181,7 @@
       },
       "death": {
         "date": "28 Jan 2004",
-        "place": "Rockledge, Brevard, Florida, United States",
+        "place": "Rockledge, Brevard, Florida, USA",
         "note": null
       },
       "burial": null,
@@ -9440,7 +9221,7 @@
       },
       "death": {
         "date": "6 Dec 2006",
-        "place": "Dana Point, Orange, California",
+        "place": "Dana Point, Orange, California, USA",
         "note": null
       },
       "burial": null,
@@ -9467,41 +9248,6 @@
       ],
       "family_spouse_ids": [
         "t0:F90"
-      ],
-      "source_count": 1
-    },
-    {
-      "id": "t1:I102119268425",
-      "name": "Mary E McCarthy",
-      "given": "Mary E",
-      "surname": "McCarthy",
-      "suffix": "",
-      "sex": "F",
-      "birth": {
-        "date": "1874",
-        "place": "New York, New York, New York, USA",
-        "note": null
-      },
-      "death": {
-        "date": "14 Apr 1956",
-        "place": "New Rochelle, Westchester, New York, USA",
-        "note": null
-      },
-      "burial": null,
-      "residences": [],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [],
-      "spouse_ids": [
-        "t0:I19744180137"
-      ],
-      "child_ids": [
-        "t0:I19744180137"
-      ],
-      "family_child_ids": [],
-      "family_spouse_ids": [
-        "t1:F10"
       ],
       "source_count": 1
     },
@@ -9628,7 +9374,7 @@
       "sex": "M",
       "birth": {
         "date": "17 Apr 1862",
-        "place": "Abbey Paisley,Renfrew,Scotland",
+        "place": "Abbey Paisley, Renfrew, Scotland",
         "note": null
       },
       "death": {
@@ -9663,7 +9409,7 @@
       "sex": "M",
       "birth": {
         "date": "27 Mar 1830",
-        "place": "County, Meath, Ireland",
+        "place": "County Meath, Ireland",
         "note": null
       },
       "death": {
@@ -9703,24 +9449,19 @@
       },
       "death": {
         "date": "6 Mar 1966",
-        "place": "San Bernardino, San Bernardino, California, United States of America",
+        "place": "San Bernardino, San Bernardino, California, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1 Jan 1925",
-          "place": "Clear Creek",
-          "note": null
-        },
-        {
-          "date": "1 Jan 1925",
-          "place": "Johnson, Iowa, USA",
+          "place": "Clear Creek, Johnson, Iowa, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Clear Creek, Johnson, Iowa",
+          "place": "Clear Creek, Johnson, Iowa, USA",
           "note": null
         }
       ],
@@ -9758,7 +9499,7 @@
         "note": null
       },
       "death": {
-        "date": "February 12,2015",
+        "date": "February 12, 2015",
         "place": "Palm Desert, Riverside, California, USA",
         "note": null
       },
@@ -9766,17 +9507,12 @@
       "residences": [
         {
           "date": "1 Jan 1925",
-          "place": "Clear Creek",
-          "note": null
-        },
-        {
-          "date": "1 Jan 1925",
-          "place": "Johnson, Iowa, USA",
+          "place": "Clear Creek, Johnson, Iowa, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Clear Creek, Johnson, Iowa",
+          "place": "Clear Creek, Johnson, Iowa, USA",
           "note": null
         }
       ],
@@ -9808,7 +9544,7 @@
       "sex": "M",
       "birth": {
         "date": "08/26/2020",
-        "place": "Albany  New York, USA",
+        "place": "Albany, New York, USA",
         "note": null
       },
       "death": null,
@@ -9838,7 +9574,7 @@
       "sex": "M",
       "birth": {
         "date": "10/20/1983",
-        "place": "Vermont",
+        "place": "Vermont, USA",
         "note": null
       },
       "death": null,
@@ -9904,7 +9640,7 @@
       "sex": "M",
       "birth": {
         "date": "21/01/1946",
-        "place": "PA",
+        "place": "Pennsylvania, USA",
         "note": null
       },
       "death": null,
@@ -10063,12 +9799,12 @@
       "sex": "M",
       "birth": {
         "date": "29 Nov 1918",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
         "date": "19 Apr 1973",
-        "place": "Lenoir, Caldwell, North Carolina",
+        "place": "Lenoir, Caldwell, North Carolina, USA",
         "note": null
       },
       "burial": {
@@ -10094,7 +9830,7 @@
         },
         {
           "date": null,
-          "place": "Lenoir, Caldwell, North Carolina",
+          "place": "Lenoir, Caldwell, North Carolina, USA",
           "note": null
         }
       ],
@@ -10126,7 +9862,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1922",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -10177,7 +9913,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1901",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -10185,7 +9921,7 @@
       "residences": [
         {
           "date": "1 June 1915",
-          "place": "Glens Falls Ward 03, Warren, New York, United States",
+          "place": "Glens Falls Ward 03, Warren, New York, USA",
           "note": "Relation to Head of House: Wife"
         },
         {
@@ -10324,7 +10060,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": "Marital Status: Married; Relation to Head of House: Head"
         }
       ],
@@ -10370,7 +10106,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": "Marital Status: Single; Relation to Head of House: Son"
         }
       ],
@@ -10453,14 +10189,14 @@
       },
       "death": {
         "date": "Jan 1985",
-        "place": "Vandalia, Fayette, Illinois, United States",
+        "place": "Vandalia, Fayette, Illinois, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": "Marital Status: Single; Relation to Head of House: Son"
         }
       ],
@@ -10493,7 +10229,7 @@
       },
       "death": {
         "date": "25 Feb 1990",
-        "place": "Saratoga Springs, Saratoga, New York, United States",
+        "place": "Saratoga Springs, Saratoga, New York, USA",
         "note": null
       },
       "burial": null,
@@ -10522,7 +10258,7 @@
       "sex": "M",
       "birth": {
         "date": "6 Jan 1924",
-        "place": "United States",
+        "place": "USA",
         "note": null
       },
       "death": {
@@ -10572,7 +10308,7 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": "Marital Status: Single; Relation to Head of House: Son"
         },
         {
@@ -10762,7 +10498,7 @@
       },
       "death": {
         "date": "25 Dec 1945",
-        "place": "Worchester, Mass.",
+        "place": "Worcester, Massachusetts, USA",
         "note": null
       },
       "burial": null,
@@ -11021,7 +10757,7 @@
       },
       "death": {
         "date": "9 Nov 1943",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11081,7 +10817,7 @@
       },
       "death": {
         "date": "Abt 1918",
-        "place": "Near Amsterdam, NY",
+        "place": "Near Amsterdam, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11145,7 +10881,7 @@
       },
       "death": {
         "date": "8 Aug 1906",
-        "place": "Brooklyn, New York",
+        "place": "Brooklyn, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11306,7 +11042,7 @@
       "parent_ids": [],
       "spouse_ids": [],
       "child_ids": [
-        "t1:I102119268128"
+        "t0:I19744849560"
       ],
       "family_child_ids": [],
       "family_spouse_ids": [
@@ -11315,72 +11051,27 @@
       "source_count": 1
     },
     {
-      "id": "t1:I102119268128",
-      "name": "Mary F. Reilly",
-      "given": "Mary F.",
-      "surname": "Reilly",
-      "suffix": "",
-      "sex": "F",
-      "birth": {
-        "date": "19 Sep 1897",
-        "place": "New York",
-        "note": null
-      },
-      "death": {
-        "date": "May 1978",
-        "place": null,
-        "note": null
-      },
-      "burial": null,
-      "residences": [
-        {
-          "date": "1974",
-          "place": "New York",
-          "note": null
-        }
-      ],
-      "occupations": [],
-      "educations": [],
-      "notes": [],
-      "parent_ids": [
-        "t1:I102624922981"
-      ],
-      "spouse_ids": [
-        "t0:I19739309279"
-      ],
-      "child_ids": [
-        "t0:I19738989728"
-      ],
-      "family_child_ids": [
-        "t1:F19"
-      ],
-      "family_spouse_ids": [
-        "t1:F11"
-      ],
-      "source_count": 1
-    },
-    {
       "id": "t0:I19744849560",
-      "name": "Mary Riley",
-      "given": "Mary",
+      "name": "Mary F. Riley",
+      "given": "Mary F.",
       "surname": "Riley",
       "suffix": "",
       "sex": "F",
       "birth": {
         "date": "19 Sep 1897",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
         "date": "May 1978",
-        "place": "Albany  New York, USA",
+        "place": "Albany, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1920",
-          "place": "Manhattan Assembly District 22, New York, New York",
+          "place": "Manhattan Assembly District 22, New York, USA",
           "note": null
         },
         {
@@ -11391,8 +11082,12 @@
       ],
       "occupations": [],
       "educations": [],
-      "notes": [],
-      "parent_ids": [],
+      "notes": [
+        "Also recorded as Mary F. Reilly."
+      ],
+      "parent_ids": [
+        "t1:I102624922981"
+      ],
       "spouse_ids": [
         "t0:I19739309279"
       ],
@@ -11415,7 +11110,7 @@
       "sex": "F",
       "birth": {
         "date": "April 30, 1819",
-        "place": "Wurtemburg",
+        "place": "Württemberg, Germany",
         "note": null
       },
       "death": {
@@ -11496,7 +11191,7 @@
       },
       "death": {
         "date": "1910",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11525,12 +11220,12 @@
       "sex": "M",
       "birth": {
         "date": "7 Jul 1870",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "28 Apr 1923",
-        "place": "Washington, DC, US",
+        "place": "Washington, DC, USA",
         "note": null
       },
       "burial": null,
@@ -11582,12 +11277,12 @@
       "sex": "F",
       "birth": {
         "date": "1868",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "death": {
         "date": "1869",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11616,12 +11311,12 @@
       "sex": "M",
       "birth": {
         "date": "1873",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "death": {
         "date": "1875",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11650,12 +11345,12 @@
       "sex": "F",
       "birth": {
         "date": "1875",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "death": {
         "date": "1876",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11701,7 +11396,7 @@
         },
         {
           "date": "1930",
-          "place": "Queens, Queens, New York",
+          "place": "Queens, Queens, New York, USA",
           "note": null
         },
         {
@@ -11745,12 +11440,12 @@
       "sex": "F",
       "birth": {
         "date": "May 1867",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jul 1930",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11779,12 +11474,12 @@
       "sex": "M",
       "birth": {
         "date": "1870",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "death": {
         "date": "before 1880",
-        "place": "New York City, New York, New York",
+        "place": "New York City, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11818,7 +11513,7 @@
       },
       "death": {
         "date": "27 Oct 1892",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -11986,7 +11681,7 @@
       "sex": "F",
       "birth": {
         "date": "20 Dec 1949",
-        "place": "PA",
+        "place": "Pennsylvania, USA",
         "note": null
       },
       "death": {
@@ -11998,7 +11693,7 @@
       "residences": [
         {
           "date": null,
-          "place": "Wolcott",
+          "place": "Wolcott, Lamoille, Vermont, USA",
           "note": null
         }
       ],
@@ -12034,7 +11729,7 @@
       "sex": "F",
       "birth": {
         "date": "30 Dec 1927",
-        "place": "Detroit, Michigan",
+        "place": "Detroit, Michigan, USA",
         "note": null
       },
       "death": {
@@ -12142,7 +11837,7 @@
       "sex": "F",
       "birth": {
         "date": "Sep 1891",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -12206,7 +11901,7 @@
       "sex": "F",
       "birth": {
         "date": "Aug 1898",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -12280,7 +11975,7 @@
       "sex": "M",
       "birth": {
         "date": "Dec 1889",
-        "place": "Connecticut",
+        "place": "Connecticut, USA",
         "note": null
       },
       "death": null,
@@ -12318,9 +12013,13 @@
       "residences": [],
       "occupations": [],
       "educations": [],
-      "notes": [],
+      "notes": [
+        "Married name Caldwell; wife of William Minns Caldwell."
+      ],
       "parent_ids": [],
-      "spouse_ids": [],
+      "spouse_ids": [
+        "t1:I102119741545"
+      ],
       "child_ids": [
         "t0:I19744304033"
       ],
@@ -12473,7 +12172,7 @@
       "sex": "F",
       "birth": {
         "date": "Sep 1898",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
@@ -12489,12 +12188,12 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         },
         {
@@ -12527,24 +12226,24 @@
       "sex": "F",
       "birth": {
         "date": "Apr 1885",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "20 May 1952",
-        "place": "Alameda, Alameda, California, United States",
+        "place": "Alameda, Alameda, California, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         }
       ],
@@ -12577,19 +12276,19 @@
       },
       "death": {
         "date": "1981",
-        "place": "Mamaroneck, Westchester, New York, United States",
+        "place": "Mamaroneck, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         }
       ],
@@ -12617,19 +12316,19 @@
       "sex": "F",
       "birth": {
         "date": "14 Dec 1901",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "2 Aug 1996",
-        "place": "Harrison, Westchester, New York, United States",
+        "place": "Harrison, Westchester, New York, USA",
         "note": null
       },
       "burial": null,
       "residences": [
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         }
       ],
@@ -12707,7 +12406,7 @@
       "sex": "M",
       "birth": {
         "date": "19 May 1891",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -12719,27 +12418,22 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Manhattan Assembly District 22, New York, New York",
+          "place": "Manhattan Assembly District 22, New York, USA",
           "note": null
         },
         {
           "date": "1930",
           "place": "Larchmont, Westchester, New York, USA",
-          "note": null
-        },
-        {
-          "date": null,
-          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
@@ -12756,8 +12450,7 @@
         "t0:I19745142863"
       ],
       "spouse_ids": [
-        "t0:I19744849560",
-        "t1:I102119268128"
+        "t0:I19744849560"
       ],
       "child_ids": [
         "t0:I19738989728",
@@ -12828,7 +12521,7 @@
       "sex": "F",
       "birth": {
         "date": "abt 1929",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -12880,7 +12573,7 @@
       "residences": [
         {
           "date": null,
-          "place": "Albany New York",
+          "place": "Albany, New York, USA",
           "note": null
         }
       ],
@@ -12920,12 +12613,12 @@
       "sex": "F",
       "birth": {
         "date": "27 Feb 1887",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
         "date": "Jul 1977",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": {
@@ -12936,27 +12629,27 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1920",
-          "place": "Manhattan Assembly District 13, New York, New York",
+          "place": "Manhattan Assembly District 13, New York, USA",
           "note": null
         },
         {
           "date": "1930",
-          "place": "Manhattan, New York, New York",
+          "place": "Manhattan, New York, USA",
           "note": null
         },
         {
           "date": "1 Apr 1940",
-          "place": "New York, New York, New York, USA",
+          "place": "New York, New York, USA",
           "note": null
         }
       ],
@@ -12991,7 +12684,7 @@
       "sex": "M",
       "birth": {
         "date": "26 Nov 1894",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "death": {
@@ -13003,12 +12696,12 @@
       "residences": [
         {
           "date": "1900",
-          "place": "Albany city, Albany, New York",
+          "place": "Albany, Albany, New York, USA",
           "note": null
         },
         {
           "date": "1910",
-          "place": "Albany Ward 14, Albany, New York",
+          "place": "Albany Ward 14, Albany, New York, USA",
           "note": null
         }
       ],
@@ -13075,7 +12768,7 @@
       "sex": "M",
       "birth": {
         "date": "12 Aug 1951",
-        "place": "Albany  New York, USA",
+        "place": "Albany, New York, USA",
         "note": null
       },
       "death": null,
@@ -13174,8 +12867,7 @@
       "notes": [],
       "parent_ids": [
         "t0:I19739309279",
-        "t0:I19744849560",
-        "t1:I102119268128"
+        "t0:I19744849560"
       ],
       "spouse_ids": [
         "t0:I19744165677"
@@ -13219,7 +12911,7 @@
       "sex": "F",
       "birth": {
         "date": "1854",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
@@ -13280,7 +12972,7 @@
       },
       "death": {
         "date": "14 May 1918",
-        "place": "New York, New York, New York, USA",
+        "place": "New York, New York, USA",
         "note": null
       },
       "burial": null,
@@ -13292,7 +12984,7 @@
         },
         {
           "date": "1900",
-          "place": "Jackson Township, Washington, New York",
+          "place": "Jackson Township, Washington, New York, USA",
           "note": null
         }
       ],
@@ -13328,7 +13020,7 @@
       "sex": "M",
       "birth": {
         "date": "1866",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": null,
@@ -13370,12 +13062,12 @@
       "sex": "F",
       "birth": {
         "date": "1904",
-        "place": "New York",
+        "place": "New York, USA",
         "note": null
       },
       "death": {
         "date": "August 4, 1976",
-        "place": "Barrington, Illinois",
+        "place": "Barrington, Illinois, USA",
         "note": null
       },
       "burial": null,
@@ -13570,7 +13262,7 @@
       ],
       "marriage": {
         "date": "21 Jun 1924",
-        "place": "Manhattan, New York, New York",
+        "place": "Manhattan, New York, USA",
         "note": null
       },
       "divorce": null
@@ -13623,7 +13315,7 @@
       ],
       "marriage": {
         "date": null,
-        "place": "New York, New York, New York, United States",
+        "place": "New York, New York, USA",
         "note": null
       },
       "divorce": null
@@ -13647,7 +13339,7 @@
       ],
       "marriage": {
         "date": "4 Dec 1881",
-        "place": "Madison St German Presbyterian Church, New York, United States",
+        "place": "Madison St German Presbyterian Church, New York, USA",
         "note": null
       },
       "divorce": null
@@ -13664,7 +13356,7 @@
       ],
       "marriage": {
         "date": "April 19, 1952",
-        "place": "Troy, NY",
+        "place": "Troy, New York, USA",
         "note": null
       },
       "divorce": null
@@ -13741,7 +13433,7 @@
       ],
       "marriage": {
         "date": "17 August 1885",
-        "place": "Troy, New York, United States",
+        "place": "Troy, New York, USA",
         "note": "St. Patrick's Church"
       },
       "divorce": null
@@ -13901,7 +13593,7 @@
       ],
       "marriage": {
         "date": "9 Jul 1988",
-        "place": "Doane Stuart Chapel Albany, NY",
+        "place": "Doane Stuart Chapel, Albany, New York, USA",
         "note": null
       },
       "divorce": null
@@ -13918,17 +13610,9 @@
       ],
       "marriage": {
         "date": "31 December 1917",
-        "place": "Troy, New York, United States",
+        "place": "Troy, New York, USA",
         "note": "St. Patrick's Church"
       },
-      "divorce": null
-    },
-    {
-      "id": "t0:F33",
-      "husband_id": "t0:I29550637674",
-      "wife_id": "t0:I29550637806",
-      "children_ids": [],
-      "marriage": null,
       "divorce": null
     },
     {
@@ -14086,7 +13770,7 @@
       ],
       "marriage": {
         "date": "17 Nov 1919",
-        "place": "St Augustine's Church, Troy, NY",
+        "place": "St Augustine's Church, Troy, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14105,7 +13789,7 @@
       ],
       "marriage": {
         "date": "1866",
-        "place": "Manhattan, NYC, NY",
+        "place": "Manhattan, NYC, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14156,7 +13840,7 @@
       ],
       "marriage": {
         "date": "8 Feb 1893",
-        "place": "Greenwich, Washington, New York, United States",
+        "place": "Greenwich, Washington, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14179,7 +13863,7 @@
       ],
       "marriage": {
         "date": "11 Jun 1915",
-        "place": "Rennselaer, New York, USA",
+        "place": "Rensselaer, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14254,8 +13938,7 @@
       "husband_id": "t0:I372433897708",
       "wife_id": "t0:I372433897803",
       "children_ids": [
-        "t0:I19744215609",
-        "t0:I19744180137"
+        "t0:I19744215609"
       ],
       "marriage": null,
       "divorce": null
@@ -14422,7 +14105,7 @@
       ],
       "marriage": {
         "date": "30 Dec 1982",
-        "place": "Cathedral of the Immaculate Conception Albany,NY",
+        "place": "Cathedral of the Immaculate Conception, Albany, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14529,7 +14212,7 @@
       ],
       "marriage": {
         "date": "July 13, 1946",
-        "place": "Troy, NY",
+        "place": "Troy, New York, USA",
         "note": null
       },
       "divorce": null
@@ -14674,7 +14357,7 @@
       ],
       "marriage": {
         "date": "About 1861, 1867?",
-        "place": "New York, United States",
+        "place": "New York, USA",
         "note": null
       },
       "divorce": null
@@ -14731,16 +14414,6 @@
       "divorce": null
     },
     {
-      "id": "t0:F98",
-      "husband_id": "t0:I18669423251",
-      "wife_id": null,
-      "children_ids": [
-        "t0:I29550637674"
-      ],
-      "marriage": null,
-      "divorce": null
-    },
-    {
       "id": "t0:F99",
       "husband_id": null,
       "wife_id": "t0:I29567701850",
@@ -14762,7 +14435,7 @@
     },
     {
       "id": "t0:F101",
-      "husband_id": null,
+      "husband_id": "t1:I102119741545",
       "wife_id": "t0:I372535859984",
       "children_ids": [
         "t0:I19744304033"
@@ -14814,42 +14487,11 @@
       "divorce": null
     },
     {
-      "id": "t1:F5",
-      "husband_id": "t0:I18635890324",
-      "wife_id": "t1:I102119268177",
-      "children_ids": [
-        "t0:I18635890324",
-        "t0:I18635646682"
-      ],
-      "marriage": null,
-      "divorce": null
-    },
-    {
-      "id": "t1:F10",
-      "husband_id": "t0:I19744180137",
-      "wife_id": "t1:I102119268425",
-      "children_ids": [
-        "t0:I19744180137"
-      ],
-      "marriage": null,
-      "divorce": null
-    },
-    {
       "id": "t1:F11",
       "husband_id": "t0:I19739309279",
-      "wife_id": "t1:I102119268128",
+      "wife_id": "t0:I19744849560",
       "children_ids": [
         "t0:I19738989728"
-      ],
-      "marriage": null,
-      "divorce": null
-    },
-    {
-      "id": "t1:F14",
-      "husband_id": "t1:I102119741545",
-      "wife_id": "t1:I102624528667",
-      "children_ids": [
-        "t1:I102119268454"
       ],
       "marriage": null,
       "divorce": null
@@ -14860,16 +14502,6 @@
       "wife_id": null,
       "children_ids": [
         "t1:I102119741545"
-      ],
-      "marriage": null,
-      "divorce": null
-    },
-    {
-      "id": "t1:F17",
-      "husband_id": "t0:I18635810354",
-      "wife_id": null,
-      "children_ids": [
-        "t0:I18635654544"
       ],
       "marriage": null,
       "divorce": null
@@ -14889,15 +14521,15 @@
       "husband_id": "t1:I102624922981",
       "wife_id": null,
       "children_ids": [
-        "t1:I102119268128"
+        "t0:I19744849560"
       ],
       "marriage": null,
       "divorce": null
     }
   ],
   "stats": {
-    "total_individuals": 324,
-    "total_families": 113,
+    "total_individuals": 317,
+    "total_families": 107,
     "top_surnames": [
       {
         "surname": "Dugan",
@@ -14905,11 +14537,11 @@
       },
       {
         "surname": "Maloy",
-        "count": 25
+        "count": 26
       },
       {
         "surname": "Faden",
-        "count": 18
+        "count": 17
       },
       {
         "surname": "Leahy",
@@ -14940,14 +14572,6 @@
         "count": 8
       },
       {
-        "surname": "(unknown)",
-        "count": 6
-      },
-      {
-        "surname": "Crummey",
-        "count": 6
-      },
-      {
         "surname": "Flavin",
         "count": 6
       },
@@ -14960,11 +14584,11 @@
         "count": 6
       },
       {
-        "surname": "Caldwell",
+        "surname": "Cranwell",
         "count": 5
       },
       {
-        "surname": "Cranwell",
+        "surname": "Crummey",
         "count": 5
       },
       {
@@ -14998,6 +14622,10 @@
       {
         "surname": "Wimmer",
         "count": 4
+      },
+      {
+        "surname": "(unknown)",
+        "count": 3
       }
     ]
   }

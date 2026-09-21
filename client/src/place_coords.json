@@ -650,5 +650,297 @@
 "York": [
 53.96566,
 -1.07431
+],
+"Abbey Paisley, Renfrew, Scotland": [
+55.84491,
+-4.42023
+],
+"Alameda, Alameda, California, USA": [
+37.76521,
+-122.24164
+],
+"Albany Ward 01, Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"Albany Ward 14, Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"Albany Ward 7, Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"Barrington, Illinois, USA": [
+42.15391,
+-88.13619
+],
+"Bronx County, New York, USA": [
+40.84478,
+-73.86483
+],
+"Brooklodge, Ireland": [
+51.93121,
+-8.38057
+],
+"Brooklyn, New York, USA": [
+40.6526,
+-73.94972
+],
+"Cathedral of the Immaculate Conception, Albany, New York, USA": [
+42.6526,
+-73.7527
+],
+"Chatham, Columbia, New York, USA": [
+42.36425,
+-73.59484
+],
+"Chicago, Cook, Illinois, USA": [
+41.87556,
+-87.62442
+],
+"Churchville, Warren, Iowa, USA": [
+41.39666,
+-93.75105
+],
+"Clear Creek, Johnson, Iowa, USA": [
+41.66877,
+-91.57824
+],
+"Clifton Park, New York, USA": [
+42.86304,
+-73.77476
+],
+"Connecticut, USA": [
+41.65002,
+-72.73422
+],
+"County Kilkenny, Ireland": [
+52.65063,
+-7.25144
+],
+"County Meath, Ireland": [
+53.87426,
+-6.80338
+],
+"Dana Point, Orange, California, USA": [
+33.46697,
+-117.69811
+],
+"Detroit, Michigan, USA": [
+42.33155,
+-83.04664
+],
+"Doane Stuart Chapel, Albany, New York, USA": [
+42.65117,
+-73.75497
+],
+"East Greenbush, New York, USA": [
+42.59091,
+-73.70179
+],
+"Essex, New Jersey, USA": [
+40.79139,
+-74.24794
+],
+"Floral Park, New York, USA": [
+40.7247,
+-73.7048
+],
+"Fulton, Callaway, Missouri, USA": [
+38.84671,
+-91.94796
+],
+"Gaspereau, Kings, Nova Scotia, Canada": [
+45.0806,
+-64.3654
+],
+"Glens Falls Ward 03, Warren, New York, USA": [
+43.30952,
+-73.64401
+],
+"Harris, Texas, USA": [
+29.81198,
+-95.37412
+],
+"Harrison, Westchester, New York, USA": [
+40.96899,
+-73.71263
+],
+"Hillsborough, Florida, USA": [
+27.91845,
+-82.34881
+],
+"Jackson, Jackson, Michigan, USA": [
+42.2465,
+-84.4017
+],
+"Johnsonville, Rensselaer, New York, USA": [
+42.91443,
+-73.51354
+],
+"Lacona, Warren, Iowa, USA": [
+41.19001,
+-93.38327
+],
+"Lansingburg Village (Part), Rensselaer, New York, USA": [
+42.77021,
+-73.67527
+],
+"Latham, Albany, New York, USA": [
+42.74361,
+-73.74585
+],
+"Lenoir, Caldwell, North Carolina, USA": [
+35.91402,
+-81.53898
+],
+"Madison St German Presbyterian Church, New York, USA": [
+40.7135,
+-73.9904
+],
+"Mamaroneck, Westchester, New York, USA": [
+40.94873,
+-73.73314
+],
+"Manhattan (Districts 501-750), New York, USA": [
+40.75796,
+-73.98553
+],
+"Manhattan Assembly District 13, New York, USA": [
+40.75796,
+-73.98553
+],
+"Manhattan Assembly District 22, New York, USA": [
+40.75796,
+-73.98553
+],
+"Manhattan, NYC, New York, USA": [
+40.75796,
+-73.98553
+],
+"Manhattan, New York, USA": [
+40.75796,
+-73.98553
+],
+"New Jersey, USA": [
+40.07574,
+-74.40416
+],
+"New Rochelle, New York, USA": [
+40.91154,
+-73.78264
+],
+"New York City, New York, USA": [
+40.71273,
+-74.00602
+],
+"New York, New York, USA": [
+40.71273,
+-74.00602
+],
+"Petersburg, New York, USA": [
+42.63313,
+-74.44903
+],
+"Pinellas, Florida, USA": [
+27.87789,
+-82.73293
+],
+"Port Chester, New York, USA": [
+41.00176,
+-73.66568
+],
+"Portland, Dodge, Wisconsin, USA": [
+43.23852,
+-88.94983
+],
+"Purchase, Westchester, New York, USA": [
+41.03815,
+-73.71457
+],
+"Queens, Queens, New York, USA": [
+40.71351,
+-73.82831
+],
+"Rensselaer, New York, USA": [
+42.70914,
+-73.51077
+],
+"Richmond, Contra Costa, California, USA": [
+37.93576,
+-122.34775
+],
+"Rockledge, Brevard, Florida, USA": [
+28.33083,
+-80.73492
+],
+"Rosemount, Warren, Iowa, USA": [
+41.24844,
+-93.36799
+],
+"San Bernardino, San Bernardino, California, USA": [
+34.10816,
+-117.28946
+],
+"Saratoga Springs, Saratoga, New York, USA": [
+43.08223,
+-73.78537
+],
+"St Augustine's Church, Troy, New York, USA": [
+42.7284,
+-73.6918
+],
+"St. Peter's Cemetery, Troy, New York, USA": [
+42.7662,
+-73.6684
+],
+"Troy City, Rensselaer, New York, USA": [
+42.73318,
+-73.65756
+],
+"Troy Ward 02, Rensselaer, New York, USA": [
+42.73318,
+-73.65756
+],
+"Troy Ward 7, Rensselaer, New York, USA": [
+42.81822,
+-73.4722
+],
+"Troy, New York, USA": [
+42.73318,
+-73.65756
+],
+"Vandalia, Fayette, Illinois, USA": [
+38.9606,
+-89.09368
+],
+"Vermont, USA": [
+44.59907,
+-72.50026
+],
+"Warren, Iowa, USA": [
+41.31386,
+-93.56853
+],
+"Washington, DC, USA": [
+38.8951,
+-77.03638
+],
+"Worcester, Massachusetts, USA": [
+42.26259,
+-71.80229
+],
+"Yonkers Ward 3, Westchester, New York, USA": [
+40.93121,
+-73.89875
+],
+"Yonkers, Westchester, New York, USA": [
+40.93121,
+-73.89875
 ]
 }

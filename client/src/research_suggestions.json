@@ -120,101 +120,7 @@
     }
   },
   "cross_record": {
-    "duplicates": [
-      {
-        "a_id": "t1:I102119268454",
-        "a_name": "Edith Maud Caldwell",
-        "b_id": "t0:I19744304033",
-        "b_name": "Edith Maude Caldwell",
-        "confidence": "high",
-        "reasons": [
-          "born within 2 years (1877/1879)",
-          "both died 1968"
-        ]
-      },
-      {
-        "a_id": "t0:I372634356131",
-        "a_name": "Betty B. Crummey",
-        "b_id": "t0:I372634356507",
-        "b_name": "Betty B. Crummey",
-        "confidence": "high",
-        "reasons": [
-          "both born 1920",
-          "both died 2012"
-        ]
-      },
-      {
-        "a_id": "t0:I19808837836",
-        "a_name": "Mary Dugan",
-        "b_id": "t0:I29577990354",
-        "b_name": "Mary A Dugan",
-        "confidence": "medium",
-        "reasons": [
-          "born within 2 years (1874/1875)"
-        ]
-      },
-      {
-        "a_id": "t0:I19808837836",
-        "a_name": "Mary Dugan",
-        "b_id": "t0:I29577946355",
-        "b_name": "Mary Helena Dugan",
-        "confidence": "medium",
-        "reasons": [
-          "both died 1886"
-        ]
-      },
-      {
-        "a_id": "t0:I18635953178",
-        "a_name": "William B. Dugan",
-        "b_id": "t0:I18635953181",
-        "b_name": "William Francis Dugan",
-        "confidence": "medium",
-        "reasons": [
-          "both born in Troy, New York"
-        ]
-      },
-      {
-        "a_id": "t0:I29550637674",
-        "a_name": "William C Faden",
-        "b_id": "t0:I29550637901",
-        "b_name": "William C Faden",
-        "confidence": "medium",
-        "reasons": [
-          "born within 2 years (1926/1925)"
-        ]
-      },
-      {
-        "a_id": "t0:I19821174269",
-        "a_name": "Georg Ambros Kessler",
-        "b_id": "t0:I19821174260",
-        "b_name": "Georg Willibard Kessler",
-        "confidence": "high",
-        "reasons": [
-          "born within 2 years (1839/1837)",
-          "both born in Reiterswiesen, Bad Kissingen, Bayern, Germany"
-        ]
-      },
-      {
-        "a_id": "t0:I19895529673",
-        "a_name": "A. Louis Maier",
-        "b_id": "t0:I19895533869",
-        "b_name": "A. Teresa Maier",
-        "confidence": "medium",
-        "reasons": [
-          "identical parents"
-        ]
-      },
-      {
-        "a_id": "t0:I18635670923",
-        "a_name": "James H Maloy",
-        "b_id": "t0:I18635654544",
-        "b_name": "James Henry Maloy",
-        "confidence": "medium",
-        "reasons": [
-          "both died 1944"
-        ]
-      }
-    ],
+    "duplicates": [],
     "military_clusters": [
       {
         "theme": "World War II veterans",
@@ -290,7 +196,7 @@
           },
           {
             "id": "t0:I29577903368",
-            "name": "Louis. F. Dugan",
+            "name": "Louis F. Dugan",
             "branch": "army",
             "rank": "",
             "unit": ""
@@ -347,11 +253,6 @@
             "id": "t0:I29577902360",
             "name": "Mark Thomas Dugan",
             "year": 1893
-          },
-          {
-            "id": "t1:I102119268177",
-            "name": "Debora Dorothy Faden",
-            "year": 1890
           },
           {
             "id": "t0:I18635922801",
@@ -480,12 +381,12 @@
         "members": [
           {
             "id": "t0:I29577946350",
-            "name": "JosephP Dugan",
+            "name": "Joseph P Dugan",
             "year": 1876
           },
           {
             "id": "t0:I29577903368",
-            "name": "Louis. F. Dugan",
+            "name": "Louis F. Dugan",
             "year": 1874
           },
           {

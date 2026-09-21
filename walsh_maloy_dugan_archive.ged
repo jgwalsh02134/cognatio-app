@@ -20,18 +20,20 @@
 2 PLAC Ireland
 1 FAMS @T0F22@
 0 @T0I19744215649@ INDI
-1 NAME Mary E. //
+1 NAME Mary E. /McCarthy/
 2 GIVN Mary E.
+2 SURN McCarthy
 1 SEX F
 1 BIRT
 2 DATE MAY 1872
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 14 APR 1956
 2 PLAC New Rochelle, Westchester, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Yonkers Ward 3, Westchester, New York
+2 PLAC Yonkers Ward 3, Westchester, New York, USA
+1 NOTE A second export gives her birth year as 1874. This record keeps May 1872.
 1 FAMS @T0F83@
 1 FAMS @T0F96@
 0 @T0I19809902952@ INDI
@@ -118,7 +120,6 @@
 2 DATE 1952
 2 PLAC Albany, Albany, New York, USA
 1 FAMS @T0F5@
-1 FAMS @T0F33@
 0 @T0I29550080557@ INDI
 1 NAME Joseph /Behan/
 2 GIVN Joseph
@@ -132,7 +133,7 @@
 1 SEX F
 1 BIRT
 2 DATE 12 MAY 1955
-2 PLAC Floral Park, NY
+2 PLAC Floral Park, New York, USA
 1 FAMC @T0F9@
 1 FAMS @T0F13@
 0 @T0I19809200335@ INDI
@@ -175,6 +176,7 @@
 1 NAME May Helen /Brainard/
 2 GIVN May Helen
 2 SURN Brainard
+1 SEX F
 1 BIRT
 2 DATE 1882
 2 PLAC Troy, Rensselaer, New York, USA
@@ -203,25 +205,11 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1801
-2 PLAC Gaspreau, Kings, Nova Scotia,
+2 PLAC Gaspereau, Kings, Nova Scotia, Canada
 1 DEAT
 2 DATE 10 FEB 1889
 2 PLAC Jeffries Hall, New Brunswick, Canada
 1 FAMS @T1F16@
-0 @T1I102119268454@ INDI
-1 NAME Edith Maud /Caldwell/
-2 GIVN Edith Maud
-2 SURN Caldwell
-1 SEX F
-1 BIRT
-2 DATE 25 MAR 1877
-2 PLAC Rhode Island, USA
-1 DEAT
-2 DATE 8 FEB 1968
-2 PLAC Pinellas, Florida, United States
-2 NOTE BURIED: New Rochelle, Westchester, New York, USA
-1 FAMC @T1F14@
-1 FAMS @T0F64@
 0 @T0I19744304033@ INDI
 1 NAME Edith Maude /Caldwell/
 2 GIVN Edith Maude
@@ -232,15 +220,10 @@
 2 PLAC Providence, Rhode Island, USA
 1 DEAT
 2 DATE 8 FEB 1968
-2 PLAC Pinellas, Florida, United States
+2 PLAC Pinellas, Florida, USA
+1 NOTE A second export records her birth as 25 Mar 1877 in Rhode Island, and spells the middle name Maud. This record keeps 26 Mar 1879, Providence, and Maude.
 1 FAMC @T0F101@
 1 FAMS @T0F64@
-0 @T1I102624528667@ INDI
-1 NAME Ella M. /Caldwell/
-2 GIVN Ella M.
-2 SURN Caldwell
-1 SEX F
-1 FAMS @T1F14@
 0 @T1I102119741545@ INDI
 1 NAME William Minns /Caldwell/ MD
 2 GIVN William Minns
@@ -253,10 +236,7 @@
 1 DEAT
 2 DATE 3 JUL 1917
 2 PLAC Saint John, Saint John, New Brunswick, Canada
-1 RESI
-2 PLAC Ward
 1 FAMC @T1F16@
-1 FAMS @T1F14@
 0 @T0I19821096737@ INDI
 1 NAME Helen /Cantlan/
 2 GIVN Helen
@@ -272,7 +252,7 @@
 1 SEX F
 1 BIRT
 2 DATE 31 JUL 1856
-2 PLAC New Jersey, United States
+2 PLAC New Jersey, USA
 1 DEAT
 2 DATE 24 DEC 1908
 2 PLAC Troy, Rensselaer, New York, USA
@@ -294,13 +274,13 @@
 1 SEX M
 1 BIRT
 2 DATE DEC 1867
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 12 MAY 1946
 2 PLAC New Rochelle, Westchester, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Manhattan (Districts 501-750), Manhattan, New York, New York, USA
+2 PLAC Manhattan (Districts 501-750), New York, USA
 2 NOTE Marital Status: Married; Relation to Head of House: Head; Occupation: Contractor
 1 FAMC @T0F59@
 1 FAMS @T0F83@
@@ -311,10 +291,10 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1907
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Yonkers Ward 3, Westchester, New York
+2 PLAC Yonkers Ward 3, Westchester, New York, USA
 1 FAMC @T0F96@
 0 @T0I372433897708@ INDI
 1 NAME James /Cranwell/
@@ -335,13 +315,13 @@
 1 SEX F
 1 BIRT
 2 DATE 8 NOV 1926
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 6 MAY 2001
 2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Queens, Queens, New York
+2 PLAC Queens, Queens, New York, USA
 1 RESI
 2 DATE 1935
 2 PLAC New Rochelle, Westchester, New York, USA
@@ -362,10 +342,10 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1898
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Yonkers Ward 3, Westchester, New York
+2 PLAC Yonkers Ward 3, Westchester, New York, USA
 1 FAMC @T0F96@
 0 @T0I19744180137@ INDI
 1 NAME Edward H /Cranwell Jr./
@@ -380,10 +360,10 @@
 2 PLAC New Rochelle, Westchester, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Yonkers Ward 3, Westchester, New York
+2 PLAC Yonkers Ward 3, Westchester, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Queens, Queens, New York
+2 PLAC Queens, Queens, New York, USA
 1 RESI
 2 DATE 1935
 2 PLAC New Rochelle, Westchester, New York, USA
@@ -391,7 +371,7 @@
 2 DATE 1 APR 1940
 2 PLAC New Rochelle, Westchester, New York, USA
 1 RESI
-2 PLAC Yonkers, Westchester, New York
+2 PLAC Yonkers, Westchester, New York, USA
 1 EVEN
 2 TYPE Military Service
 2 NOTE Branch: ARMY
@@ -410,10 +390,7 @@
 2 SOUR New York State Military Museum — 102nd Engineer Regiment unit history
 2 SOUR Defendam Association of the 102nd Engineers (member)
 1 FAMC @T0F83@
-1 FAMC @T1F10@
-1 FAMC @T0F59@
 1 FAMS @T0F3@
-1 FAMS @T1F10@
 0 @T0I19821096733@ INDI
 1 NAME Hanora /Cronin/
 2 GIVN Hanora
@@ -430,6 +407,7 @@
 1 NAME Betty B. /Crummey/
 2 GIVN Betty B.
 2 SURN Crummey
+1 SEX F
 1 BIRT
 2 DATE 1920
 1 DEAT
@@ -437,16 +415,8 @@
 1 BURI
 2 PLAC Menands, Albany, New York, USA
 1 RESI
-2 PLAC Albany , N.y.
+2 PLAC Albany, New York, USA
 1 FAMS @T0F27@
-0 @T0I372634356507@ INDI
-1 NAME Betty B. /Crummey/
-2 GIVN Betty B.
-2 SURN Crummey
-1 BIRT
-2 DATE 1920
-1 DEAT
-2 DATE 7 DEC 2012
 0 @T0I372634356545@ INDI
 1 NAME Catherine A. /Crummey/
 2 GIVN Catherine A.
@@ -454,10 +424,10 @@
 1 SEX F
 1 BIRT
 2 DATE 24 JUN 1863
-2 PLAC New York USA, New York, USA
+2 PLAC New York, USA
 1 DEAT
 2 DATE 1908
-2 PLAC Menands, Albany, New York USA, California, USA
+2 PLAC Menands, Albany, New York, USA
 1 FAMS @T0F97@
 0 @T0I19886650464@ INDI
 1 NAME Edward J /Crummey/
@@ -466,7 +436,7 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1921
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 13 OCT 2013
 2 PLAC Loudonville, Albany, New York, USA
@@ -474,16 +444,12 @@
 2 PLAC Menands, Albany, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Manhattan, New York, New York
+2 PLAC Manhattan, New York, USA
 1 RESI
 2 DATE 1 APR 1940
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 RESI
-2 PLAC Albany , N.y.
-1 RESI
-2 PLAC New
-1 RESI
-2 PLAC York
+2 PLAC Albany, New York, USA
 1 EVEN
 2 TYPE Military Service
 2 NOTE Branch: ARMY
@@ -515,18 +481,18 @@
 2 PLAC Albany, Albany, New York, USA
 1 DEAT
 2 DATE JAN 1968
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 BURI
 2 PLAC Menands, Albany, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Manhattan Assembly District 13, New York, New York
+2 PLAC Manhattan Assembly District 13, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Manhattan, New York, New York
+2 PLAC Manhattan, New York, USA
 1 RESI
 2 DATE 1 APR 1940
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F97@
 1 FAMS @T0F4@
 0 @T0I19886650462@ INDI
@@ -536,18 +502,18 @@
 1 SEX F
 1 BIRT
 2 DATE 3 MAR 1914
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 3 OCT 1989
 1 RESI
 2 DATE 1920
-2 PLAC Manhattan Assembly District 13, New York, New York
+2 PLAC Manhattan Assembly District 13, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Manhattan, New York, New York
+2 PLAC Manhattan, New York, USA
 1 RESI
 2 DATE 1 APR 1940
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F4@
 0 @T0I29567833430@ INDI
 1 NAME Helen /Culleton/
@@ -608,7 +574,7 @@
 1 SEX F
 1 BIRT
 2 DATE 1884
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 16, Rensselaer, New York, USA
@@ -676,10 +642,10 @@
 1 SEX F
 1 BIRT
 2 DATE 30 APR 1842
-2 PLAC Co, Kilkenny, Ireland
+2 PLAC County Kilkenny, Ireland
 1 DEAT
 2 DATE 29 MAR 1928
-2 PLAC Chatham, Columbia, New York, United States
+2 PLAC Chatham, Columbia, New York, USA
 1 FAMC @T0F58@
 0 @T0I19808899853@ INDI
 1 NAME Edward V /Dugan/
@@ -707,7 +673,7 @@
 1 SEX F
 1 BIRT
 2 DATE 19 FEB 1879
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 6 DEC 1935
 2 PLAC Troy, Rensselaer, New York, USA
@@ -724,7 +690,7 @@
 2 DATE 5 FEB 1957
 1 RESI
 2 DATE 1993
-2 PLAC East Greenbush, NY
+2 PLAC East Greenbush, New York, USA
 1 FAMC @T0F20@
 0 @T0I29577903369@ INDI
 1 NAME James H /Dugan/
@@ -806,12 +772,12 @@
 2 PLAC Watervliet, Albany, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 RESI
-2 PLAC Petersburg, NY
+2 PLAC Petersburg, New York, USA
 1 FAMC @T0F62@
 1 FAMS @T0F45@
 0 @T0I29577946350@ INDI
-1 NAME JosephP /Dugan/
-2 GIVN JosephP
+1 NAME Joseph P /Dugan/
+2 GIVN Joseph P
 2 SURN Dugan
 1 SEX M
 1 BIRT
@@ -835,7 +801,7 @@
 2 DATE 10 JUN 1955
 1 RESI
 2 DATE 1935-1993
-2 PLAC Clift, NY
+2 PLAC Clift, New York, USA
 1 RESI
 2 DATE 1983
 2 PLAC Waterford, Saratoga, New York, USA
@@ -848,15 +814,15 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1874
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Lansingburgh, Rensselaer, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 FAMC @T0F76@
 0 @T0I29577903368@ INDI
-1 NAME Louis. F. /Dugan/
-2 GIVN Louis. F.
+1 NAME Louis F. /Dugan/
+2 GIVN Louis F.
 2 SURN Dugan
 1 SEX M
 1 BIRT
@@ -869,7 +835,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1 JUN 1915
-2 PLAC Troy Ward 02, Rensselaer, New York, United States
+2 PLAC Troy Ward 02, Rensselaer, New York, USA
 2 NOTE Relation to Head of House: Head
 1 RESI
 2 DATE 1917-1918
@@ -921,7 +887,7 @@
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 RESI
 2 DATE 1 JUN 1915
-2 PLAC Glens Falls Ward 03, Warren, New York, United States
+2 PLAC Glens Falls Ward 03, Warren, New York, USA
 2 NOTE Relation to Head of House: Head
 1 RESI
 2 DATE 1918
@@ -949,10 +915,10 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1875
-2 PLAC United States
+2 PLAC USA
 1 RESI
 2 DATE 1 JUN 1915
-2 PLAC Troy Ward 02, Rensselaer, New York, United States
+2 PLAC Troy Ward 02, Rensselaer, New York, USA
 2 NOTE Relation to Head of House: Wife
 1 FAMS @T0F21@
 0 @T0I29577946355@ INDI
@@ -962,7 +928,7 @@
 1 SEX F
 1 BIRT
 2 DATE 1878
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 1886
 2 PLAC Troy, Rensselaer, New York, USA
@@ -989,7 +955,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1930
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1001,7 +967,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1992
-2 PLAC Clifton Park, NY
+2 PLAC Clifton Park, New York, USA
 1 EVEN
 2 TYPE Military Service
 2 NOTE Branch: ARMY
@@ -1071,7 +1037,6 @@
 1 RESI
 2 DATE 1959
 1 FAMC @T0F47@
-1 FAMC @T1F5@
 1 FAMS @T0F11@
 0 @T0I29550080860@ INDI
 1 NAME Stephen /Dugan/
@@ -1091,7 +1056,7 @@
 1 SEX M
 1 BIRT
 2 DATE 8 JAN 1844
-2 PLAC Co, Kilkenny, Ireland
+2 PLAC County Kilkenny, Ireland
 1 DEAT
 2 DATE 9 MAR 1912
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1142,7 +1107,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 16 NOV 1893
-2 PLAC Rensselaer, New York
+2 PLAC Rensselaer, New York, USA
 1 FAMC @T0F58@
 0 @T0I18635890324@ INDI
 1 NAME Walter J /Dugan/
@@ -1157,13 +1122,13 @@
 2 PLAC Troy, Rensselaer, New York, USA
 2 NOTE Age: 82
 1 BURI
-2 PLAC St. Peter's Cemetery Troy, NY United States
+2 PLAC St. Peter's Cemetery, Troy, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Troy City, Rensselaer, New York
+2 PLAC Troy City, Rensselaer, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Troy Ward 7, Rensselaer, New York
+2 PLAC Troy Ward 7, Rensselaer, New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1186,9 +1151,7 @@
 3 CONC umented active duty service between 6 April 1917 and 11 November 1918.
 2 SOUR U.S. World War I Draft Registration Cards, 1917–1918
 1 FAMC @T0F89@
-1 FAMC @T1F5@
 1 FAMS @T0F47@
-1 FAMS @T1F5@
 0 @T0I19739345719@ INDI
 1 NAME Walter James /Dugan/
 2 GIVN Walter James
@@ -1196,7 +1159,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1922
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 6 DEC 2013
 2 PLAC Salt Lake City, Salt Lake, Utah, USA
@@ -1254,7 +1217,8 @@
 2 PLAC Albany, Albany, New York, USA
 1 DEAT
 2 DATE 26 DEC 1887
-2 PLAC Albany, New York-Died In Childbirth
+2 PLAC Albany, New York, USA
+2 NOTE Died in childbirth
 1 FAMC @T0F89@
 0 @T0I18635953178@ INDI
 1 NAME William B. /Dugan/
@@ -1266,7 +1230,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 15 MAR 1906
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 RESI
 2 DATE 1 JUN 1875
 2 PLAC Troy Ward 11, Rensselaer, New York, USA
@@ -1290,7 +1254,7 @@
 2 NOTE Age: 21
 1 BURI
 2 DATE ABT NOV 1944
-2 PLAC St. Peter's Cemetery Troy, NY United States
+2 PLAC St. Peter's Cemetery, Troy, New York, USA
 2 NOTE St. Peter's Cemetery Oakwood Avenue Troy, NY
 1 RESI
 2 DATE 1930
@@ -1323,7 +1287,7 @@
 1 SEX F
 1 BIRT
 2 DATE 27 DEC 1806
-2 PLAC Co, Kilkenny, Ireland
+2 PLAC County Kilkenny, Ireland
 1 FAMC @T0F41@
 0 @T0I19809103423@ INDI
 1 NAME John /Duggan/
@@ -1332,7 +1296,7 @@
 1 SEX M
 1 BIRT
 2 DATE 8 MAR 1809
-2 PLAC Co, Kilkenny, Ireland
+2 PLAC County Kilkenny, Ireland
 1 DEAT
 2 DATE 1865
 1 FAMC @T0F41@
@@ -1402,7 +1366,7 @@
 2 PLAC Lansingburgh, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
@@ -1421,13 +1385,13 @@
 1 SEX M
 1 BIRT
 2 DATE JAN 1882
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 21 NOV 1900
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 FAMC @T0F91@
 0 @T0I19895524908@ INDI
 1 NAME Caroline /Faden/
@@ -1451,13 +1415,13 @@
 1 SEX M
 1 BIRT
 2 DATE DEC 1885
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 11 DEC 1949
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
@@ -1468,18 +1432,6 @@
 2 DATE 1920
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
 1 FAMC @T0F91@
-0 @T1I102119268177@ INDI
-1 NAME Debora Dorothy /Faden/
-2 GIVN Debora Dorothy
-2 SURN Faden
-1 SEX F
-1 BIRT
-2 DATE 5 AUG 1890
-2 PLAC Troy, Rensselaer, New York, USA
-1 DEAT
-2 DATE 16 JUN 1956
-2 PLAC Troy, Rensselaer, New York, USA
-1 FAMS @T1F5@
 0 @T0I18635922801@ INDI
 1 NAME Deborah Dorothy /Faden/
 2 GIVN Deborah Dorothy
@@ -1494,7 +1446,7 @@
 2 NOTE Age: 66
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1905
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
@@ -1511,7 +1463,7 @@
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Troy Ward 7, Rensselaer, New York
+2 PLAC Troy Ward 7, Rensselaer, New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1551,7 +1503,7 @@
 1 SEX M
 1 BIRT
 2 DATE 18 JUL 1908
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 28 DEC 1958
 1 BURI
@@ -1569,7 +1521,7 @@
 2 DATE 1947
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
-2 PLAC Rensselaer, New York
+2 PLAC Rensselaer, New York, USA
 1 EVEN
 2 TYPE Military Service
 2 NOTE Branch: ARMY
@@ -1595,13 +1547,13 @@
 1 SEX M
 1 BIRT
 2 DATE 1884
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 1936
-2 PLAC Hillsborough, Florida, United States
+2 PLAC Hillsborough, Florida, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 16, Rensselaer, New York, USA
@@ -1636,7 +1588,7 @@
 2 SURN Faden
 1 SEX F
 1 BIRT
-2 PLAC New York
+2 PLAC New York, USA
 1 FAMS @T0F18@
 0 @T0I19744463356@ INDI
 1 NAME Mary /Faden/
@@ -1648,19 +1600,6 @@
 1 DEAT
 2 DATE 1891
 1 FAMC @T0F91@
-0 @T0I29550637674@ INDI
-1 NAME William C /Faden/
-2 GIVN William C
-2 SURN Faden
-1 SEX M
-1 BIRT
-2 DATE 1926
-2 PLAC New York
-1 RESI
-2 DATE 1930
-2 PLAC Troy, Rensselaer, New York, USA
-1 FAMC @T0F98@
-1 FAMS @T0F33@
 0 @T0I29550637901@ INDI
 1 NAME William C /Faden/
 2 GIVN William C
@@ -1700,7 +1639,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
@@ -1727,11 +1666,11 @@
 1 FAMC @T0F91@
 1 FAMS @T0F23@
 1 FAMS @T0F18@
-1 FAMS @T0F98@
 0 @T0I29550636913@ INDI
 1 NAME Joseph Warren /Faden, Jr./
 2 GIVN Joseph Warren
 2 SURN Faden, Jr.
+1 SEX M
 1 FAMC @T0F1@
 0 @T0I372433897803@ INDI
 1 NAME Bridget /Finnegan/
@@ -1743,7 +1682,7 @@
 2 PLAC Wexford, Wexford, Ireland
 1 DEAT
 2 DATE 3 JAN 1890
-2 PLAC UTICA NY
+2 PLAC Utica, Oneida, New York, USA
 1 FAMS @T0F59@
 0 @T0I19809932472@ INDI
 1 NAME /Flavin/
@@ -1784,10 +1723,10 @@
 2 PLAC Troy; Watervliet; Green Island; Cohoes; Waterford, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Albany Ward 7, Albany, New York
+2 PLAC Albany Ward 7, Albany, New York, USA
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 2 NOTE Relation to Head of House: Wife
 1 FAMC @T0F17@
 1 FAMS @T0F32@
@@ -1870,7 +1809,7 @@
 1 SEX F
 1 BIRT
 2 DATE MAY 1868
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1887,7 +1826,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1866
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1914,7 +1853,7 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1874
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1932,7 +1871,7 @@
 1 SEX F
 1 BIRT
 2 DATE AUG 1879
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1900
 2 PLAC Troy Ward 13, Rensselaer, New York, USA
@@ -1958,7 +1897,7 @@
 1 SEX F
 1 BIRT
 2 DATE JUL 1869
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -1982,10 +1921,10 @@
 2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 FAMC @T0F70@
 1 FAMS @T0F49@
 0 @T0I19745160031@ INDI
@@ -2033,10 +1972,10 @@
 2 PLAC Ireland
 1 DEAT
 2 DATE 15 JAN 1927
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F22@
 1 FAMS @T0F48@
 0 @T0I29550637424@ INDI
@@ -2091,7 +2030,7 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1874
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 19 JUL 1950
 2 PLAC Troy, Rensselaer, New York, USA
@@ -2106,7 +2045,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1875
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -2128,7 +2067,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 16 AUG 1999
-2 PLAC Harris, Texas
+2 PLAC Harris, Texas, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
@@ -2150,7 +2089,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1898
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 13 MAY 1956
 2 PLAC Troy, Rensselaer, New York, USA
@@ -2168,7 +2107,7 @@
 1 SEX M
 1 BIRT
 2 DATE 6 AUG 1958
-2 PLAC Port Chester, NY
+2 PLAC Port Chester, New York, USA
 1 DEAT
 2 DATE 8 JAN 2025
 2 PLAC White Plains, Westchester, New York, USA
@@ -2220,7 +2159,7 @@
 2 PLAC Reiterswiesen, Bad Kissingen, Bayern, Germany
 1 DEAT
 2 DATE 23 NOV 1928
-2 PLAC Lacona, Warren, Iowa, United States
+2 PLAC Lacona, Warren, Iowa, USA
 0 @T0I19821174256@ INDI
 1 NAME Anna Margaretta /Kessler/
 2 GIVN Anna Margaretta
@@ -2231,7 +2170,7 @@
 2 PLAC Reiterswiesen, Bad Kissingen, Bayern, Germany
 1 DEAT
 2 DATE 14 AUG 1899
-2 PLAC Rosemount, Warren, Iowa, United States
+2 PLAC Rosemount, Warren, Iowa, USA
 0 @T0I19821174293@ INDI
 1 NAME Barbara /Kessler/
 2 GIVN Barbara
@@ -2242,7 +2181,7 @@
 2 PLAC Byron, Bayern, Germany
 1 DEAT
 2 DATE 18 APR 1939
-2 PLAC Richmond, Contra Costa, California, United States
+2 PLAC Richmond, Contra Costa, California, USA
 0 @T0I19746479773@ INDI
 1 NAME Charles H /Kessler/
 2 GIVN Charles H
@@ -2250,14 +2189,14 @@
 1 SEX M
 1 BIRT
 2 DATE 24 NOV 1856
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Lansingburgh, Rensselaer, New York, USA
 1 RESI
-2 PLAC New York
+2 PLAC New York, USA
 1 FAMC @T0F67@
 1 FAMS @T0F10@
 0 @T0I19746544169@ INDI
@@ -2288,15 +2227,12 @@
 2 PLAC Lansingburgh, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Lansingburg Village (Part), Rensselaer, New York
+2 PLAC Lansingburg Village (Part), Rensselaer, New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
 1 RESI
 2 DATE 1 JUN 1915
-2 PLAC Troy Ward 15, Rensselaer, New York, USA
-1 RESI
-2 DATE 1920
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
 1 RESI
 2 DATE 1920
@@ -2319,7 +2255,7 @@
 2 PLAC Reiterswiesen, Bad Kissingen, Bayern, Germany
 1 DEAT
 2 DATE 25 JUN 1885
-2 PLAC Warren, Iowa, United States
+2 PLAC Warren, Iowa, USA
 0 @T0I19821174260@ INDI
 1 NAME Georg Willibard /Kessler/
 2 GIVN Georg Willibard
@@ -2373,7 +2309,7 @@
 2 PLAC Reiterswiesen, Bad Kissingen, Bayern, Germany
 1 DEAT
 2 DATE 27 JAN 1934
-2 PLAC Churchville, Warren, Iowa, United States
+2 PLAC Churchville, Warren, Iowa, USA
 0 @T0I19821174254@ INDI
 1 NAME Margaretha /Kessler/
 2 GIVN Margaretha
@@ -2384,7 +2320,7 @@
 2 PLAC Reiterswiesen, Bad Kissingen, Bayern, Germany
 1 DEAT
 2 DATE 12 JAN 1901
-2 PLAC Rosemount, Warren, Iowa, United States
+2 PLAC Rosemount, Warren, Iowa, USA
 0 @T0I19809071483@ INDI
 1 NAME Mary /Kessler/
 2 GIVN Mary
@@ -2395,7 +2331,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 11 AUG 1920
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F67@
 1 FAMS @T0F79@
 0 @T0I19821174242@ INDI
@@ -2420,7 +2356,7 @@
 2 PLAC Munster, Cork, Ireland
 1 DEAT
 2 DATE 3 MAR 1899
-2 PLAC Jackson, Jackson, Michigan, United States
+2 PLAC Jackson, Jackson, Michigan, USA
 1 FAMC @T0F42@
 0 @T0I19821096743@ INDI
 1 NAME Bartholemew /Leahy/
@@ -2443,7 +2379,7 @@
 2 PLAC Munster, Cork, Ireland
 1 DEAT
 2 DATE 7 JUL 1887
-2 PLAC Portland, Dodge, Wisconsin, United States
+2 PLAC Portland, Dodge, Wisconsin, USA
 1 FAMC @T0F42@
 0 @T0I19821106503@ INDI
 1 NAME Daniel /Leahy/
@@ -2452,7 +2388,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1740
-2 PLAC Brooklodge, 5298, Ireland
+2 PLAC Brooklodge, Ireland
 1 DEAT
 2 DATE 1775
 2 PLAC Cork, Cork, Ireland
@@ -2502,7 +2438,7 @@
 2 PLAC Limerick, Ireland
 1 DEAT
 2 DATE 1899
-2 PLAC Chicago, Cook, Illinois, United States
+2 PLAC Chicago, Cook, Illinois, USA
 1 FAMC @T0F42@
 0 @T0I19809195607@ INDI
 1 NAME Honora /Leahy/
@@ -2654,7 +2590,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1900
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 10, Rensselaer, New York, USA
@@ -2671,7 +2607,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1896
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1920
 2 PLAC Troy Ward 13, Rensselaer, New York, USA
@@ -2684,7 +2620,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1874
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -2716,7 +2652,7 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1907
-2 PLAC United States
+2 PLAC USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 10, Rensselaer, New York, USA
@@ -2739,7 +2675,7 @@
 1 SEX F
 1 BIRT
 2 DATE 1895
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1910
 2 PLAC Troy Ward 10, Rensselaer, New York, USA
@@ -2790,7 +2726,7 @@
 2 DATE 1920
 2 PLAC Troy Ward 16, Rensselaer, New York, USA
 1 RESI
-2 PLAC New York
+2 PLAC New York, USA
 1 FAMS @T0F66@
 0 @T0I19895531547@ INDI
 1 NAME Charles /Maier/
@@ -2843,7 +2779,7 @@
 1 EVEN
 2 TYPE Education
 2 DATE 1974
-2 PLAC Albany, NY
+2 PLAC Albany, New York, USA
 2 NOTE St. Agnes School
 1 EVEN
 2 TYPE Education
@@ -2876,7 +2812,7 @@
 2 PLAC Greenwich, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 2 NOTE Marital Status: Married; Relation to Head of House: Wife
 1 RESI
 2 DATE 1905
@@ -2931,10 +2867,10 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 BURI
 2 DATE 11 FEB 2003
-2 PLAC St. Peter's Cemetery Troy, NY
+2 PLAC St. Peter's Cemetery, Troy, New York, USA
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 2 NOTE Relation to Head of House: Son
 1 RESI
 2 DATE 1930
@@ -2982,23 +2918,23 @@
 2 PLAC Menands, Albany, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 1 RESI
 2 DATE 1905
 2 PLAC Jackson, Washington, New York, USA
 1 RESI
 2 DATE ABT 1917
-2 PLAC Essex, New Jersey
+2 PLAC Essex, New Jersey, USA
 1 RESI
 2 DATE 1920
-2 PLAC Albany Ward 7, Albany, New York
+2 PLAC Albany Ward 7, Albany, New York, USA
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 2 NOTE Relation to Head of House: Head
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 1 RESI
 2 DATE 1927
 2 PLAC Albany; Rensselaer, New York, USA
@@ -3031,10 +2967,7 @@
 1 SEX M
 1 BIRT
 2 DATE 3 JUL 1964
-2 PLAC Albany  New York, USA
-1 DEAT
-2 DATE 1944
-2 PLAC Albany County, New York, USA
+2 PLAC Albany, New York, USA
 1 BURI
 2 PLAC Menands, Albany, New York, USA
 1 FAMC @T0F11@
@@ -3058,12 +2991,12 @@
 1 SEX M
 1 BIRT
 2 DATE ABT 1924
-2 PLAC United States
+2 PLAC USA
 1 DEAT
 2 DATE 2010
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 2 NOTE Relation to Head of House: Son
 1 RESI
 2 DATE 1930
@@ -3105,7 +3038,7 @@
 2 PLAC Jackson, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 1 RESI
 2 DATE 1905
 2 PLAC Jackson, Washington, New York, USA
@@ -3116,7 +3049,6 @@
 1 FAMC @T0F71@
 1 FAMC @T1F18@
 1 FAMS @T0F92@
-1 FAMS @T1F17@
 0 @T0I18635838499@ INDI
 1 NAME John /Maloy/
 2 GIVN John
@@ -3124,7 +3056,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1875
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 21 OCT 1900
 1 RESI
@@ -3138,7 +3070,7 @@
 1 SEX F
 1 BIRT
 2 DATE 1879
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 10 MAR 1967
 2 PLAC Troy, Rensselaer, New York, USA
@@ -3162,7 +3094,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1878
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE ABT 1972
 1 RESI
@@ -3173,7 +3105,7 @@
 2 PLAC Johnson, Iowa, USA
 1 RESI
 2 DATE 1930
-2 PLAC Clear Creek, Johnson, Iowa
+2 PLAC Clear Creek, Johnson, Iowa, USA
 1 FAMC @T0F92@
 1 FAMS @T0F77@
 0 @T0I19809920785@ INDI
@@ -3242,7 +3174,7 @@
 1 SEX F
 1 BIRT
 2 DATE 2 AUG 1881
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE JAN 1971
 2 PLAC Troy, Rensselaer, New York, USA
@@ -3253,7 +3185,7 @@
 2 PLAC Jackson, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 1 RESI
 2 DATE 1 JUN 1915
 2 PLAC Troy Ward 10, Rensselaer, New York, USA
@@ -3282,13 +3214,13 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1920
-2 PLAC United States
+2 PLAC USA
 1 DEAT
 2 DATE MAR 1985
-2 PLAC Floral Park, NY
+2 PLAC Floral Park, New York, USA
 1 RESI
 2 DATE 1 JUN 1925
-2 PLAC Albany Ward 01, Albany, New York, United States
+2 PLAC Albany Ward 01, Albany, New York, USA
 2 NOTE Relation to Head of House: Daughter
 1 RESI
 2 DATE 1930
@@ -3307,7 +3239,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1873
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 2 JUL 1889
 1 RESI
@@ -3338,7 +3270,7 @@
 1 SEX M
 1 BIRT
 2 DATE 23 APR 1895
-2 PLAC Johnsonville, Rensselaer, New York, United States
+2 PLAC Johnsonville, Rensselaer, New York, USA
 1 DEAT
 2 DATE 4 MAY 1952
 2 PLAC Bennington, Bennington, Vermont, USA
@@ -3357,7 +3289,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 28 JAN 2004
-2 PLAC Rockledge, Brevard, Florida, United States
+2 PLAC Rockledge, Brevard, Florida, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
@@ -3373,25 +3305,13 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 6 DEC 2006
-2 PLAC Dana Point, Orange, California
+2 PLAC Dana Point, Orange, California, USA
 1 RESI
 2 DATE 1930
 2 PLAC Troy, Rensselaer, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Daughter
 1 FAMC @T0F14@
 1 FAMS @T0F90@
-0 @T1I102119268425@ INDI
-1 NAME Mary E /McCarthy/
-2 GIVN Mary E
-2 SURN McCarthy
-1 SEX F
-1 BIRT
-2 DATE 1874
-2 PLAC New York, New York, New York, USA
-1 DEAT
-2 DATE 14 APR 1956
-2 PLAC New Rochelle, Westchester, New York, USA
-1 FAMS @T1F10@
 0 @T0I372433897615@ INDI
 1 NAME Margaret Jane /McCue/
 2 GIVN Margaret Jane
@@ -3438,7 +3358,7 @@
 1 SEX M
 1 BIRT
 2 DATE 17 APR 1862
-2 PLAC Abbey Paisley,Renfrew,Scotland
+2 PLAC Abbey Paisley, Renfrew, Scotland
 1 DEAT
 2 DATE 25 JAN 1930
 2 PLAC Kings, New York, USA
@@ -3450,7 +3370,7 @@
 1 SEX M
 1 BIRT
 2 DATE 27 MAR 1830
-2 PLAC County, Meath, Ireland
+2 PLAC County Meath, Ireland
 1 DEAT
 2 DATE 2 NOV 1907
 2 PLAC Johnson, Iowa, USA
@@ -3465,16 +3385,13 @@
 2 PLAC Iowa, USA
 1 DEAT
 2 DATE 6 MAR 1966
-2 PLAC San Bernardino, San Bernardino, California, United States of America
+2 PLAC San Bernardino, San Bernardino, California, USA
 1 RESI
 2 DATE 1 JAN 1925
-2 PLAC Clear Creek
-1 RESI
-2 DATE 1 JAN 1925
-2 PLAC Johnson, Iowa, USA
+2 PLAC Clear Creek, Johnson, Iowa, USA
 1 RESI
 2 DATE 1930
-2 PLAC Clear Creek, Johnson, Iowa
+2 PLAC Clear Creek, Johnson, Iowa, USA
 1 FAMC @T0F86@
 1 FAMS @T0F77@
 0 @T0I19746204874@ INDI
@@ -3490,13 +3407,10 @@
 2 PLAC Palm Desert, Riverside, California, USA
 1 RESI
 2 DATE 1 JAN 1925
-2 PLAC Clear Creek
-1 RESI
-2 DATE 1 JAN 1925
-2 PLAC Johnson, Iowa, USA
+2 PLAC Clear Creek, Johnson, Iowa, USA
 1 RESI
 2 DATE 1930
-2 PLAC Clear Creek, Johnson, Iowa
+2 PLAC Clear Creek, Johnson, Iowa, USA
 1 FAMC @T0F77@
 1 FAMS @T0F37@
 0 @T0I372224855273@ INDI
@@ -3506,7 +3420,7 @@
 1 SEX M
 1 BIRT
 2 DATE 08/26/2020
-2 PLAC Albany  New York, USA
+2 PLAC Albany, New York, USA
 1 FAMC @T0F75@
 0 @T0I372224855249@ INDI
 1 NAME Christopher Peter /Medve/
@@ -3515,7 +3429,7 @@
 1 SEX M
 1 BIRT
 2 DATE 10/20/1983
-2 PLAC Vermont
+2 PLAC Vermont, USA
 1 FAMC @T0F55@
 1 FAMS @T0F75@
 0 @T0I372237394798@ INDI
@@ -3534,7 +3448,7 @@
 1 SEX M
 1 BIRT
 2 DATE 21/01/1946
-2 PLAC PA
+2 PLAC Pennsylvania, USA
 1 FAMS @T0F55@
 0 @T0I372628899388@ INDI
 1 NAME William Dugan /Medve/
@@ -3591,10 +3505,10 @@
 1 SEX M
 1 BIRT
 2 DATE 29 NOV 1918
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 19 APR 1973
-2 PLAC Lenoir, Caldwell, North Carolina
+2 PLAC Lenoir, Caldwell, North Carolina, USA
 1 BURI
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
@@ -3610,7 +3524,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 RESI
-2 PLAC Lenoir, Caldwell, North Carolina
+2 PLAC Lenoir, Caldwell, North Carolina, USA
 1 FAMC @T0F53@
 1 FAMS @T0F90@
 0 @T0I29568101207@ INDI
@@ -3620,7 +3534,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1922
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1 JUN 1925
 2 PLAC Troy Ward 15, Rensselaer, New York, USA
@@ -3643,10 +3557,10 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1901
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1 JUN 1915
-2 PLAC Glens Falls Ward 03, Warren, New York, United States
+2 PLAC Glens Falls Ward 03, Warren, New York, USA
 2 NOTE Relation to Head of House: Wife
 1 RESI
 2 DATE 1918
@@ -3694,7 +3608,7 @@
 2 PLAC Greenwich, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 2 NOTE Marital Status: Married; Relation to Head of House: Head
 1 FAMS @T0F51@
 0 @T0I19744513602@ INDI
@@ -3710,7 +3624,7 @@
 2 PLAC Greenwich, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 FAMC @T0F51@
 0 @T0I19821003133@ INDI
@@ -3746,10 +3660,10 @@
 2 PLAC Jackson, Washington, New York, USA
 1 DEAT
 2 DATE JAN 1985
-2 PLAC Vandalia, Fayette, Illinois, United States
+2 PLAC Vandalia, Fayette, Illinois, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 FAMC @T0F51@
 0 @T0I19744530394@ INDI
@@ -3762,7 +3676,7 @@
 2 PLAC Jackson, Washington, New York, USA
 1 DEAT
 2 DATE 25 FEB 1990
-2 PLAC Saratoga Springs, Saratoga, New York, United States
+2 PLAC Saratoga Springs, Saratoga, New York, USA
 1 FAMC @T0F51@
 0 @T0I28135914037@ INDI
 1 NAME Thomas Donald /Pemrick/
@@ -3771,7 +3685,7 @@
 1 SEX M
 1 BIRT
 2 DATE 6 JAN 1924
-2 PLAC United States
+2 PLAC USA
 1 DEAT
 2 DATE 7 AUG 2008
 2 PLAC Troy, Rensselaer, New York, USA
@@ -3790,7 +3704,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 2 NOTE Marital Status: Single; Relation to Head of House: Son
 1 RESI
 2 DATE 1920
@@ -3855,7 +3769,7 @@
 2 PLAC Ireland
 1 DEAT
 2 DATE 25 DEC 1945
-2 PLAC Worchester, Mass.
+2 PLAC Worcester, Massachusetts, USA
 1 RESI
 2 DATE 1880
 2 PLAC Troy, Rensselaer, New York, USA
@@ -3944,7 +3858,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 9 NOV 1943
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F79@
 0 @T0I19895442305@ INDI
 1 NAME Henrietta /Quandt/
@@ -3962,7 +3876,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE ABT 1918
-2 PLAC Near Amsterdam, NY
+2 PLAC Near Amsterdam, New York, USA
 1 FAMC @T0F79@
 0 @T0I19895442295@ INDI
 1 NAME Margaret L /Quandt/
@@ -3983,7 +3897,7 @@
 2 PLAC Troy, Rensselaer, New York, USA
 1 DEAT
 2 DATE 8 AUG 1906
-2 PLAC Brooklyn, New York
+2 PLAC Brooklyn, New York, USA
 1 FAMC @T0F79@
 0 @T0I19895442299@ INDI
 1 NAME Still Born /Quandt/
@@ -4028,38 +3942,24 @@
 2 SURN Reilly
 1 SEX M
 1 FAMS @T1F19@
-0 @T1I102119268128@ INDI
-1 NAME Mary F. /Reilly/
-2 GIVN Mary F.
-2 SURN Reilly
-1 SEX F
-1 BIRT
-2 DATE 19 SEP 1897
-2 PLAC New York
-1 DEAT
-2 DATE MAY 1978
-1 RESI
-2 DATE 1974
-2 PLAC New York
-1 FAMC @T1F19@
-1 FAMS @T1F11@
 0 @T0I19744849560@ INDI
-1 NAME Mary /Riley/
-2 GIVN Mary
+1 NAME Mary F. /Riley/
+2 GIVN Mary F.
 2 SURN Riley
 1 SEX F
 1 BIRT
 2 DATE 19 SEP 1897
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE MAY 1978
-2 PLAC Albany  New York, USA
+2 PLAC Albany, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Manhattan Assembly District 22, New York, New York
+2 PLAC Manhattan Assembly District 22, New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Larchmont, Westchester, New York, USA
+1 NOTE Also recorded as Mary F. Reilly.
 1 FAMS @T0F46@
 0 @T0I19744463195@ INDI
 1 NAME Elizabeth /Rink/
@@ -4068,7 +3968,7 @@
 1 SEX F
 1 BIRT
 2 DATE 30 APR 1819
-2 PLAC Wurtemburg
+2 PLAC Württemberg, Germany
 1 DEAT
 2 DATE 6 AUG 1900
 2 PLAC Troy, Rensselaer, New York, USA
@@ -4095,7 +3995,7 @@
 2 DATE 1900
 1 DEAT
 2 DATE 1910
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F64@
 0 @T0I19744303987@ INDI
 1 NAME Daniel Joseph /Riordan/
@@ -4104,10 +4004,10 @@
 1 SEX M
 1 BIRT
 2 DATE 7 JUL 1870
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 28 APR 1923
-2 PLAC Washington, DC, US
+2 PLAC Washington, DC, USA
 1 EVEN
 2 TYPE Affiliation
 2 NOTE Manhattan College — Undergraduate
@@ -4128,10 +4028,10 @@
 1 SEX F
 1 BIRT
 2 DATE 1868
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 DEAT
 2 DATE 1869
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F48@
 0 @T0I19744731800@ INDI
 1 NAME Jeremiah /Riordan/
@@ -4140,10 +4040,10 @@
 1 SEX M
 1 BIRT
 2 DATE 1873
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 DEAT
 2 DATE 1875
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F48@
 0 @T0I19744731841@ INDI
 1 NAME Margaret /Riordan/
@@ -4152,10 +4052,10 @@
 1 SEX F
 1 BIRT
 2 DATE 1875
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 DEAT
 2 DATE 1876
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F48@
 0 @T0I19744180178@ INDI
 1 NAME Marion /Riordan/
@@ -4172,7 +4072,7 @@
 2 DATE ABT 1920
 1 RESI
 2 DATE 1930
-2 PLAC Queens, Queens, New York
+2 PLAC Queens, Queens, New York, USA
 1 RESI
 2 DATE 1935
 2 PLAC New Rochelle, Westchester, New York, USA
@@ -4188,10 +4088,10 @@
 1 SEX F
 1 BIRT
 2 DATE MAY 1867
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 DEAT
 2 DATE JUL 1930
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F48@
 0 @T0I19744731755@ INDI
 1 NAME Michael /Riordan/
@@ -4200,10 +4100,10 @@
 1 SEX M
 1 BIRT
 2 DATE 1870
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 DEAT
 2 DATE BEF 1880
-2 PLAC New York City, New York, New York
+2 PLAC New York City, New York, USA
 1 FAMC @T0F48@
 0 @T0I19744709306@ INDI
 1 NAME Michael COUSIN /Riordan/
@@ -4215,7 +4115,7 @@
 2 PLAC Cork, Cork, Ireland
 1 DEAT
 2 DATE 27 OCT 1892
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMS @T0F48@
 0 @T0I29567699760@ INDI
 1 NAME /Roach/
@@ -4255,12 +4155,12 @@
 1 SEX F
 1 BIRT
 2 DATE 20 DEC 1949
-2 PLAC PA
+2 PLAC Pennsylvania, USA
 1 DEAT
 2 DATE 14 SEP 1990
 2 PLAC Wolcott, Lamoille, Vermont, USA
 1 RESI
-2 PLAC Wolcott
+2 PLAC Wolcott, Lamoille, Vermont, USA
 1 FAMC @T0F74@
 1 FAMS @T0F55@
 1 FAMS @T0F93@
@@ -4271,7 +4171,7 @@
 1 SEX F
 1 BIRT
 2 DATE 30 DEC 1927
-2 PLAC Detroit, Michigan
+2 PLAC Detroit, Michigan, USA
 1 DEAT
 2 DATE 08/30/2009
 1 FAMS @T0F2@
@@ -4304,7 +4204,7 @@
 1 SEX F
 1 BIRT
 2 DATE SEP 1891
-2 PLAC New York
+2 PLAC New York, USA
 1 FAMC @T0F88@
 0 @T0I29565681559@ INDI
 1 NAME Edwin /Stanton/
@@ -4322,7 +4222,7 @@
 1 SEX F
 1 BIRT
 2 DATE AUG 1898
-2 PLAC New York
+2 PLAC New York, USA
 1 FAMC @T0F88@
 0 @T0I28135914035@ INDI
 1 NAME Helen Frances (Nellie) /Stanton/
@@ -4345,7 +4245,7 @@
 1 SEX M
 1 BIRT
 2 DATE DEC 1889
-2 PLAC Connecticut
+2 PLAC Connecticut, USA
 1 FAMC @T0F88@
 0 @T0I372535859984@ INDI
 1 NAME Ella M. /Tibbets/
@@ -4355,6 +4255,7 @@
 1 BIRT
 2 DATE ABT 1855
 2 PLAC Maine, USA
+1 NOTE Married name Caldwell; wife of William Minns Caldwell.
 1 FAMS @T0F101@
 0 @T0I19821435326@ INDI
 1 NAME /Faden/
@@ -4414,7 +4315,7 @@
 1 SEX F
 1 BIRT
 2 DATE SEP 1898
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE ABT 1980
 2 PLAC Albany, Albany, New York, USA
@@ -4422,10 +4323,10 @@
 2 PLAC Menands, Albany, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 RESI
 2 PLAC Albany, Albany, New York, USA
 1 FAMC @T0F49@
@@ -4436,16 +4337,16 @@
 1 SEX F
 1 BIRT
 2 DATE APR 1885
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 20 MAY 1952
-2 PLAC Alameda, Alameda, California, United States
+2 PLAC Alameda, Alameda, California, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 FAMC @T0F49@
 0 @T0I19745160244@ INDI
 1 NAME Esther /Walsh/
@@ -4457,13 +4358,13 @@
 2 PLAC Albany, Albany, New York, USA
 1 DEAT
 2 DATE 1981
-2 PLAC Mamaroneck, Westchester, New York, United States
+2 PLAC Mamaroneck, Westchester, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 FAMC @T0F49@
 0 @T0I19745160349@ INDI
 1 NAME Faith /Walsh/
@@ -4472,13 +4373,13 @@
 1 SEX F
 1 BIRT
 2 DATE 14 DEC 1901
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 2 AUG 1996
-2 PLAC Harrison, Westchester, New York, United States
+2 PLAC Harrison, Westchester, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 FAMC @T0F49@
 0 @T0I18635653381@ INDI
 1 NAME James Gregory /Walsh/
@@ -4510,25 +4411,23 @@
 1 SEX M
 1 BIRT
 2 DATE 19 MAY 1891
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 28 AUG 1953
 2 PLAC San Francisco
 2 NOTE Age: 62
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Manhattan Assembly District 22, New York, New York
+2 PLAC Manhattan Assembly District 22, New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Larchmont, Westchester, New York, USA
-1 RESI
-2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 PLAC Albany, Albany, New York, USA
 1 EVEN
@@ -4571,7 +4470,7 @@
 1 SEX F
 1 BIRT
 2 DATE ABT 1929
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1930
 2 PLAC Larchmont, Westchester, New York, USA
@@ -4590,7 +4489,7 @@
 1 BURI
 2 PLAC Menands, Albany, New York, USA
 1 RESI
-2 PLAC Albany New York
+2 PLAC Albany, New York, USA
 1 FAMC @T0F8@
 1 FAMS @T0F49@
 0 @T0I19745160133@ INDI
@@ -4600,27 +4499,27 @@
 1 SEX F
 1 BIRT
 2 DATE 27 FEB 1887
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE JUL 1977
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 BURI
 2 PLAC Menands, Albany, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 RESI
 2 DATE 1920
-2 PLAC Manhattan Assembly District 13, New York, New York
+2 PLAC Manhattan Assembly District 13, New York, USA
 1 RESI
 2 DATE 1930
-2 PLAC Manhattan, New York, New York
+2 PLAC Manhattan, New York, USA
 1 RESI
 2 DATE 1 APR 1940
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 FAMC @T0F49@
 1 FAMS @T0F4@
 0 @T0I19745160190@ INDI
@@ -4630,16 +4529,16 @@
 1 SEX M
 1 BIRT
 2 DATE 26 NOV 1894
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 DEAT
 2 DATE 31 MAY 1974
 2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Albany city, Albany, New York
+2 PLAC Albany, Albany, New York, USA
 1 RESI
 2 DATE 1910
-2 PLAC Albany Ward 14, Albany, New York
+2 PLAC Albany Ward 14, Albany, New York, USA
 1 FAMC @T0F49@
 0 @T0I372433897574@ INDI
 1 NAME William Edward /Walsh/
@@ -4662,7 +4561,7 @@
 1 SEX M
 1 BIRT
 2 DATE 12 AUG 1951
-2 PLAC Albany  New York, USA
+2 PLAC Albany, New York, USA
 1 RESI
 2 DATE 1993
 2 PLAC Albany, Albany, New York, USA
@@ -4726,7 +4625,7 @@
 1 SEX F
 1 BIRT
 2 DATE 1854
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 1927
 2 PLAC Troy, Rensselaer, New York, USA
@@ -4747,13 +4646,13 @@
 2 PLAC Ireland
 1 DEAT
 2 DATE 14 MAY 1918
-2 PLAC New York, New York, New York, USA
+2 PLAC New York, New York, USA
 1 RESI
 2 DATE 1880
 2 PLAC Jackson, Washington, New York, USA
 1 RESI
 2 DATE 1900
-2 PLAC Jackson Township, Washington, New York
+2 PLAC Jackson Township, Washington, New York, USA
 1 FAMS @T0F92@
 0 @T0I28141319446@ INDI
 1 NAME Charles /Wheeland/
@@ -4762,7 +4661,7 @@
 1 SEX M
 1 BIRT
 2 DATE 1866
-2 PLAC New York
+2 PLAC New York, USA
 1 RESI
 2 DATE 1935
 2 PLAC Troy, Rensselaer, New York, USA
@@ -4777,10 +4676,10 @@
 1 SEX F
 1 BIRT
 2 DATE 1904
-2 PLAC New York
+2 PLAC New York, USA
 1 DEAT
 2 DATE 4 AUG 1976
-2 PLAC Barrington, Illinois
+2 PLAC Barrington, Illinois, USA
 1 RESI
 2 DATE 1935
 2 PLAC Troy, Rensselaer, New York, USA
@@ -4837,7 +4736,7 @@
 1 CHIL @T0I19744165677@
 1 MARR
 2 DATE 21 JUN 1924
-2 PLAC Manhattan, New York, New York
+2 PLAC Manhattan, New York, USA
 0 @T0F4@ FAM
 1 HUSB @T0I19886650460@
 1 WIFE @T0I19745160133@
@@ -4860,7 +4759,7 @@
 1 WIFE @T0I372433897615@
 1 CHIL @T0I19745141692@
 1 MARR
-2 PLAC New York, New York, New York, United States
+2 PLAC New York, New York, USA
 0 @T0F9@ FAM
 1 HUSB @T0I19809200335@
 1 WIFE @T0I18635731419@
@@ -4871,7 +4770,7 @@
 1 CHIL @T0I19746544169@
 1 MARR
 2 DATE 4 DEC 1881
-2 PLAC Madison St German Presbyterian Church, New York, United States
+2 PLAC Madison St German Presbyterian Church, New York, USA
 0 @T0F11@ FAM
 1 HUSB @T0I18635645027@
 1 WIFE @T0I18635646682@
@@ -4881,7 +4780,7 @@
 1 CHIL @T0I18635657946@
 1 MARR
 2 DATE 19 APR 1952
-2 PLAC Troy, NY
+2 PLAC Troy, New York, USA
 0 @T0F12@ FAM
 1 HUSB @T0I18635731420@
 1 WIFE @T0I20427631344@
@@ -4920,7 +4819,7 @@
 1 CHIL @T0I18635672053@
 1 MARR
 2 DATE 17 AUG 1885
-2 PLAC Troy, New York, United States
+2 PLAC Troy, New York, USA
 2 NOTE St. Patrick's Church
 0 @T0F18@ FAM
 1 HUSB @T0I18669423251@
@@ -4995,7 +4894,7 @@
 1 CHIL @T0I19774443854@
 1 MARR
 2 DATE 9 JUL 1988
-2 PLAC Doane Stuart Chapel Albany, NY
+2 PLAC Doane Stuart Chapel, Albany, New York, USA
 0 @T0F32@ FAM
 1 HUSB @T0I18635670923@
 1 WIFE @T0I18635672053@
@@ -5005,11 +4904,8 @@
 1 CHIL @T0I18635731421@
 1 MARR
 2 DATE 31 DEC 1917
-2 PLAC Troy, New York, United States
+2 PLAC Troy, New York, USA
 2 NOTE St. Patrick's Church
-0 @T0F33@ FAM
-1 HUSB @T0I29550637674@
-1 WIFE @T0I29550637806@
 0 @T0F34@ FAM
 1 HUSB @T0I28092513856@
 1 WIFE @T0I18635810356@
@@ -5085,7 +4981,7 @@
 1 CHIL @T0I19739345716@
 1 MARR
 2 DATE 17 NOV 1919
-2 PLAC St Augustine's Church, Troy, NY
+2 PLAC St Augustine's Church, Troy, New York, USA
 0 @T0F48@ FAM
 1 HUSB @T0I19744709306@
 1 WIFE @T0I19744709449@
@@ -5097,7 +4993,7 @@
 1 CHIL @T0I19744731841@
 1 MARR
 2 DATE 1866
-2 PLAC Manhattan, NYC, NY
+2 PLAC Manhattan, NYC, New York, USA
 0 @T0F49@ FAM
 1 HUSB @T0I19745141692@
 1 WIFE @T0I19745142863@
@@ -5127,7 +5023,7 @@
 1 CHIL @T0I19744530425@
 1 MARR
 2 DATE 8 FEB 1893
-2 PLAC Greenwich, Washington, New York, United States
+2 PLAC Greenwich, Washington, New York, USA
 0 @T0F52@ FAM
 1 HUSB @T0I29550081035@
 1 WIFE @T0I29550080762@
@@ -5138,7 +5034,7 @@
 1 CHIL @T0I29568101207@
 1 MARR
 2 DATE 11 JUN 1915
-2 PLAC Rennselaer, New York, USA
+2 PLAC Rensselaer, New York, USA
 0 @T0F54@ FAM
 1 HUSB @T0I19808920789@
 1 WIFE @T0I19808920796@
@@ -5176,7 +5072,6 @@
 1 HUSB @T0I372433897708@
 1 WIFE @T0I372433897803@
 1 CHIL @T0I19744215609@
-1 CHIL @T0I19744180137@
 0 @T0F60@ FAM
 1 HUSB @T0I19821496326@
 1 WIFE @T0I19821437865@
@@ -5256,7 +5151,7 @@
 1 CHIL @T0I18635653381@
 1 MARR
 2 DATE 30 DEC 1982
-2 PLAC Cathedral of the Immaculate Conception Albany,NY
+2 PLAC Cathedral of the Immaculate Conception, Albany, New York, USA
 0 @T0F74@ FAM
 1 HUSB @T0I372237394657@
 1 WIFE @T0I372237394658@
@@ -5315,7 +5210,7 @@
 1 CHIL @T0I28141314744@
 1 MARR
 2 DATE 13 JUL 1946
-2 PLAC Troy, NY
+2 PLAC Troy, New York, USA
 0 @T0F82@ FAM
 1 HUSB @T0I19821128656@
 1 WIFE @T0I19821128660@
@@ -5390,7 +5285,7 @@
 1 CHIL @T0I18635670923@
 1 MARR
 2 DATE ABT 1861
-2 PLAC New York, United States
+2 PLAC New York, USA
 0 @T0F93@ FAM
 1 WIFE @T0I372237394071@
 1 CHIL @T0I372237394798@
@@ -5407,9 +5302,6 @@
 0 @T0F97@ FAM
 1 WIFE @T0I372634356545@
 1 CHIL @T0I19886650460@
-0 @T0F98@ FAM
-1 HUSB @T0I18669423251@
-1 CHIL @T0I29550637674@
 0 @T0F99@ FAM
 1 WIFE @T0I29567701850@
 1 CHIL @T0I28092521761@
@@ -5417,6 +5309,7 @@
 1 WIFE @T0I29567702006@
 1 CHIL @T0I28092521768@
 0 @T0F101@ FAM
+1 HUSB @T1I102119741545@
 1 WIFE @T0I372535859984@
 1 CHIL @T0I19744304033@
 0 @T0F102@ FAM
@@ -5435,33 +5328,17 @@
 1 HUSB @T1I102624527993@
 1 WIFE @T1I102624527910@
 1 CHIL @T0I372433897615@
-0 @T1F5@ FAM
-1 HUSB @T0I18635890324@
-1 WIFE @T1I102119268177@
-1 CHIL @T0I18635890324@
-1 CHIL @T0I18635646682@
-0 @T1F10@ FAM
-1 HUSB @T0I19744180137@
-1 WIFE @T1I102119268425@
-1 CHIL @T0I19744180137@
 0 @T1F11@ FAM
 1 HUSB @T0I19739309279@
-1 WIFE @T1I102119268128@
+1 WIFE @T0I19744849560@
 1 CHIL @T0I19738989728@
-0 @T1F14@ FAM
-1 HUSB @T1I102119741545@
-1 WIFE @T1I102624528667@
-1 CHIL @T1I102119268454@
 0 @T1F16@ FAM
 1 HUSB @T1I102624528692@
 1 CHIL @T1I102119741545@
-0 @T1F17@ FAM
-1 HUSB @T0I18635810354@
-1 CHIL @T0I18635654544@
 0 @T1F18@ FAM
 1 WIFE @T0I19809902952@
 1 CHIL @T0I18635810354@
 0 @T1F19@ FAM
 1 HUSB @T1I102624922981@
-1 CHIL @T1I102119268128@
+1 CHIL @T0I19744849560@
 0 TRLR
