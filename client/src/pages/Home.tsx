@@ -668,10 +668,11 @@ export default function Home() {
           />
           <button
             type="submit"
-            className="inline-flex h-9 shrink-0 items-center rounded-full bg-primary text-primary-foreground text-xs font-medium px-4 hover-elevate active-elevate-2"
+            className="inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium px-3 sm:px-4 hover-elevate active-elevate-2"
             data-testid="home-search-submit"
           >
-            Search
+            <Search className="h-4 w-4 sm:hidden" />
+            <span className="hidden sm:inline">Search</span>
           </button>
         </form>
 
