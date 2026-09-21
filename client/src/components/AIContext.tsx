@@ -10,22 +10,19 @@ import {
 import type { PersonWebFinding } from "@/components/WebFindingsCard";
 import { safeGet, safeRemove, safeSet } from "@/lib/safeStorage";
 import { checkServerAI, type AiAuth } from "@/lib/openai";
+import { useAuth } from "@/components/AuthContext";
 
 /**
  * How AI is authenticated this session:
  *  - "loading": still probing the server.
- *  - "proxy":   server holds the OpenAI key; the user supplies a shared access
- *               passphrase that's checked server-side.
- *  - "direct":  no server key; the user brings their own OpenAI key.
+ *  - "proxy":   server holds the OpenAI key; access is gated by login (the
+ *               session cookie), so no client secret is needed.
+ *  - "direct":  no server key; the user brings their own OpenAI key (BYOK).
  */
 export type AiMode = "loading" | "proxy" | "direct";
 
-/** Opt-in remembered-secret storage keys (separate per mode so a remembered
- *  OpenAI key is never sent as a passphrase or vice versa). */
-const SECRET_STORAGE: Record<"proxy" | "direct", string> = {
-  proxy: "cognatio.ai_passcode",
-  direct: "cognatio.openai_key",
-};
+/** Storage key for the opt-in remembered BYOK OpenAI key (direct mode only). */
+const DIRECT_KEY_STORAGE = "cognatio.openai_key";
 
 /**
  * Session-only AI state. Holds:
@@ -54,8 +51,8 @@ interface AIContextValue {
   /** Server-probed auth mode (see AiMode). */
   aiMode: AiMode;
   /**
-   * The credential the user supplied this session: an OpenAI key (direct mode)
-   * or the shared access passphrase (proxy mode). Null when not yet provided.
+   * The user-supplied OpenAI key for direct (BYOK) mode. Null in proxy mode
+   * (where login is the auth) or before a key is entered.
    */
   secret: string | null;
   /**
@@ -67,14 +64,22 @@ interface AIContextValue {
   /** Whether the secret is (or should be) persisted on this device. */
   rememberSecret: boolean;
   setRememberSecret: (remember: boolean) => void;
-  /** True once AI is usable (a secret is present). */
+  /**
+   * True once AI is usable: in proxy mode this means logged in; in direct
+   * (BYOK) mode it means an OpenAI key has been provided.
+   */
   aiReady: boolean;
   /** Build the auth object for openai.ts calls, or null if not ready. */
   getAuth: () => AiAuth | null;
-  /** UI state for the "enter key/passphrase" modal. */
+  /** UI state for the direct-mode "enter OpenAI key" modal. */
   keyDialogOpen: boolean;
   openKeyDialog: () => void;
   closeKeyDialog: () => void;
+  /**
+   * Prompt the user for whatever AI access is missing: the OpenAI-key dialog in
+   * direct mode, or the sign-in dialog in proxy mode.
+   */
+  promptForAiAccess: () => void;
 
   /** Runtime per-person findings. */
   researched: Record<string, PersonWebFinding>;
@@ -113,24 +118,27 @@ export const CHAT_MODELS = [
 const Ctx = createContext<AIContextValue | null>(null);
 
 export function AIProvider({ children }: { children: ReactNode }) {
+  const { user, openAuthDialog } = useAuth();
   const [aiMode, setAiMode] = useState<AiMode>("loading");
   const [secret, setSecretInternal] = useState<string | null>(null);
   const [rememberSecret, setRememberSecretState] = useState<boolean>(false);
   const [keyDialogOpen, setKeyDialogOpen] = useState(false);
 
-  // Probe the server once: if it has a key, we use passphrase-gated proxy mode;
+  // Probe the server once: if it has a key, we use login-gated proxy mode;
   // otherwise fall back to bring-your-own-key direct mode. Then hydrate any
-  // remembered secret for the resolved mode.
+  // remembered BYOK key (direct mode only — proxy mode needs no client secret).
   useEffect(() => {
     let cancelled = false;
     void checkServerAI().then((enabled) => {
       if (cancelled) return;
       const mode: AiMode = enabled ? "proxy" : "direct";
       setAiMode(mode);
-      const stored = safeGet(SECRET_STORAGE[mode]);
-      if (stored) {
-        setSecretInternal(stored);
-        setRememberSecretState(true);
+      if (mode === "direct") {
+        const stored = safeGet(DIRECT_KEY_STORAGE);
+        if (stored) {
+          setSecretInternal(stored);
+          setRememberSecretState(true);
+        }
       }
     });
     return () => {
@@ -143,51 +151,49 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatModel, setChatModel] = useState<string>("gpt-5.4-mini");
 
-  // The mode used for persistence (treat "loading" as direct so an early save
-  // is never lost; the probe resolves before any UI lets the user save).
-  const storageKeyFor = useCallback(
-    (mode: AiMode) => SECRET_STORAGE[mode === "loading" ? "direct" : mode],
-    [],
-  );
-
+  // The remembered secret only applies to direct (BYOK) mode.
   const setSecret = useCallback(
     (value: string | null, remember?: boolean) => {
       const clean = value && value.trim() ? value.trim() : null;
       setSecretInternal(clean);
       const shouldRemember = remember ?? rememberSecret;
       if (remember !== undefined) setRememberSecretState(remember);
-      const key = storageKeyFor(aiMode);
       if (clean && shouldRemember) {
-        safeSet(key, clean);
+        safeSet(DIRECT_KEY_STORAGE, clean);
       } else {
-        safeRemove(key);
+        safeRemove(DIRECT_KEY_STORAGE);
       }
     },
-    [aiMode, rememberSecret, storageKeyFor],
+    [rememberSecret],
   );
 
   const setRememberSecret = useCallback(
     (remember: boolean) => {
       setRememberSecretState(remember);
-      const key = storageKeyFor(aiMode);
       if (remember && secret) {
-        safeSet(key, secret);
+        safeSet(DIRECT_KEY_STORAGE, secret);
       } else {
-        safeRemove(key);
+        safeRemove(DIRECT_KEY_STORAGE);
       }
     },
-    [aiMode, secret, storageKeyFor],
+    [secret],
   );
 
   const getAuth = useCallback((): AiAuth | null => {
-    if (!secret) return null;
-    return aiMode === "proxy"
-      ? { mode: "proxy", passcode: secret }
-      : { mode: "direct", apiKey: secret };
-  }, [aiMode, secret]);
+    if (aiMode === "proxy") return user ? { mode: "proxy" } : null;
+    return secret ? { mode: "direct", apiKey: secret } : null;
+  }, [aiMode, secret, user]);
+
+  const aiReady = aiMode === "proxy" ? !!user : !!secret;
 
   const openKeyDialog = useCallback(() => setKeyDialogOpen(true), []);
   const closeKeyDialog = useCallback(() => setKeyDialogOpen(false), []);
+
+  // Prompt for whatever is missing to use AI: sign-in (proxy) or a key (direct).
+  const promptForAiAccess = useCallback(() => {
+    if (aiMode === "proxy") openAuthDialog();
+    else setKeyDialogOpen(true);
+  }, [aiMode, openAuthDialog]);
 
   const setResearched = useCallback((id: string, finding: PersonWebFinding) => {
     setResearchedState((prev) => ({ ...prev, [id]: finding }));
@@ -225,11 +231,12 @@ export function AIProvider({ children }: { children: ReactNode }) {
       setSecret,
       rememberSecret,
       setRememberSecret,
-      aiReady: !!secret,
+      aiReady,
       getAuth,
       keyDialogOpen,
       openKeyDialog,
       closeKeyDialog,
+      promptForAiAccess,
       researched,
       setResearched,
       researching,
@@ -250,10 +257,12 @@ export function AIProvider({ children }: { children: ReactNode }) {
       setSecret,
       rememberSecret,
       setRememberSecret,
+      aiReady,
       getAuth,
       keyDialogOpen,
       openKeyDialog,
       closeKeyDialog,
+      promptForAiAccess,
       researched,
       setResearched,
       researching,
