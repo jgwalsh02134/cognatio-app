@@ -219,14 +219,24 @@ export default function Changes() {
             <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-3" />
             <h1 className="font-display text-xl font-semibold">Edit mode is locked</h1>
             <p className="text-sm text-muted-foreground mt-2">
-              Unlock edit mode from the header to begin staging changes.
+              Log in with the family passphrase to begin staging changes.
             </p>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1 mt-4 text-sm text-primary hover:underline"
-            >
-              <ArrowLeft className="h-3 w-3" /> Back to home
-            </Link>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                data-testid="link-changes-login"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                data-testid="link-changes-signup"
+              >
+                Sign up
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>

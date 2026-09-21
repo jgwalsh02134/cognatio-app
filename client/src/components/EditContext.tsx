@@ -47,8 +47,13 @@ export type PersonPatch = Partial<{
 
 interface EditContextValue {
   unlocked: boolean;
-  unlock: (passphrase: string) => Promise<boolean>;
+  unlock: (passphrase: string, name?: string | null) => Promise<boolean>;
   lock: () => void;
+  /**
+   * Display name from sign up / log in, kept in session memory for notes.
+   * Never persisted.
+   */
+  memberName: string | null;
   /**
    * The plaintext passphrase entered at unlock, kept in memory for the session
    * so authenticated saves can send it to the server (POST /api/archive). Null
@@ -89,6 +94,7 @@ async function sha256(input: string): Promise<string> {
 
 export function EditProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
+  const [memberName, setMemberName] = useState<string | null>(null);
   const [passcode, setPasscode] = useState<string | null>(null);
   const [pending, setPending] = useState<Record<string, PersonPatch>>({});
   // Edits saved to the server THIS session. Kept as an overlay so a successful
@@ -113,12 +119,14 @@ export function EditProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const unlock = useCallback(async (passphrase: string) => {
+  const unlock = useCallback(async (passphrase: string, name?: string | null) => {
     const trimmed = passphrase.trim();
     const hash = await sha256(trimmed);
     if (hash === EDIT_PASSPHRASE_HASH) {
       setUnlocked(true);
       setPasscode(trimmed);
+      const n = name?.trim();
+      if (n) setMemberName(n);
       return true;
     }
     return false;
@@ -127,6 +135,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
   const lock = useCallback(() => {
     setUnlocked(false);
     setPasscode(null);
+    setMemberName(null);
   }, []);
 
   const setPatch = useCallback((id: string, patch: PersonPatch) => {
@@ -223,6 +232,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
       unlocked,
       unlock,
       lock,
+      memberName,
       passcode,
       pending,
       setPatch,
@@ -236,7 +246,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
       commitToArchive,
     }),
     [
-      unlocked, unlock, lock, passcode, pending, setPatch, discard, discardAll,
+      unlocked, unlock, lock, memberName, passcode, pending, setPatch, discard, discardAll,
       count, hasChanges, merge, archiveEnabled, saving, commitToArchive,
     ],
   );

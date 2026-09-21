@@ -29,6 +29,7 @@ import Anomalies from "@/pages/Anomalies";
 import Duplicates from "@/pages/Duplicates";
 import ExportPage from "@/pages/Export";
 import Changes from "@/pages/Changes";
+import AuthPage from "@/pages/Auth";
 import NotFound from "@/pages/not-found";
 import IntroScreen from "@/components/IntroScreen";
 
@@ -36,6 +37,8 @@ function AppRouter() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/login">{() => <AuthPage mode="login" />}</Route>
+      <Route path="/signup">{() => <AuthPage mode="signup" />}</Route>
       <Route path="/people" component={PeopleList} />
       <Route path="/person/:id" component={PersonDetail} />
       <Route path="/tree" component={TreeView} />

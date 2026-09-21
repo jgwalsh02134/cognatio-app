@@ -88,7 +88,7 @@ export function AIChat() {
       {/* Floating launcher — inline-flex + w-fit guarantees shrink-to-fit
           inside any container/iframe. Hidden when the drawer is open so it
           never overlaps the Sheet animation. */}
-      {!chatOpen && (
+      {!chatOpen && location !== "/login" && location !== "/signup" && (
         <button
           onClick={() => setChatOpen(true)}
           data-ai-launcher

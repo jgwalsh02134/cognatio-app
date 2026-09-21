@@ -20,7 +20,6 @@ import {
   Combine,
   Map as MapIcon,
   Dna,
-  Lock,
   Unlock,
   Pencil,
   FileEdit,
@@ -28,11 +27,10 @@ import {
   ChevronDown,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { useTheme } from "./ThemeProvider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useEdit } from "./EditContext";
 import { useToast } from "@/hooks/use-toast";
@@ -114,17 +112,14 @@ function isActivePath(location: string, href: string): boolean {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const isTreePage = location === "/tree";
+  const isAuthPage = location === "/login" || location === "/signup";
   const { theme, toggle } = useTheme();
-  const { unlocked, unlock, lock, count, hasChanges, archiveEnabled, commitToArchive } = useEdit();
+  const { unlocked, lock, memberName, count, hasChanges, archiveEnabled, commitToArchive } = useEdit();
   const { toast } = useToast();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [unlockOpen, setUnlockOpen] = useState(false);
-  const [unlockDraft, setUnlockDraft] = useState("");
-  const [unlockErr, setUnlockErr] = useState<string | null>(null);
-  const unlockInputRef = useRef<HTMLInputElement>(null);
 
   // Global shortcuts: Cmd/Ctrl-K and "/" open palette; "e" toggles edit mode.
   useEffect(() => {
@@ -155,14 +150,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-
-  useEffect(() => {
-    if (unlockOpen) {
-      setUnlockDraft("");
-      setUnlockErr(null);
-      setTimeout(() => unlockInputRef.current?.focus(), 30);
-    }
-  }, [unlockOpen]);
 
   // ⌘S / Ctrl+S saves pending edits straight to the archive (server mode only).
   // We only intercept the browser's Save dialog when there is actually
@@ -202,18 +189,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // so the last of the page content isn't hidden behind it (mobile especially).
   const editBarVisible = unlocked && hasChanges && location !== "/changes";
 
-  async function tryUnlock() {
-    if (!unlockDraft.trim()) return;
-    const ok = await unlock(unlockDraft);
-    if (ok) {
-      setUnlockOpen(false);
-      setUnlockDraft("");
-      setUnlockErr(null);
-    } else {
-      setUnlockErr("Incorrect passphrase");
-    }
-  }
-
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
@@ -235,7 +210,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
 
-          <nav className="ml-auto hidden md:flex self-stretch items-center gap-0.5 lg:gap-1">
+          <nav className={cn("ml-auto hidden md:flex self-stretch items-center gap-0.5 lg:gap-1", isAuthPage && "md:hidden")}>
             {PRIMARY.map(({ href, icon: Icon, label }) => {
               const active = isActivePath(location, href);
               return (
@@ -321,7 +296,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             variant="outline"
             size="sm"
             onClick={() => setPaletteOpen(true)}
-            className="ml-auto md:ml-0 gap-2 text-muted-foreground h-9 px-2 sm:px-3 rounded-full"
+            className={cn(
+              "ml-auto md:ml-0 gap-2 text-muted-foreground h-9 px-2 sm:px-3 rounded-full",
+              isAuthPage && "hidden",
+            )}
             data-testid="button-search"
           >
             <SearchIcon className="h-4 w-4" />
@@ -344,27 +322,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
 
           {unlocked ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={lock}
-              aria-label="Lock edit mode"
-              data-testid="button-edit-lock"
-              className="h-9 w-9 text-primary"
-            >
-              <Unlock className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1.5">
+              {memberName && (
+                <span
+                  className="hidden sm:inline max-w-[9rem] truncate text-xs text-muted-foreground"
+                  data-testid="text-member-name"
+                >
+                  {memberName}
+                </span>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={lock}
+                aria-label="Log out"
+                data-testid="button-edit-lock"
+                className="h-9 px-2.5 text-primary"
+              >
+                <Unlock className="h-4 w-4" />
+                <span className="hidden sm:inline">Log out</span>
+              </Button>
+            </div>
           ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setUnlockOpen(true)}
-              aria-label="Unlock edit mode"
-              data-testid="button-edit-unlock"
-              className="h-9 w-9"
-            >
-              <Lock className="h-4 w-4" />
-            </Button>
+            !isAuthPage && (
+              <div className="flex items-center gap-1.5">
+                <Link
+                  href="/login"
+                  className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                  data-testid="button-edit-unlock"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex h-9 items-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover-elevate active-elevate-2"
+                  data-testid="nav-signup"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )
           )}
 
           <Button
@@ -373,7 +370,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={toggle}
             aria-label="Toggle theme"
             data-testid="button-theme"
-            className="h-9 w-9"
+            className={cn("h-9 w-9", isAuthPage && "ml-auto")}
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
@@ -397,7 +394,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           // edge. Forcing w-full pins each page root to the container width while
           // its own max-w-* still caps the line length on desktop.
           "flex-1 min-w-0 min-h-0 overflow-x-hidden flex flex-col [&>*]:w-full [&>*]:min-w-0",
-          editBarVisible
+          isAuthPage
+            ? "pb-0"
+            : editBarVisible
             ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-24"
             : "pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
         )}
@@ -408,7 +407,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom nav: 4 primary tabs + a "More" tab opening a grouped sheet.
           Five equal thumb-zone targets — no horizontal scrolling. */}
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+        className={cn(
+          "md:hidden fixed bottom-0 inset-x-0 z-40 border-t bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]",
+          isAuthPage && "hidden",
+        )}
         aria-label="Primary"
       >
         <div className="flex">
@@ -499,7 +501,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
           (bottom-right) so it never covers the footer text. */}
-      <footer className={cn("border-t py-10 px-4 sm:px-5 pb-24 md:pb-12", isTreePage ? "hidden" : "mt-16")}>
+      <footer className={cn("border-t py-10 px-4 sm:px-5 pb-24 md:pb-12", isTreePage || isAuthPage ? "hidden" : "mt-16")}>
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
@@ -543,69 +545,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
 
-      {/* Unlock overlay */}
-      {unlockOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[20vh] px-4"
-          onClick={() => setUnlockOpen(false)}
-          data-testid="overlay-unlock"
-        >
-          <div
-            className="w-full max-w-sm rounded-xl border bg-card shadow-xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 pt-5 pb-2">
-              <h2 className="font-display text-base font-semibold flex items-center gap-2">
-                <Lock className="h-4 w-4 text-primary" /> Unlock Edit Mode
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                Enter the family passphrase to enable inline editing.
-              </p>
-            </div>
-            <div className="px-5 py-3">
-              <Input
-                ref={unlockInputRef}
-                type="password"
-                value={unlockDraft}
-                onChange={(e) => {
-                  setUnlockDraft(e.target.value);
-                  setUnlockErr(null);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") tryUnlock();
-                  if (e.key === "Escape") setUnlockOpen(false);
-                }}
-                placeholder="Passphrase"
-                className="text-base"
-                data-testid="input-unlock"
-              />
-              {unlockErr && (
-                <p className="text-xs text-destructive mt-2" data-testid="text-unlock-error">
-                  {unlockErr}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-end gap-2 border-t px-5 py-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setUnlockOpen(false)}
-                data-testid="button-unlock-cancel"
-              >
-                Cancel
-              </Button>
-              <Button size="sm" onClick={tryUnlock} data-testid="button-unlock-submit">
-                Unlock
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        onRequestUnlock={() => setUnlockOpen(true)}
+        onRequestUnlock={() => setLocation("/login")}
       />
 
       <ApiKeyDialog />
