@@ -1,9 +1,18 @@
 import "dotenv/config";
 import express, { Response, NextFunction } from 'express';
 import type { Request } from 'express';
+import session from "express-session";
+import createMemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "node:http";
+
+// Session shape — a logged-in user's id lives here (httpOnly cookie only).
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
 
 const app = express();
 // Behind Railway's proxy, trust X-Forwarded-For so req.ip is the real client
@@ -33,6 +42,45 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// ---------------------------------------------------------------------------
+// Sessions (login state)
+//
+// A single httpOnly session cookie carries the logged-in user's id. Cookies
+// flow automatically on same-origin fetches (the client is served by this same
+// Express server), so the browser never handles a token directly.
+//
+// TODO: the memorystore session store is in-memory and NON-persistent across
+// server restarts — users must re-login after a redeploy. A persistent
+// Postgres-backed session store (e.g. connect-pg-simple) is a future
+// improvement for production durability.
+// ---------------------------------------------------------------------------
+const MemoryStore = createMemoryStore(session);
+const sessionSecret =
+  process.env.SESSION_SECRET ||
+  (() => {
+    console.warn(
+      "[auth] SESSION_SECRET is not set — using an insecure development fallback. " +
+        "Set SESSION_SECRET in production so sessions survive and stay secure.",
+    );
+    return "cognatio-dev-insecure-session-secret";
+  })();
+
+app.use(
+  session({
+    name: "cognatio.sid",
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({ checkPeriod: 24 * 60 * 60 * 1000 }),
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    },
+  }),
+);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
