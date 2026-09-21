@@ -235,7 +235,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
 
-          <nav className="ml-auto hidden md:flex items-center gap-0.5 lg:gap-1">
+          <nav className="ml-auto hidden md:flex self-stretch items-center gap-0.5 lg:gap-1">
             {PRIMARY.map(({ href, icon: Icon, label }) => {
               const active = isActivePath(location, href);
               return (
@@ -246,13 +246,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   aria-label={label}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-2 rounded-md px-2.5 lg:px-3 py-1.5 text-sm font-medium hover-elevate active-elevate-2",
-                    active ? "bg-muted text-foreground" : "text-muted-foreground",
+                    "relative flex h-full items-center gap-2 px-2.5 lg:px-3 text-sm font-medium hover-elevate active-elevate-2",
+                    active ? "text-foreground" : "text-muted-foreground",
                   )}
                   data-testid={`nav-${label.toLowerCase()}`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="hidden lg:inline">{label}</span>
+                  {active && (
+                    <span
+                      className="pointer-events-none absolute inset-x-2.5 bottom-0 h-0.5 rounded-full bg-primary"
+                      aria-hidden
+                    />
+                  )}
                 </Link>
               );
             })}
@@ -264,14 +270,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   title="More"
                   aria-label="More sections"
                   className={cn(
-                    "flex items-center gap-1.5 rounded-md px-2.5 lg:px-3 py-1.5 text-sm font-medium hover-elevate active-elevate-2",
-                    moreActive ? "bg-muted text-foreground" : "text-muted-foreground",
+                    "relative flex h-full items-center gap-1.5 px-2.5 lg:px-3 text-sm font-medium hover-elevate active-elevate-2",
+                    moreActive ? "text-foreground" : "text-muted-foreground",
                   )}
                   data-testid="nav-more"
                 >
                   <LayoutGrid className="h-4 w-4 shrink-0" />
                   <span className="hidden lg:inline">More</span>
                   <ChevronDown className="hidden lg:inline h-3 w-3 opacity-60" />
+                  {moreActive && (
+                    <span
+                      className="pointer-events-none absolute inset-x-2.5 bottom-0 h-0.5 rounded-full bg-primary"
+                      aria-hidden
+                    />
+                  )}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-60">
@@ -309,7 +321,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             variant="outline"
             size="sm"
             onClick={() => setPaletteOpen(true)}
-            className="ml-auto md:ml-0 gap-2 text-muted-foreground h-9 px-2 sm:px-3"
+            className="ml-auto md:ml-0 gap-2 text-muted-foreground h-9 px-2 sm:px-3 rounded-full"
             data-testid="button-search"
           >
             <SearchIcon className="h-4 w-4" />
@@ -487,16 +499,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
           (bottom-right) so it never covers the footer text. */}
-      <footer className={cn("border-t py-6 px-4 sm:px-5 pb-24 md:pb-20", isTreePage ? "hidden" : "mt-12")}>
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-2.5">
-            <Logo className="h-4 w-4 text-primary/70" />
-            <span className="font-display font-semibold text-foreground tracking-tight">Cognatio</span>
-            <span className="h-3 w-px bg-border" aria-hidden="true" />
-            <span className="uppercase tracking-[0.18em]">Walsh · Maloy · Cranwell · Dugan</span>
-          </div>
-          <div className="text-center sm:text-right">
-            Compiled from Ancestry.com GEDCOM exports · Built privately for family
+      <footer className={cn("border-t py-10 px-4 sm:px-5 pb-24 md:pb-12", isTreePage ? "hidden" : "mt-16")}>
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <Logo className="h-4 w-4 text-primary/70" />
+                <span className="font-display font-semibold text-foreground tracking-tight">
+                  Cognatio
+                </span>
+              </div>
+              <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground max-w-xs">
+                Walsh · Maloy · Cranwell · Dugan family archive. Compiled from Ancestry.com
+                GEDCOM exports and kept privately for family.
+              </p>
+            </div>
+            {GROUPS.map((group) => (
+              <div key={group.title}>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-3">
+                  {group.title}
+                </div>
+                <ul className="space-y-2">
+                  {group.items.map(({ href, label }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className={cn(
+                          "text-sm hover:text-foreground",
+                          isActivePath(location, href)
+                            ? "text-foreground font-medium"
+                            : "text-muted-foreground",
+                        )}
+                        data-testid={`footer-${label.toLowerCase()}`}
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </footer>

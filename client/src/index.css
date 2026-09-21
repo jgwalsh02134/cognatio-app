@@ -48,15 +48,15 @@
   --font-sans: Inter, system-ui, sans-serif;
   --font-serif: 'Source Serif 4', Georgia, serif;
   --font-mono: 'IBM Plex Mono', Menlo, monospace;
-  --radius: 0.5rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 1px 2px -1px hsl(0 0% 0% / 0);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 1px 2px -1px hsl(0 0% 0% / 0);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 2px 4px -1px hsl(0 0% 0% / 0);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 4px 6px -1px hsl(0 0% 0% / 0);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 8px 10px -1px hsl(0 0% 0% / 0);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0);
+  --radius: 0.625rem;
+  --shadow-2xs: 0 1px 2px hsl(220 22% 11% / 0.03);
+  --shadow-xs: 0 1px 2px hsl(220 22% 11% / 0.04);
+  --shadow-sm: 0 1px 2px hsl(220 22% 11% / 0.04), 0 1px 1px hsl(220 22% 11% / 0.03);
+  --shadow: 0 1px 3px hsl(220 22% 11% / 0.06), 0 1px 2px hsl(220 22% 11% / 0.04);
+  --shadow-md: 0 4px 16px -4px hsl(220 22% 11% / 0.08), 0 2px 6px hsl(220 22% 11% / 0.04);
+  --shadow-lg: 0 12px 28px -10px hsl(220 22% 11% / 0.12);
+  --shadow-xl: 0 20px 40px -16px hsl(220 22% 11% / 0.16);
+  --shadow-2xl: 0 24px 48px -12px hsl(220 22% 11% / 0.18);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -144,14 +144,14 @@
   --chart-3: 38 85% 65%;
   --chart-4: 160 50% 55%;
   --chart-5: 285 50% 70%;
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 1px 2px -1px hsl(0 0% 0% / 0);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 1px 2px -1px hsl(0 0% 0% / 0);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 2px 4px -1px hsl(0 0% 0% / 0);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 4px 6px -1px hsl(0 0% 0% / 0);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0), 0px 8px 10px -1px hsl(0 0% 0% / 0);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0);
+  --shadow-2xs: 0 1px 2px hsl(0 0% 0% / 0.25);
+  --shadow-xs: 0 1px 2px hsl(0 0% 0% / 0.28);
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.28), 0 1px 1px hsl(0 0% 0% / 0.2);
+  --shadow: 0 1px 3px hsl(0 0% 0% / 0.35), 0 1px 2px hsl(0 0% 0% / 0.25);
+  --shadow-md: 0 8px 20px -6px hsl(0 0% 0% / 0.45);
+  --shadow-lg: 0 16px 32px -10px hsl(0 0% 0% / 0.5);
+  --shadow-xl: 0 24px 40px -12px hsl(0 0% 0% / 0.55);
+  --shadow-2xl: 0 28px 48px -12px hsl(0 0% 0% / 0.6);
 
   /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -305,6 +305,20 @@
     .fade-up {
       animation: none;
     }
+  }
+
+  /* Soft wash behind profile / magazine headers (Confluence + New Yorker). */
+  .profile-banner {
+    background-image:
+      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.12), transparent 52%),
+      radial-gradient(ellipse at 92% 20%, hsl(38 60% 70% / 0.12), transparent 48%),
+      linear-gradient(180deg, hsl(var(--muted) / 0.7), transparent);
+  }
+  .dark .profile-banner {
+    background-image:
+      radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.18), transparent 55%),
+      radial-gradient(ellipse at 92% 20%, hsl(280 30% 40% / 0.16), transparent 50%),
+      linear-gradient(180deg, hsl(var(--muted) / 0.45), transparent);
   }
 }
 

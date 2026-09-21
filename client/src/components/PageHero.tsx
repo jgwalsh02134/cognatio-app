@@ -46,12 +46,12 @@ export function PageHero({
       </Link>
       <div className="mt-4 flex items-start gap-3 sm:gap-4">
         {Icon ? (
-          <div className="hidden sm:flex shrink-0 mt-1 h-10 w-10 items-center justify-center rounded-md bg-foreground/[0.04] border border-border/60 text-foreground/70">
+          <div className="hidden sm:flex shrink-0 mt-1 h-10 w-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/15 text-primary">
             <Icon className="h-5 w-5" />
           </div>
         ) : null}
         <div className="min-w-0 flex-1">
-          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          <div className="text-[11px] uppercase tracking-[0.22em] text-primary/80">
             {eyebrow}
           </div>
           <h1 className="mt-1 font-display font-semibold text-lg sm:text-xl leading-[1.15] tracking-tight break-words">
@@ -75,14 +75,14 @@ export function PageHero({
           {stats.map((s) => (
             <div
               key={s.label}
-              className="rounded-md border border-card-border bg-card px-3 py-2.5 sm:px-4 sm:py-3"
+              className="rounded-lg border border-card-border bg-card px-3 py-2.5 sm:px-4 sm:py-3 shadow-sm"
             >
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 {s.label}
               </div>
               <div
                 className={cn(
-                  "mt-1 font-display text-lg sm:text-xl tabular-nums leading-none",
+                  "mt-1.5 font-display text-lg sm:text-xl tabular-nums leading-none",
                   s.tone === "warn" && "text-amber-500 dark:text-amber-400",
                   s.tone === "good" && "text-emerald-600 dark:text-emerald-400",
                   s.tone === "primary" && "text-primary",

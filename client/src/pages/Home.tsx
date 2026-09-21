@@ -156,7 +156,7 @@ function StatPill({
   hint?: string;
 }) {
   return (
-    <div className="flex flex-col">
+    <div className="rounded-lg border border-card-border bg-card px-3 py-3 sm:px-4 shadow-sm">
       <div
         className="font-display text-xl font-semibold tabular-nums leading-none"
         data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
@@ -213,7 +213,7 @@ function FeatureCard({
     <Link
       href={href}
       data-testid={testId}
-      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 hover-elevate active-elevate-2 min-w-0"
+      className="group flex flex-col gap-2 rounded-lg border border-card-border bg-card p-4 shadow-sm hover-elevate active-elevate-2 min-w-0"
     >
       <div className="flex items-start justify-between gap-2 min-w-0">
         <div
@@ -642,14 +642,8 @@ export default function Home() {
     <div className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-10">
       {/* ───────── Hero ───────── */}
       <section className="pb-8 sm:pb-10 border-b">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 sm:mb-4">
-          <span className="font-display text-sm font-semibold tracking-tight text-foreground shrink-0">
-            Cognatio
-          </span>
-          <span className="h-3 w-px bg-border shrink-0" aria-hidden="true" />
-          <span className="min-w-0 break-words text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-primary">
-            Walsh · Maloy · Cranwell · Dugan Family Archive
-          </span>
+        <div className="text-[11px] uppercase tracking-[0.22em] text-primary/80 mb-3">
+          Walsh · Maloy · Cranwell · Dugan
         </div>
         <h1 className="font-display text-xl font-semibold leading-[1.15] tracking-tight max-w-3xl">
           Generations gathered in one place.
@@ -659,66 +653,73 @@ export default function Home() {
           from two Ancestry.com GEDCOM exports and reconciled into one shared lineage.
         </p>
 
-        {/* Search + primary CTAs — unified row at h-10 */}
-        <div className="mt-5 sm:mt-6 flex flex-col gap-3 md:flex-row md:items-center md:flex-wrap min-w-0">
-          <form
-            onSubmit={handleSearch}
-            className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md border border-border bg-card pl-3 pr-1 focus-within:ring-2 focus-within:ring-primary/30 md:flex-1 md:min-w-[260px]"
+        <form
+          onSubmit={handleSearch}
+          className="mt-5 sm:mt-6 flex h-11 w-full min-w-0 items-center gap-2 rounded-full border border-border bg-card pl-4 pr-1 shadow-sm focus-within:ring-2 focus-within:ring-primary/30"
+        >
+          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+          <input
+            type="search"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Search by name, surname, or place…"
+            className="flex-1 bg-transparent outline-none text-sm min-w-0"
+            data-testid="home-search-input"
+          />
+          <button
+            type="submit"
+            className="inline-flex h-9 shrink-0 items-center rounded-full bg-primary text-primary-foreground text-xs font-medium px-4 hover-elevate active-elevate-2"
+            data-testid="home-search-submit"
           >
-            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-            <input
-              type="search"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search by name, surname, or place…"
-              className="flex-1 bg-transparent outline-none text-sm min-w-0"
-              data-testid="home-search-input"
-            />
-            <button
-              type="submit"
-              className="inline-flex h-8 shrink-0 items-center rounded-md bg-primary text-primary-foreground text-xs font-medium px-3 hover-elevate active-elevate-2"
-              data-testid="home-search-submit"
-            >
-              Search
-            </button>
-          </form>
-          <div className="flex flex-wrap items-center gap-2">
+            Search
+          </button>
+        </form>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {[
+            { href: "/tree", label: "Tree", icon: GitBranch, testId: "cta-tree" },
+            { href: "/people", label: "People", icon: Users, testId: "chip-people" },
+            { href: "/timeline", label: "Timeline", icon: Clock, testId: "chip-timeline" },
+            { href: "/map", label: "Map", icon: MapIcon, testId: "chip-map" },
+            { href: "/research", label: "Research", icon: Compass, testId: "chip-research" },
+            { href: "/surnames", label: "Surnames", icon: ScrollText, testId: "chip-surnames" },
+          ].map(({ href, label, icon: Icon, testId }) => (
             <Link
-              href="/tree"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground px-3.5 text-sm font-medium hover-elevate active-elevate-2"
-              data-testid="cta-tree"
+              key={href}
+              href={href}
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+              data-testid={testId}
             >
-              <GitBranch className="h-4 w-4" />
-              Explore tree
+              <Icon className="h-3.5 w-3.5" />
+              {label}
             </Link>
-            <button
-              onClick={() => setChatOpen(true)}
-              type="button"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border bg-card px-3.5 text-sm font-medium hover-elevate active-elevate-2"
-              data-testid="cta-ai"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Ask AI
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                downloadGedcom(
-                  `cognatio_archive_${new Date().toISOString().slice(0, 10)}.ged`,
-                )
-              }
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border bg-card px-3.5 text-sm font-medium hover-elevate active-elevate-2"
-              data-testid="cta-download-ged"
-              title="Download the archive as a GEDCOM 5.5.1 file (.ged)"
-            >
-              <Download className="h-4 w-4" />
-              GEDCOM
-            </button>
-          </div>
+          ))}
+          <button
+            onClick={() => setChatOpen(true)}
+            type="button"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            data-testid="cta-ai"
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            Ask AI
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              downloadGedcom(
+                `cognatio_archive_${new Date().toISOString().slice(0, 10)}.ged`,
+              )
+            }
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            data-testid="cta-download-ged"
+            title="Download the archive as a GEDCOM 5.5.1 file (.ged)"
+          >
+            <Download className="h-3.5 w-3.5" />
+            GEDCOM
+          </button>
         </div>
 
-        {/* Stat pills strip */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5 sm:gap-6 border-t border-border/60 pt-5 sm:pt-6">
+        <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
           <StatPill label="Individuals" value={stats.total_individuals} />
           <StatPill label="Families" value={stats.total_families} />
           <StatPill
