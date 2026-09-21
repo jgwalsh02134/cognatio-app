@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import {
-  ArrowLeft,
   Baby,
+  Clock,
   Cross,
   Heart,
   Shield,
@@ -10,6 +10,7 @@ import {
   Home as HomeIcon,
   Filter,
 } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 import {
   people,
   families,
@@ -180,38 +181,17 @@ export default function Timeline() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-5 py-5 sm:py-8 fade-up">
-      <div className="mb-5 sm:mb-7">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-2 -mx-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
-          data-testid="link-back-home"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back home
-        </Link>
-      </div>
-
-      <header className="pb-6 sm:pb-8 border-b">
-        <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
-          Family timeline
-        </p>
-        <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight">
-          A chronological history
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2.5 max-w-2xl">
-          Every dated life event across the archive — births, marriages, deaths, military service,
-          schooling, and homes — laid out in order.
-          {yearRange && (
-            <>
-              {" "}
-              Spans <span className="tabular-nums text-foreground font-medium">{yearRange.min}</span>{" "}
-              to <span className="tabular-nums text-foreground font-medium">{yearRange.max}</span>{" "}
-              with <span className="tabular-nums text-foreground font-medium">{events.length}</span>{" "}
-              events.
-            </>
-          )}
-        </p>
-      </header>
+      <PageHero
+        eyebrow="Family timeline"
+        title="A chronological history"
+        description="Every dated life event across the archive — births, marriages, deaths, military service, schooling, and homes — laid out in order."
+        icon={Clock}
+        stats={[
+          { label: "Events", value: events.length, tone: "primary" },
+          { label: "From", value: yearRange?.min ?? "—" },
+          { label: "To", value: yearRange?.max ?? "—" },
+        ]}
+      />
 
       <div className="mt-6 sm:mt-7 space-y-3">
         <div className="relative">
@@ -221,7 +201,7 @@ export default function Timeline() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter by person, place, or detail…"
-            className="w-full h-10 pl-9 pr-3 rounded-md border border-border bg-background text-sm outline-none focus:border-primary"
+            className="w-full h-10 pl-9 pr-3 rounded-full border border-border bg-card shadow-sm text-sm outline-none focus:border-primary"
             data-testid="input-timeline-filter"
           />
         </div>

@@ -1,5 +1,5 @@
 import { Link, useSearch } from "wouter";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   bySurname,
   byCountry,
@@ -13,7 +13,8 @@ import {
 import { PersonAvatar } from "@/components/PersonAvatar";
 import { CountryFlag } from "@/components/CountryFlag";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, Search } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
+import { ChevronDown, Search, Users, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Category = "surname" | "country";
@@ -87,15 +88,48 @@ function buildSections(pool: Person[], sort: SortKey): PeopleSection[] {
     }));
 }
 
+function personMatchesQuery(p: Person, q: string): boolean {
+  const hay = [
+    p.name,
+    p.given,
+    p.surname,
+    p.birth?.place,
+    p.death?.place,
+    p.burial?.place,
+    ...(p.occupations ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return hay.includes(q);
+}
+
 export default function PeopleList() {
-  const params = new URLSearchParams(useSearch());
+  const search = useSearch();
+  const params = new URLSearchParams(search);
   const initialSurname = params.get("surname");
   const initialCountry = params.get("country");
+  const urlQuery = params.get("q") ?? "";
 
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState(urlQuery);
   const [category, setCategory] = useState<Category>(initialCountry ? "country" : "surname");
   const [activeSurname, setActiveSurname] = useState<string | null>(initialSurname);
   const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry);
+
+  // Keep the directory in sync when arriving from Home search (`#/people?q=`).
+  useEffect(() => {
+    if (urlQuery) setFilter(urlQuery);
+    if (initialSurname) {
+      setActiveSurname(initialSurname);
+      setActiveCountry(null);
+      setCategory("surname");
+    }
+    if (initialCountry) {
+      setActiveCountry(initialCountry);
+      setActiveSurname(null);
+      setCategory("country");
+    }
+  }, [urlQuery, initialSurname, initialCountry]);
   const [livingFilter, setLivingFilter] = useState<"all" | "living" | "deceased">("all");
   const [sort, setSort] = useState<SortKey>("surname");
   // Mobile-only: the long surname/country browser is collapsed by default so the
@@ -132,7 +166,7 @@ export default function PeopleList() {
       pool = pool.filter((p) => (personCountry(p) || "Unknown") === activeCountry);
     if (filter.trim()) {
       const q = filter.trim().toLowerCase();
-      pool = pool.filter((p) => p.name.toLowerCase().includes(q));
+      pool = pool.filter((p) => personMatchesQuery(p, q));
     }
     if (livingFilter === "living") {
       pool = pool.filter((p) => !p.death?.date && parseYear(p.birth?.date) && new Date().getFullYear() - parseYear(p.birth?.date)! < 110);
@@ -144,14 +178,88 @@ export default function PeopleList() {
 
   const sections = useMemo(() => buildSections(filtered, sort), [filtered, sort]);
 
+  const hasActiveFilters =
+    Boolean(filter.trim()) ||
+    Boolean(activeSurname) ||
+    Boolean(activeCountry) ||
+    livingFilter !== "all";
+
+  function clearFilters() {
+    setFilter("");
+    setActiveSurname(null);
+    setActiveCountry(null);
+    setLivingFilter("all");
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-5 py-6 sm:py-8">
-      <header className="mb-4 sm:mb-6">
-        <h1 className="font-display text-lg sm:text-xl font-semibold">All people</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {filtered.length} of {allPeople.length} individuals
-        </p>
-      </header>
+      <PageHero
+        eyebrow="Directory"
+        title="All people"
+        description="Search the archive by name, place, or occupation. Filter by surname, country, and living status."
+        icon={Users}
+        stats={[
+          { label: "Showing", value: filtered.length, tone: "primary" },
+          { label: "In archive", value: allPeople.length },
+        ]}
+      />
+
+      {hasActiveFilters && (
+        <div className="mb-4 flex flex-wrap items-center gap-2" data-testid="active-filters">
+          {filter.trim() && (
+            <button
+              type="button"
+              onClick={() => setFilter("")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card pl-2.5 pr-2 py-1 text-xs text-foreground hover-elevate active-elevate-2"
+              data-testid="chip-query"
+            >
+              “{filter.trim()}”
+              <X className="h-3 w-3 text-muted-foreground" />
+            </button>
+          )}
+          {activeSurname && (
+            <button
+              type="button"
+              onClick={() => setActiveSurname(null)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card pl-2.5 pr-2 py-1 text-xs text-foreground hover-elevate active-elevate-2"
+              data-testid="chip-surname"
+            >
+              {activeSurname}
+              <X className="h-3 w-3 text-muted-foreground" />
+            </button>
+          )}
+          {activeCountry && (
+            <button
+              type="button"
+              onClick={() => setActiveCountry(null)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card pl-2.5 pr-2 py-1 text-xs text-foreground hover-elevate active-elevate-2"
+              data-testid="chip-country"
+            >
+              {activeCountry}
+              <X className="h-3 w-3 text-muted-foreground" />
+            </button>
+          )}
+          {livingFilter !== "all" && (
+            <button
+              type="button"
+              onClick={() => setLivingFilter("all")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card pl-2.5 pr-2 py-1 text-xs capitalize text-foreground hover-elevate active-elevate-2"
+              data-testid="chip-living"
+            >
+              {livingFilter}
+              <X className="h-3 w-3 text-muted-foreground" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+            data-testid="button-clear-filters"
+          >
+            Clear all
+          </button>
+        </div>
+      )}
 
       <div className="flex flex-col gap-4 md:gap-6 md:grid md:grid-cols-[16rem_minmax(0,1fr)]">
         {/* Sidebar */}
@@ -162,8 +270,8 @@ export default function PeopleList() {
               <Input
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                placeholder="Filter…"
-                className="pl-9"
+                placeholder="Name, place, or occupation…"
+                className="pl-9 rounded-full"
                 data-testid="input-filter"
               />
             </div>
@@ -367,8 +475,18 @@ export default function PeopleList() {
           )}
 
           {filtered.length === 0 ? (
-            <div className="rounded-md border border-dashed p-12 text-center text-sm text-muted-foreground">
-              No matches.
+            <div className="rounded-lg border border-dashed border-border p-10 sm:p-12 text-center">
+              <p className="text-sm text-muted-foreground">No people match these filters.</p>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-3 inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium hover-elevate active-elevate-2"
+                  data-testid="button-empty-clear"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
           ) : (
             sections.map((sec) => (
@@ -382,25 +500,36 @@ export default function PeopleList() {
                     {sec.items.length}
                   </span>
                 </div>
-                <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                  {sec.items.map((p) => (
-                    <li key={p.id} className="min-w-0">
-                      <Link
-                        href={`/person/${encodeURIComponent(p.id)}`}
-                        className="flex items-center gap-3 rounded-md border border-card-border bg-card p-2.5 sm:p-3 hover-elevate active-elevate-2 min-w-0 min-h-[3rem]"
-                        data-testid={`person-row-${p.id}`}
-                      >
-                        <PersonAvatar person={p} size="sm" />
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium truncate">{fullDisplayName(p)}</div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {lifespan(p)}
-                            {p.birth?.place ? ` · ${p.birth.place}` : ""}
+                <ul className="divide-y divide-border/70 rounded-lg border border-card-border bg-card shadow-sm overflow-hidden">
+                  {sec.items.map((p) => {
+                    const place = p.birth?.place?.split(",")[0]?.trim();
+                    const occupation = (p.occupations ?? []).find(Boolean);
+                    return (
+                      <li key={p.id} className="min-w-0">
+                        <Link
+                          href={`/person/${encodeURIComponent(p.id)}`}
+                          className="flex items-center gap-3 px-3 py-2.5 sm:px-4 hover-elevate active-elevate-2 min-w-0 min-h-[3rem]"
+                          data-testid={`person-row-${p.id}`}
+                        >
+                          <PersonAvatar person={p} size="sm" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-medium truncate">
+                              {fullDisplayName(p)}
+                            </div>
+                            <div className="text-xs text-muted-foreground truncate">
+                              {lifespan(p)}
+                              {place ? ` · ${place}` : ""}
+                            </div>
                           </div>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
+                          {occupation && (
+                            <div className="hidden md:block max-w-[12rem] text-xs text-muted-foreground truncate text-right">
+                              {occupation}
+                            </div>
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </section>
             ))

@@ -205,159 +205,166 @@ export default function PersonDetail() {
         </div>
       </div>
 
-      {/* Hero */}
-      <header className="grid gap-5 sm:gap-7 sm:grid-cols-[auto_1fr_auto] sm:items-center pb-7 sm:pb-9 border-b">
-        <div className="relative w-20 sm:w-24 shrink-0">
-          <PersonAvatar person={person} size="lg" className="h-20 w-20 sm:h-24 sm:w-24 text-xl" />
-          {unlocked && (
-            <>
-              <button
-                type="button"
-                onClick={() => setPhotoEditorOpen(true)}
-                className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-accent active:bg-accent"
-                aria-label={person.photo ? "Change photo" : "Add photo"}
-                data-testid="button-edit-photo"
-              >
-                <Camera className="h-4 w-4" />
-              </button>
-              {person.photo && (
+      {/* Hero — magazine / Confluence-style banner + overlapping portrait */}
+      <header className="relative overflow-hidden rounded-xl border border-card-border bg-card shadow-sm">
+        <div className="h-20 sm:h-28 profile-banner" aria-hidden />
+        <div className="px-4 sm:px-6 pb-6 sm:pb-7 -mt-12 sm:-mt-14 grid gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-end">
+          <div className="relative w-20 sm:w-24 shrink-0">
+            <PersonAvatar
+              person={person}
+              size="lg"
+              className="h-20 w-20 sm:h-24 sm:w-24 text-xl ring-4 ring-card"
+            />
+            {unlocked && (
+              <>
                 <button
                   type="button"
-                  onClick={() => update({ photo: null })}
-                  className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm transition-colors hover:bg-accent"
-                  aria-label="Remove photo"
-                  data-testid="button-remove-photo"
+                  onClick={() => setPhotoEditorOpen(true)}
+                  className="absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-accent active:bg-accent"
+                  aria-label={person.photo ? "Change photo" : "Add photo"}
+                  data-testid="button-edit-photo"
                 >
-                  <Trash2 className="h-3 w-3" />
+                  <Camera className="h-4 w-4" />
                 </button>
-              )}
-            </>
-          )}
-        </div>
-        <div className="min-w-0">
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2.5">
-            <span>{person.surname || "Unknown"} family</span>
-            {isLiving(person) && (
-              <span className="ml-3 inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 normal-case tracking-normal">
-                <span className="h-1.5 w-1.5 rounded-full bg-current" /> Living
-              </span>
-            )}
-          </p>
-          <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight break-words">
-            {unlocked ? (
-              <span className="inline-flex flex-wrap items-baseline gap-2">
-                <EditableText
-                  value={person.given}
-                  onSave={(v) => update({ given: v })}
-                  placeholder="Given name"
-                  emptyLabel="Given"
-                  testId="edit-given"
-                >
-                  <span>{person.given || ""}</span>
-                </EditableText>
-                <EditableText
-                  value={person.surname}
-                  onSave={(v) => update({ surname: v })}
-                  placeholder="Surname"
-                  emptyLabel="Surname"
-                  testId="edit-surname"
-                >
-                  <span>{person.surname || ""}</span>
-                </EditableText>
-              </span>
-            ) : (
-              fullDisplayName(person)
-            )}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-2.5 break-words">
-            <span className="tabular-nums">{lifespan(person)}</span>
-            {person.birth?.place ? (
-              <>
-                <span className="mx-2 text-muted-foreground/50">·</span>
-                <span>Born in {person.birth.place}</span>
+                {person.photo && (
+                  <button
+                    type="button"
+                    onClick={() => update({ photo: null })}
+                    className="absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-destructive shadow-sm transition-colors hover:bg-accent"
+                    aria-label="Remove photo"
+                    data-testid="button-remove-photo"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                )}
               </>
-            ) : null}
-          </p>
-          <NameFixChips person={person} />
-          {unlocked && (
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="uppercase tracking-[0.16em]">Sex</span>
-              <select
-                value={person.sex ?? ""}
-                onChange={(e) => update({ sex: e.target.value || null })}
-                className="rounded border border-input bg-background px-2 py-0.5 text-xs"
-                data-testid="edit-sex"
-              >
-                <option value="">—</option>
-                {SEX_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          {isRoot ? (
-            <div
-              className="inline-flex items-center gap-1.5 mt-3 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-              data-testid="badge-root"
-            >
-              <Sparkles className="h-3 w-3" />
-              Reference person for this archive
-            </div>
-          ) : relationship ? (
-            (() => {
-              const isOrphan = relationship.label.startsWith("in the ");
-              return (
-                <Link
-                  href={`/person/${encodeURIComponent(root.id)}`}
-                  className="inline-flex items-center gap-2 mt-3 max-w-full rounded-full border border-card-border bg-card pl-1 pr-3 py-1.5 min-h-10 hover-elevate active-elevate-2"
-                  data-testid="badge-relationship"
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">
+              <span>{person.surname || "Unknown"} family</span>
+              {isLiving(person) && (
+                <span className="ml-3 inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 normal-case tracking-normal">
+                  <span className="h-1.5 w-1.5 rounded-full bg-current" /> Living
+                </span>
+              )}
+            </p>
+            <h1 className="font-display text-lg sm:text-xl font-semibold leading-[1.15] tracking-tight break-words">
+              {unlocked ? (
+                <span className="inline-flex flex-wrap items-baseline gap-2">
+                  <EditableText
+                    value={person.given}
+                    onSave={(v) => update({ given: v })}
+                    placeholder="Given name"
+                    emptyLabel="Given"
+                    testId="edit-given"
+                  >
+                    <span>{person.given || ""}</span>
+                  </EditableText>
+                  <EditableText
+                    value={person.surname}
+                    onSave={(v) => update({ surname: v })}
+                    placeholder="Surname"
+                    emptyLabel="Surname"
+                    testId="edit-surname"
+                  >
+                    <span>{person.surname || ""}</span>
+                  </EditableText>
+                </span>
+              ) : (
+                fullDisplayName(person)
+              )}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-2 break-words">
+              <span className="tabular-nums">{lifespan(person)}</span>
+              {person.birth?.place ? (
+                <>
+                  <span className="mx-2 text-muted-foreground/50">·</span>
+                  <span>Born in {person.birth.place}</span>
+                </>
+              ) : null}
+            </p>
+            <NameFixChips person={person} />
+            {unlocked && (
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span className="uppercase tracking-[0.16em]">Sex</span>
+                <select
+                  value={person.sex ?? ""}
+                  onChange={(e) => update({ sex: e.target.value || null })}
+                  className="rounded border border-input bg-background px-2 py-0.5 text-xs"
+                  data-testid="edit-sex"
                 >
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-                    <GitBranch className="h-3 w-3" />
-                  </span>
-                  <span className="text-xs min-w-0 break-words">
-                    {!isOrphan && (
-                      <span className="text-muted-foreground">
-                        {relationship.bySpouse ? "By marriage · " : ""}
-                      </span>
-                    )}
-                    <span className="font-medium">{relationship.label}</span>
-                    {!isOrphan && (
-                      <span className="text-muted-foreground"> of {root.given}</span>
-                    )}
-                  </span>
-                </Link>
-              );
-            })()
-          ) : (
-            <div
-              className="inline-flex items-center gap-1.5 mt-3 rounded-full border border-dashed border-border/60 bg-card px-3 py-1 text-xs text-muted-foreground"
-              data-testid="badge-relationship-unknown"
+                  <option value="">—</option>
+                  {SEX_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {isRoot ? (
+              <div
+                className="inline-flex items-center gap-1.5 mt-3 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                data-testid="badge-root"
+              >
+                <Sparkles className="h-3 w-3" />
+                Reference person for this archive
+              </div>
+            ) : relationship ? (
+              (() => {
+                const isOrphan = relationship.label.startsWith("in the ");
+                return (
+                  <Link
+                    href={`/person/${encodeURIComponent(root.id)}`}
+                    className="inline-flex items-center gap-2 mt-3 max-w-full rounded-full border border-card-border bg-background pl-1 pr-3 py-1.5 min-h-10 hover-elevate active-elevate-2"
+                    data-testid="badge-relationship"
+                  >
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                      <GitBranch className="h-3 w-3" />
+                    </span>
+                    <span className="text-xs min-w-0 break-words">
+                      {!isOrphan && (
+                        <span className="text-muted-foreground">
+                          {relationship.bySpouse ? "By marriage · " : ""}
+                        </span>
+                      )}
+                      <span className="font-medium">{relationship.label}</span>
+                      {!isOrphan && (
+                        <span className="text-muted-foreground"> of {root.given}</span>
+                      )}
+                    </span>
+                  </Link>
+                );
+              })()
+            ) : (
+              <div
+                className="inline-flex items-center gap-1.5 mt-3 rounded-full border border-dashed border-border/60 bg-background px-3 py-1 text-xs text-muted-foreground"
+                data-testid="badge-relationship-unknown"
+              >
+                No tracked relationship to {root.given}
+              </div>
+            )}
+            {person.military && (
+              <div className="mt-3">
+                <MilitaryBadge person={person} />
+              </div>
+            )}
+          </div>
+          {getArmsForSurname(person.surname) && (
+            <Link
+              href={`/people?surname=${encodeURIComponent(person.surname || "")}`}
+              className="hidden sm:flex flex-col items-center gap-2 self-end rounded-md px-2 py-1.5 hover-elevate active-elevate-2"
+              data-testid="hero-arms-link"
+              title={`See all ${person.surname} family members`}
             >
-              No tracked relationship to {root.given}
-            </div>
-          )}
-          {person.military && (
-            <div className="mt-3">
-              <MilitaryBadge person={person} />
-            </div>
+              <SurnameArms surname={person.surname} size="lg" />
+              <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Family arms
+              </span>
+            </Link>
           )}
         </div>
-        {getArmsForSurname(person.surname) && (
-          <Link
-            href={`/people?surname=${encodeURIComponent(person.surname || "")}`}
-            className="hidden sm:flex flex-col items-center gap-2 self-center rounded-md px-2 py-1.5 hover-elevate active-elevate-2"
-            data-testid="hero-arms-link"
-            title={`See all ${person.surname} family members`}
-          >
-            <SurnameArms surname={person.surname} size="lg" />
-            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Family arms
-            </span>
-          </Link>
-        )}
       </header>
 
       <PhotoEditor
@@ -379,13 +386,13 @@ export default function PersonDetail() {
         <FindMissingInfo person={person} />
       </div>
 
-      {/* In-page jump nav */}
+      {/* In-page jump nav — sticky, like a library section bar */}
       {jumpTargets.length > 1 && (
         <nav
           aria-label="On this page"
-          className="mt-7 sm:mt-9 -mx-4 sm:mx-0 print:hidden"
+          className="sticky top-14 sm:top-16 z-20 mt-7 sm:mt-9 -mx-4 sm:mx-0 print:hidden border-y border-border/60 bg-background/90 backdrop-blur-md"
         >
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-4 sm:px-0 py-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-4 sm:px-0 py-2">
             <span className="hidden md:inline text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70 mr-1 shrink-0">
               On this page
             </span>
@@ -394,7 +401,7 @@ export default function PersonDetail() {
                 key={t.id}
                 type="button"
                 onClick={() => scrollToSection(t.id)}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-2.5 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-2 min-h-9 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
                 data-testid={`jump-${t.id}`}
               >
                 {t.icon}
