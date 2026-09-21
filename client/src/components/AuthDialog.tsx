@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Loader2, LogIn, UserPlus } from "lucide-react";
+import { Check, Eye, EyeOff, Loader2, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
+import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+
+const MIN_PASSWORD = 8;
 
 /**
  * Login / Create account dialog. Any signed-in user can view, edit, save, and
@@ -25,6 +29,7 @@ export function AuthDialog() {
   const [tab, setTab] = useState<"login" | "register">("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -36,6 +41,7 @@ export function AuthDialog() {
       setTab("login");
       setError(null);
       setPassword("");
+      setShowPassword(false);
       setSubmitting(false);
     }
   }, [authDialogOpen]);
@@ -65,10 +71,16 @@ export function AuthDialog() {
   return (
     <Dialog open={authDialogOpen} onOpenChange={(o) => { if (!o) closeAuthDialog(); }}>
       <DialogContent className="sm:max-w-md" data-testid="auth-dialog">
-        <DialogHeader>
+        <DialogHeader className="items-center text-center">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border bg-muted/40">
+            <Logo className="h-6 w-6 text-primary" />
+          </span>
           <DialogTitle className="text-base font-display">
             Sign in to Cognatio
           </DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            The family archive is open to browse — sign in to contribute.
+          </p>
         </DialogHeader>
 
         <Tabs
@@ -110,6 +122,7 @@ export function AuthDialog() {
               </Label>
               <Input
                 id="auth-username"
+                autoFocus
                 autoComplete="username"
                 spellCheck={false}
                 value={username}
@@ -132,19 +145,51 @@ export function AuthDialog() {
               >
                 Password
               </Label>
-              <Input
-                id="auth-password"
-                type="password"
-                autoComplete={tab === "login" ? "current-password" : "new-password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
-                placeholder="••••••••"
-                data-testid="input-password"
-              />
+              <div className="relative">
+                <Input
+                  id="auth-password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete={tab === "login" ? "current-password" : "new-password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+                  placeholder="••••••••"
+                  className="pr-10"
+                  data-testid="input-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-md text-muted-foreground hover:text-foreground"
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
               {tab === "register" && (
-                <p className="text-[11px] text-muted-foreground">
-                  At least 8 characters.
+                <p
+                  className={cn(
+                    "flex items-center gap-1 text-[11px]",
+                    password.length >= MIN_PASSWORD
+                      ? "text-primary"
+                      : "text-muted-foreground",
+                  )}
+                  data-testid="hint-password-length"
+                >
+                  <Check
+                    className={cn(
+                      "h-3 w-3 shrink-0 transition-opacity",
+                      password.length >= MIN_PASSWORD ? "opacity-100" : "opacity-30",
+                    )}
+                  />
+                  At least {MIN_PASSWORD} characters.
                 </p>
               )}
             </div>
