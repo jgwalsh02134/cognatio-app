@@ -15,14 +15,18 @@ DATA = Path("client/src/data.json")
 SUGGESTIONS = Path("client/src/research_suggestions.json")
 
 # id -> (new given, new display name)
-# Each full form is quoted on that person's own record:
+# A short form is replaced only when the full form belongs to that same
+# person. A father and son who share a first name are not the same person.
 #   Walter James — Troy Record obituary, Dec 2013, on t0:I19739345719
 #   Joseph Warren — WWII service record on t0:I19741461388
 #   William John — enlistment index "William J Faden" plus given "Wm. John"
+#   Joseph Warren Faden, Jr. — junior of Joseph Warren Faden, recorded as
+#     "J. Warren"
 REPLACEMENTS = {
     "t0:I19739345719": ("Walter James", "Walter James Dugan"),
     "t0:I19741461388": ("Joseph Warren", "Joseph Warren Faden"),
     "t0:I18669423251": ("William John", "William John Faden"),
+    "t0:I29550636913": ("Joseph Warren", "Joseph Warren Faden, Jr."),
 }
 
 
