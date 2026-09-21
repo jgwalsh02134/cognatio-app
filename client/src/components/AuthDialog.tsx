@@ -28,9 +28,12 @@ export function AuthDialog() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Reset fields whenever the dialog opens; close automatically once signed in.
+  // Reset to a consistent state whenever the dialog opens (default to the Log in
+  // tab); close automatically once signed in. Resetting the tab here prevents a
+  // stale last-used tab from desyncing the highlighted trigger and the form.
   useEffect(() => {
     if (authDialogOpen) {
+      setTab("login");
       setError(null);
       setPassword("");
       setSubmitting(false);
