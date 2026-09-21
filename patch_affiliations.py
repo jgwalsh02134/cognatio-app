@@ -64,7 +64,7 @@ AFFILIATIONS = {
             "note": "Earned an M.A. in advanced business management from RPI (Troy, NY); retired as Vice President of Marketing and Sales at Lydall, Manning Inc., Green Island, NY.",
         },
     ],
-    # Walter J. Dugan (1922\u20132013) \u2014 USS LST-491 Engineering Officer
+    # Walter James Dugan (1922\u20132013) \u2014 USS LST-491 Engineering Officer
     "t0:I19739345719": [
         {
             "key": "rpi",

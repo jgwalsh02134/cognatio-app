@@ -3,7 +3,7 @@
 2 VERS 1.0
 2 NAME Walsh Cranwell Family Archive
 1 DEST ANY
-1 DATE 3 JUN 2026
+1 DATE 21 SEP 2026
 1 CHAR UTF-8
 1 GEDC
 2 VERS 5.5.1
@@ -1190,8 +1190,8 @@
 1 FAMS @T0F47@
 1 FAMS @T1F5@
 0 @T0I19739345719@ INDI
-1 NAME Walter J /Dugan/
-2 GIVN Walter J
+1 NAME Walter James /Dugan/
+2 GIVN Walter James
 2 SURN Dugan
 1 SEX M
 1 BIRT
@@ -1545,8 +1545,8 @@
 2 PLAC Lansingburgh, Rensselaer, New York, USA
 1 FAMC @T0F91@
 0 @T0I19741461388@ INDI
-1 NAME J. Warren /Faden/
-2 GIVN J. Warren
+1 NAME Joseph Warren /Faden/
+2 GIVN Joseph Warren
 2 SURN Faden
 1 SEX M
 1 BIRT
@@ -1689,8 +1689,8 @@
 1 FAMC @T0F18@
 1 FAMS @T0F5@
 0 @T0I18669423251@ INDI
-1 NAME Wm. John /Faden/
-2 GIVN Wm. John
+1 NAME William John /Faden/
+2 GIVN William John
 2 SURN Faden
 1 SEX M
 1 BIRT
