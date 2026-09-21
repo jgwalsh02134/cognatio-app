@@ -1,5 +1,5 @@
 import { Link, useSearch } from "wouter";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   bySurname,
   byCountry,
@@ -105,15 +105,31 @@ function personMatchesQuery(p: Person, q: string): boolean {
 }
 
 export default function PeopleList() {
-  const params = new URLSearchParams(useSearch());
+  const search = useSearch();
+  const params = new URLSearchParams(search);
   const initialSurname = params.get("surname");
   const initialCountry = params.get("country");
-  const initialQuery = params.get("q") ?? "";
+  const urlQuery = params.get("q") ?? "";
 
-  const [filter, setFilter] = useState(initialQuery);
+  const [filter, setFilter] = useState(urlQuery);
   const [category, setCategory] = useState<Category>(initialCountry ? "country" : "surname");
   const [activeSurname, setActiveSurname] = useState<string | null>(initialSurname);
   const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry);
+
+  // Keep the directory in sync when arriving from Home search (`#/people?q=`).
+  useEffect(() => {
+    if (urlQuery) setFilter(urlQuery);
+    if (initialSurname) {
+      setActiveSurname(initialSurname);
+      setActiveCountry(null);
+      setCategory("surname");
+    }
+    if (initialCountry) {
+      setActiveCountry(initialCountry);
+      setActiveSurname(null);
+      setCategory("country");
+    }
+  }, [urlQuery, initialSurname, initialCountry]);
   const [livingFilter, setLivingFilter] = useState<"all" | "living" | "deceased">("all");
   const [sort, setSort] = useState<SortKey>("surname");
   // Mobile-only: the long surname/country browser is collapsed by default so the
