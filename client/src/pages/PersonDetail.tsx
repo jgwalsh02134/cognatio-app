@@ -275,13 +275,13 @@ export default function PersonDetail() {
                 fullDisplayName(person)
               )}
             </h1>
-            <p className="text-sm text-muted-foreground mt-2 break-words">
+            <p className="mt-2 flex flex-col gap-0.5 text-sm text-muted-foreground sm:block">
               <span className="tabular-nums">{lifespan(person)}</span>
               {person.birth?.place ? (
-                <>
-                  <span className="mx-2 text-muted-foreground/50">·</span>
+                <span className="break-words">
+                  <span className="mx-2 hidden text-muted-foreground/50 sm:inline">·</span>
                   <span>Born in {person.birth.place}</span>
-                </>
+                </span>
               ) : null}
             </p>
             <NameFixChips person={person} />

@@ -64,7 +64,7 @@ AFFILIATIONS = {
             "note": "Earned an M.A. in advanced business management from RPI (Troy, NY); retired as Vice President of Marketing and Sales at Lydall, Manning Inc., Green Island, NY.",
         },
     ],
-    # Walter J. Dugan (1922\u20132013) \u2014 USS LST-491 Engineering Officer
+    # Walter James Dugan (1922\u20132013) \u2014 USS LST-491 Engineering Officer
     "t0:I19739345719": [
         {
             "key": "rpi",
@@ -81,7 +81,7 @@ AFFILIATIONS = {
             "note": "Continued engineering studies at Cornell University (Ithaca, NY) after WWII naval service.",
         },
     ],
-    # Daniel J. Riordan (1870\u20131923) \u2014 U.S. Congressman, Manhattan College alumnus
+    # Daniel Joseph Riordan (1870\u20131923) \u2014 U.S. Congressman, Manhattan College alumnus
     "t0:I19744303987": [
         {
             "key": "manhattan_college",
