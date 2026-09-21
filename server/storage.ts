@@ -7,6 +7,10 @@ import { eq } from "drizzle-orm";
 const sqlite = new Database("data.db");
 sqlite.pragma("journal_mode = WAL");
 
+// Exposed so sibling features (e.g. the auth user store in users.ts) can reuse
+// this single SQLite connection/file instead of opening their own handle.
+export { sqlite };
+
 export const db = drizzle(sqlite);
 
 export interface IStorage {

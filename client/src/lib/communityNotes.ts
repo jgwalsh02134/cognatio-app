@@ -1,9 +1,9 @@
 // Client for the community-notes API (server-backed, Postgres).
 //
-// Reads are public; writes send the family passphrase as `x-edit-passcode`
-// (the same credential the editor uses). Every call degrades gracefully: on a
-// static/disk build with no server, status returns false and lists return [],
-// so the UI can simply hide the feature.
+// Reads are public; writes require a logged-in session (the httpOnly cookie is
+// sent automatically via credentials:"same-origin"). Every call degrades
+// gracefully: on a static/disk build with no server, status returns false and
+// lists return [], so the UI can simply hide the feature.
 
 /** The allowed neon sticky-note colors. */
 export const NEON_COLORS = ["#FF10F0", "#FFF01F", "#FF5E00", "#39FF14", "#04D9FF"] as const;
@@ -49,11 +49,11 @@ export async function addCommunityNote(opts: {
   author: string;
   body: string;
   color?: string;
-  passcode: string;
 }): Promise<CommunityNote> {
   const r = await fetch("/api/notes", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-edit-passcode": opts.passcode },
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       personId: opts.personId,
       author: opts.author,
@@ -62,7 +62,11 @@ export async function addCommunityNote(opts: {
     }),
   });
   const j = (await r.json().catch(() => ({}))) as { note?: CommunityNote; error?: string };
-  if (!r.ok || !j.note) throw new Error(j.error || `Server responded ${r.status}`);
+  if (!r.ok || !j.note) {
+    throw new Error(
+      j.error || (r.status === 401 ? "Please sign in." : `Server responded ${r.status}`),
+    );
+  }
   return j.note;
 }
 
@@ -73,13 +77,15 @@ export async function markCommunityNoteHelpful(id: string): Promise<number> {
   return j.helpful ?? 0;
 }
 
-export async function deleteCommunityNote(id: string, passcode: string): Promise<void> {
+export async function deleteCommunityNote(id: string): Promise<void> {
   const r = await fetch(`/api/notes/${encodeURIComponent(id)}`, {
     method: "DELETE",
-    headers: { "x-edit-passcode": passcode },
+    credentials: "same-origin",
   });
   if (!r.ok) {
     const j = (await r.json().catch(() => ({}))) as { error?: string };
-    throw new Error(j.error || `Server responded ${r.status}`);
+    throw new Error(
+      j.error || (r.status === 401 ? "Please sign in." : `Server responded ${r.status}`),
+    );
   }
 }

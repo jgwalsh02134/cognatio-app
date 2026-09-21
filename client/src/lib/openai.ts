@@ -8,8 +8,9 @@
  *  - "direct": the user supplied their own OpenAI key; we call OpenAI directly
  *    with an Authorization header. Works on static/disk builds.
  *  - "proxy": a server holds the key (e.g. OPENAI_API_KEY on Railway); we call
- *    our own /api/ai/responses endpoint with a shared access passphrase. The
- *    key never reaches the browser.
+ *    our own /api/ai/responses endpoint. Access is gated by login (the session
+ *    cookie), so no secret is sent from the client and the key never reaches the
+ *    browser.
  */
 import type {
   PersonWebFinding,
@@ -27,11 +28,12 @@ import {
   type Person,
 } from "@/lib/family";
 import { linksFor } from "@/lib/researchLinks";
+import type { FsCandidate } from "@/lib/familysearch";
 
 /** How an AI request authenticates. */
 export type AiAuth =
   | { mode: "direct"; apiKey: string }
-  | { mode: "proxy"; passcode: string };
+  | { mode: "proxy" };
 
 const OPENAI_ENDPOINT = "https://api.openai.com/v1/responses";
 const PROXY_ENDPOINT = "/api/ai/responses";
@@ -107,9 +109,11 @@ async function callResponsesApi(
 ): Promise<ResponsesApiResult> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   let url: string;
+  // In proxy mode the session cookie authenticates the request (no secret sent).
+  const credentials: RequestCredentials =
+    auth.mode === "proxy" ? "same-origin" : "omit";
   if (auth.mode === "proxy") {
     url = PROXY_ENDPOINT;
-    headers["x-ai-passcode"] = auth.passcode;
   } else {
     url = OPENAI_ENDPOINT;
     headers["Authorization"] = `Bearer ${auth.apiKey}`;
@@ -118,6 +122,7 @@ async function callResponsesApi(
     method: "POST",
     headers,
     body: JSON.stringify(body),
+    credentials,
     signal,
   });
   const json = (await res.json()) as ResponsesApiResult;
@@ -523,10 +528,12 @@ export async function researchPerson(opts: {
   nameById: Map<string, string>;
   /** Full archive — used to build duplicate/relationship candidates. */
   allPeople?: Person[];
+  /** FamilySearch API candidates to ground the model in verified records. */
+  fsCandidates?: FsCandidate[];
   model?: string;
   signal?: AbortSignal;
 }): Promise<PersonWebFinding> {
-  const { auth, person, nameById, allPeople = [], model = DEFAULT_MODEL, signal } = opts;
+  const { auth, person, nameById, allPeople = [], fsCandidates, model = DEFAULT_MODEL, signal } = opts;
   const gaps = coreGaps(person);
   const anchors = personAnchors(person, nameById);
   const getP = (id: string) => allPeople.find((p) => p.id === id);
@@ -540,6 +547,24 @@ export async function researchPerson(opts: {
     .map((l) => `  ${l.label}: ${l.url}`)
     .join("\n");
 
+  // Build FamilySearch grounding block when candidates are available.
+  const fsBlock =
+    fsCandidates && fsCandidates.length > 0
+      ? [
+          "FAMILYSEARCH RECORDS (verified via API — treat these as primary sources):",
+          ...fsCandidates.map((c, i) => {
+            const parts: string[] = [`  [${i + 1}] ${c.name} (FS ID: ${c.fsId})`];
+            if (c.sex) parts.push(`      Sex: ${c.sex}`);
+            if (c.birth?.date || c.birth?.place)
+              parts.push(`      Birth: ${c.birth?.date ?? "?"} @ ${c.birth?.place ?? "?"}`);
+            if (c.death?.date || c.death?.place)
+              parts.push(`      Death: ${c.death?.date ?? "?"} @ ${c.death?.place ?? "?"}`);
+            parts.push(`      URL: ${c.url}`);
+            return parts.join("\n");
+          }),
+        ].join("\n")
+      : null;
+
   const userMsg = [
     "PERSON TO RESEARCH:",
     anchors,
@@ -552,6 +577,7 @@ export async function researchPerson(opts: {
     "",
     "PRE-BUILT RECORD SEARCHES (solid starting points for web_search):",
     recordUrls || "  (none)",
+    ...(fsBlock ? ["", fsBlock] : []),
     "",
     `Detected gaps for job 1: ${gaps.join(", ") || "(use your judgment)"}`,
     "",
@@ -562,6 +588,12 @@ export async function researchPerson(opts: {
     "3 prefer candidates from the list above and fill related_id with their ID.",
     "If you cannot confirm a fact, you must still return the candidate pages as",
     "leads and a concrete next step in the narrative — never come back empty.",
+    ...(fsBlock
+      ? [
+          "For job 1, prioritize the FAMILYSEARCH RECORDS above — cite their URLs",
+          "directly and extract birth/death dates and places from them first.",
+        ]
+      : []),
   ].join("\n");
 
   const body = {

@@ -8,13 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Person } from "@/lib/family";
-
-// SHA-256 hash of the edit-mode passphrase. The plaintext is not stored anywhere —
-// only this digest. To rotate the passphrase, run:
-//   python3 -c "import hashlib; print(hashlib.sha256(b'NEWPHRASE').hexdigest())"
-// and replace this constant in BOTH projects (main + JG3 fork).
-const EDIT_PASSPHRASE_HASH =
-  "e86d40bcfa645d4ddf651e9ff464144243505d98b94f25810d0879adca55cc17";
+import { useAuth } from "@/components/AuthContext";
 
 export interface EditableSource {
   title: string;
@@ -46,15 +40,8 @@ export type PersonPatch = Partial<{
 }>;
 
 interface EditContextValue {
+  /** True when a user is logged in — editing is gated by login, not a passphrase. */
   unlocked: boolean;
-  unlock: (passphrase: string) => Promise<boolean>;
-  lock: () => void;
-  /**
-   * The plaintext passphrase entered at unlock, kept in memory for the session
-   * so authenticated saves can send it to the server (POST /api/archive). Null
-   * when locked. Never persisted.
-   */
-  passcode: string | null;
   pending: Record<string, PersonPatch>;
   setPatch: (id: string, patch: PersonPatch) => void;
   discard: (id: string) => void;
@@ -79,17 +66,10 @@ interface EditContextValue {
 
 const Ctx = createContext<EditContextValue | null>(null);
 
-async function sha256(input: string): Promise<string> {
-  const buf = new TextEncoder().encode(input);
-  const digest = await crypto.subtle.digest("SHA-256", buf);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 export function EditProvider({ children }: { children: ReactNode }) {
-  const [unlocked, setUnlocked] = useState(false);
-  const [passcode, setPasscode] = useState<string | null>(null);
+  const { user } = useAuth();
+  // Editing is unlocked whenever a user is logged in.
+  const unlocked = !!user;
   const [pending, setPending] = useState<Record<string, PersonPatch>>({});
   // Edits saved to the server THIS session. Kept as an overlay so a successful
   // save reflects immediately without forcing a full-page reload.
@@ -111,22 +91,6 @@ export function EditProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  const unlock = useCallback(async (passphrase: string) => {
-    const trimmed = passphrase.trim();
-    const hash = await sha256(trimmed);
-    if (hash === EDIT_PASSPHRASE_HASH) {
-      setUnlocked(true);
-      setPasscode(trimmed);
-      return true;
-    }
-    return false;
-  }, []);
-
-  const lock = useCallback(() => {
-    setUnlocked(false);
-    setPasscode(null);
   }, []);
 
   const setPatch = useCallback((id: string, patch: PersonPatch) => {
@@ -172,8 +136,8 @@ export function EditProvider({ children }: { children: ReactNode }) {
   );
 
   const commitToArchive = useCallback(async () => {
-    if (!passcode) {
-      return { ok: false, error: "Unlock edit mode first so the save can be authenticated." };
+    if (!user) {
+      return { ok: false, error: "Sign in first so the save can be authenticated." };
     }
     const toSave = pending;
     const n = Object.keys(toSave).length;
@@ -182,7 +146,8 @@ export function EditProvider({ children }: { children: ReactNode }) {
     try {
       const r = await fetch("/api/archive", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-edit-passcode": passcode },
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patches: toSave }),
       });
       const json = await r.json().catch(() => ({}));
@@ -202,7 +167,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
     } finally {
       setSaving(false);
     }
-  }, [passcode, pending]);
+  }, [user, pending]);
 
   const count = Object.keys(pending).length;
   const hasChanges = count > 0;
@@ -221,9 +186,6 @@ export function EditProvider({ children }: { children: ReactNode }) {
   const value = useMemo<EditContextValue>(
     () => ({
       unlocked,
-      unlock,
-      lock,
-      passcode,
       pending,
       setPatch,
       discard,
@@ -236,7 +198,7 @@ export function EditProvider({ children }: { children: ReactNode }) {
       commitToArchive,
     }),
     [
-      unlocked, unlock, lock, passcode, pending, setPatch, discard, discardAll,
+      unlocked, pending, setPatch, discard, discardAll,
       count, hasChanges, merge, archiveEnabled, saving, commitToArchive,
     ],
   );

@@ -12,8 +12,8 @@ import {
   BarChart3,
   Moon,
   Sun,
-  Lock,
-  Unlock,
+  LogIn,
+  LogOut,
   FileEdit,
   Printer,
   Shuffle,
@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "./PersonAvatar";
 import { useTheme } from "./ThemeProvider";
 import { useEdit } from "./EditContext";
+import { useAuth } from "./AuthContext";
 import {
   searchPeople,
   lifespan,
@@ -60,11 +61,9 @@ type Row =
 export function CommandPalette({
   open,
   onClose,
-  onRequestUnlock,
 }: {
   open: boolean;
   onClose: () => void;
-  onRequestUnlock: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
@@ -72,7 +71,8 @@ export function CommandPalette({
   const listRef = useRef<HTMLDivElement>(null);
   const [, navigate] = useLocation();
   const { theme, toggle } = useTheme();
-  const { unlocked, lock, hasChanges } = useEdit();
+  const { hasChanges } = useEdit();
+  const { user, logout, openAuthDialog } = useAuth();
 
   useEffect(() => {
     if (open) {
@@ -247,27 +247,27 @@ export function CommandPalette({
       },
     });
     base.push(
-      unlocked
+      user
         ? {
-            id: "lock-edit",
-            label: "Lock edit mode",
-            hint: "Stop editing",
-            icon: <Unlock className="h-4 w-4" />,
-            keywords: ["lock", "edit", "stop"],
+            id: "sign-out",
+            label: "Sign out",
+            hint: `Signed in as ${user.username}`,
+            icon: <LogOut className="h-4 w-4" />,
+            keywords: ["sign out", "log out", "logout", "account"],
             perform: () => {
-              lock();
+              void logout();
               onClose();
             },
           }
         : {
-            id: "unlock-edit",
-            label: "Unlock edit mode",
-            hint: "Enter passphrase",
-            icon: <Lock className="h-4 w-4" />,
-            keywords: ["unlock", "edit", "passphrase"],
+            id: "sign-in",
+            label: "Sign in",
+            hint: "Log in or create an account",
+            icon: <LogIn className="h-4 w-4" />,
+            keywords: ["sign in", "log in", "login", "register", "account", "edit"],
             perform: () => {
               onClose();
-              onRequestUnlock();
+              openAuthDialog();
             },
           },
     );
@@ -300,7 +300,7 @@ export function CommandPalette({
       },
     });
     return base;
-  }, [navigate, onClose, theme, toggle, unlocked, lock, hasChanges, onRequestUnlock]);
+  }, [navigate, onClose, theme, toggle, user, logout, hasChanges, openAuthDialog]);
 
   const rows: Row[] = useMemo(() => {
     const q = query.trim().toLowerCase();

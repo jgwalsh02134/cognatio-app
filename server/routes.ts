@@ -1,12 +1,18 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import express from "express";
 import { createServer } from "node:http";
 import type { Server } from "node:http";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
 import { storage } from "./storage";
 import { archiveEnabled, getOverlay, mergeOverlay } from "./archive";
+import {
+  initUserStore,
+  createUser,
+  verifyCredentials,
+  getUserById,
+  UsernameConflictError,
+} from "./users";
 import {
   addNote,
   communityNotesEnabled,
@@ -14,6 +20,19 @@ import {
   listNotes,
   markHelpful,
 } from "./community";
+import {
+  familySearchEnabled,
+  isConnected,
+  getFsUser,
+  exchangeCodeForToken,
+  deleteToken,
+  searchPersons,
+  getPerson as getFsPerson,
+  generateState,
+  verifyState,
+  authorizeEndpoint,
+  type PersonAnchors,
+} from "./familysearch";
 
 // Resolve the canonical data.json path. The dev server runs from project root,
 // so this becomes `<root>/client/src/data.json`. The endpoint only writes when
@@ -22,13 +41,12 @@ import {
 const DATA_PATH = path.resolve(process.cwd(), "client/src/data.json");
 
 // ---------------------------------------------------------------------------
-// AI proxy gate
+// AI proxy
 //
 // When OPENAI_API_KEY is set on the server, the browser can use AI features
 // WITHOUT supplying their own key — calls are proxied through here so the key
-// never reaches the client. Access is gated by a shared passphrase
-// (AI_ACCESS_PASSCODE, default "2846" — the family editor passphrase) checked
-// on every request, plus a simple in-memory per-IP rate limit to cap spend.
+// never reaches the client. Access is gated by login (requireAuth) rather than
+// a shared passphrase, plus a simple in-memory per-IP rate limit to cap spend.
 // ---------------------------------------------------------------------------
 
 const OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses";
@@ -46,29 +64,156 @@ function rateLimited(ip: string): boolean {
   return recent.length > RL_MAX;
 }
 
-/** Constant-time comparison of a provided secret against an expected value. */
-function secretMatches(provided: string | undefined | null, expected: string): boolean {
-  if (!provided) return false;
-  const a = Buffer.from(provided);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
+// ---------------------------------------------------------------------------
+// Authentication
+// ---------------------------------------------------------------------------
+
+/** Dedicated per-IP limiter for auth endpoints (register/login). */
+const AUTH_RL_MAX = Math.max(1, parseInt(process.env.AUTH_RATE_PER_MIN || "20", 10));
+const authRlHits = new Map<string, number[]>();
+function authRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (authRlHits.get(ip) ?? []).filter((t) => now - t < RL_WINDOW_MS);
+  recent.push(now);
+  authRlHits.set(ip, recent);
+  return recent.length > AUTH_RL_MAX;
 }
 
-/** AI proxy passphrase (default "2846"). */
-function passcodeOk(provided: string | undefined | null): boolean {
-  return secretMatches(provided, process.env.AI_ACCESS_PASSCODE || "2846");
+function clientIp(req: Request): string {
+  return req.ip || req.socket.remoteAddress || "unknown";
 }
 
-/** Edit-save passphrase — the family editor passphrase (default "2846"). */
-function editPasscodeOk(provided: string | undefined | null): boolean {
-  return secretMatches(provided, process.env.DATA_WRITE_PASSCODE || "2846");
+/**
+ * Gate for logged-in-only routes. Verifies the session carries a userId AND
+ * that the user still exists; otherwise clears the session and returns 401.
+ */
+async function requireAuth(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  const userId = req.session?.userId;
+  if (!userId) {
+    res.status(401).json({ error: "Sign in required." });
+    return;
+  }
+  try {
+    const user = await getUserById(userId);
+    if (!user) {
+      req.session.destroy(() => undefined);
+      res.status(401).json({ error: "Sign in required." });
+      return;
+    }
+  } catch {
+    res.status(401).json({ error: "Sign in required." });
+    return;
+  }
+  next();
+}
+
+const USERNAME_RE = /^[A-Za-z0-9_.-]+$/;
+
+/** Signup / login / logout / session-probe endpoints. */
+function registerAuthRoutes(app: Express): void {
+  app.use("/api/auth", express.json({ limit: "16kb" }));
+
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    if (authRateLimited(clientIp(req))) {
+      return res
+        .status(429)
+        .json({ error: "Too many attempts — wait a minute and try again." });
+    }
+    const body = (req.body ?? {}) as { username?: unknown; password?: unknown };
+    const username =
+      typeof body.username === "string" ? body.username.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+
+    if (
+      username.length < 3 ||
+      username.length > 40 ||
+      !USERNAME_RE.test(username)
+    ) {
+      return res.status(400).json({
+        error:
+          "Username must be 3–40 characters using letters, numbers, and _ . - only.",
+      });
+    }
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters." });
+    }
+
+    try {
+      const user = await createUser(username, password);
+      req.session.userId = user.id;
+      return res.json({ user });
+    } catch (e) {
+      if (e instanceof UsernameConflictError) {
+        return res.status(409).json({ error: "That username is already taken." });
+      }
+      return res.status(500).json({ error: "Could not create the account." });
+    }
+  });
+
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    if (authRateLimited(clientIp(req))) {
+      return res
+        .status(429)
+        .json({ error: "Too many attempts — wait a minute and try again." });
+    }
+    const body = (req.body ?? {}) as { username?: unknown; password?: unknown };
+    const username =
+      typeof body.username === "string" ? body.username.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ error: "Username and password are required." });
+    }
+    const user = await verifyCredentials(username, password);
+    if (!user) {
+      return res.status(401).json({ error: "Incorrect username or password." });
+    }
+    req.session.userId = user.id;
+    return res.json({ user });
+  });
+
+  app.post("/api/auth/logout", (req: Request, res: Response) => {
+    const done = () => {
+      res.clearCookie("cognatio.sid");
+      res.json({ ok: true });
+    };
+    if (req.session) req.session.destroy(done);
+    else done();
+  });
+
+  app.get("/api/auth/me", async (req: Request, res: Response) => {
+    const userId = req.session?.userId;
+    if (!userId) return res.json({ user: null });
+    try {
+      const user = await getUserById(userId);
+      if (!user) {
+        req.session.destroy(() => undefined);
+        return res.json({ user: null });
+      }
+      return res.json({ user });
+    } catch {
+      return res.json({ user: null });
+    }
+  });
 }
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
+  // Ensure the user table exists (Postgres or SQLite fallback), then wire auth.
+  await initUserStore().catch((e) => {
+    console.error("initUserStore failed:", e);
+  });
+  registerAuthRoutes(app);
+
   // Accept large JSON payloads (the archive is ~1.5 MB even minified).
   app.use("/api/data", express.json({ limit: "10mb" }));
 
@@ -123,6 +268,7 @@ export async function registerRoutes(
   app.post(
     "/api/ai/responses",
     express.json({ limit: "1mb" }),
+    requireAuth,
     async (req: Request, res: Response) => {
       const key = process.env.OPENAI_API_KEY;
       if (!key) {
@@ -136,12 +282,6 @@ export async function registerRoutes(
         return res.status(429).json({
           error: { message: "Too many AI requests — wait a minute and try again." },
         });
-      }
-
-      if (!passcodeOk(req.header("x-ai-passcode"))) {
-        return res
-          .status(401)
-          .json({ error: { message: "Invalid or missing access passphrase." } });
       }
 
       try {
@@ -174,6 +314,7 @@ export async function registerRoutes(
   app.post(
     "/api/ai/images/edit",
     express.json({ limit: "12mb" }),
+    requireAuth,
     async (req: Request, res: Response) => {
       const key = process.env.OPENAI_API_KEY;
       if (!key) {
@@ -186,11 +327,6 @@ export async function registerRoutes(
         return res.status(429).json({
           error: { message: "Too many AI requests — wait a minute and try again." },
         });
-      }
-      if (!passcodeOk(req.header("x-ai-passcode"))) {
-        return res
-          .status(401)
-          .json({ error: { message: "Invalid or missing access passphrase." } });
       }
       const body = req.body as { image?: string; prompt?: string };
       if (!body?.image || !body.image.startsWith("data:") || !body?.prompt) {
@@ -270,16 +406,12 @@ export async function registerRoutes(
   app.post(
     "/api/archive",
     express.json({ limit: "10mb" }),
+    requireAuth,
     async (req: Request, res: Response) => {
       if (!archiveEnabled()) {
         return res
           .status(503)
           .json({ error: "Permanent saving is not configured on this server." });
-      }
-      if (!editPasscodeOk(req.header("x-edit-passcode"))) {
-        return res
-          .status(401)
-          .json({ error: "Invalid or missing edit passphrase." });
       }
       const body = req.body as { patches?: unknown };
       if (
@@ -320,8 +452,8 @@ export async function registerRoutes(
     res.json({ notes });
   });
 
-  // Passphrase-gated write: add a note to a person.
-  app.post("/api/notes", async (req: Request, res: Response) => {
+  // Login-gated write: add a note to a person.
+  app.post("/api/notes", requireAuth, async (req: Request, res: Response) => {
     if (!communityNotesEnabled()) {
       return res
         .status(503)
@@ -330,9 +462,6 @@ export async function registerRoutes(
     const ip = req.ip || req.socket.remoteAddress || "unknown";
     if (rateLimited(ip)) {
       return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
-    }
-    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
-      return res.status(401).json({ error: "Invalid or missing family passphrase." });
     }
     const body = req.body as { personId?: string; author?: string; body?: string; color?: string };
     if (!body || !body.personId || !body.body || !body.body.trim()) {
@@ -365,16 +494,171 @@ export async function registerRoutes(
     }
   });
 
-  // Passphrase-gated: delete a note (moderation).
-  app.delete("/api/notes/:id", async (req: Request, res: Response) => {
-    if (!editPasscodeOk(req.header("x-edit-passcode"))) {
-      return res.status(401).json({ error: "Invalid or missing family passphrase." });
-    }
+  // Login-gated: delete a note (moderation).
+  app.delete("/api/notes/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       await deleteNote(String(req.params.id));
       res.json({ ok: true });
     } catch (e) {
       res.status(500).json({ error: e instanceof Error ? e.message : "Failed" });
+    }
+  });
+
+  // ----- FamilySearch OAuth2 integration --------------------------------
+
+  app.use("/api/familysearch", express.json({ limit: "64kb" }));
+
+  // Whether FamilySearch integration is configured and connected.
+  app.get("/api/familysearch/status", async (_req: Request, res: Response) => {
+    const enabled = familySearchEnabled();
+    const connected = enabled ? await isConnected() : false;
+    const fsUser = connected ? await getFsUser() : undefined;
+    res.json({ enabled, connected, ...(fsUser ? { fsUser } : {}) });
+  });
+
+  // Generate a signed OAuth authorize URL. Gated by login.
+  app.post("/api/familysearch/connect-url", requireAuth, async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    const state = generateState();
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: process.env.FAMILYSEARCH_CLIENT_ID!,
+      redirect_uri: process.env.FAMILYSEARCH_REDIRECT_URI!,
+      state,
+    });
+    // Scope is optional; only send it when explicitly configured. ("openid"
+    // and identity scopes require a realm on your FamilySearch app key, so we
+    // never default one — sending an unconfigured scope breaks the redirect.)
+    const scopes = process.env.FAMILYSEARCH_SCOPES?.trim();
+    if (scopes) params.set("scope", scopes);
+    const url = `${authorizeEndpoint()}?${params.toString()}`;
+    res.json({ url });
+  });
+
+  // OAuth callback — exchanges code for tokens, then shows a self-contained
+  // HTML page the popup can display (no app bundle, no cookies).
+  app.get("/api/familysearch/callback", async (req: Request, res: Response) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).send("<html><body>Too many requests. Close this window and try again.</body></html>");
+    }
+
+    const code = String(req.query.code || "");
+    const state = String(req.query.state || "");
+    const error = String(req.query.error || "");
+
+    if (error) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>FamilySearch authorization failed</h2>` +
+        `<p>${error}: ${String(req.query.error_description || "")}</p>` +
+        `<p>You can close this window.</p></body></html>`,
+      );
+    }
+
+    if (!code || !state) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Missing parameters</h2><p>You can close this window.</p></body></html>`,
+      );
+    }
+
+    const stateCheck = verifyState(state);
+    if (!stateCheck.ok) {
+      return res.status(400).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Invalid state parameter</h2>` +
+        `<p>${stateCheck.error ?? "CSRF check failed."}</p>` +
+        `<p>You can close this window and try again.</p></body></html>`,
+      );
+    }
+
+    try {
+      await exchangeCodeForToken(code);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      return res.status(500).send(
+        `<html><body style="font-family:sans-serif;padding:2rem">` +
+        `<h2>Token exchange failed</h2><p>${msg}</p>` +
+        `<p>You can close this window and try again.</p></body></html>`,
+      );
+    }
+
+    res.send(
+      `<!DOCTYPE html>` +
+      `<html lang="en"><head><meta charset="utf-8">` +
+      `<title>FamilySearch connected</title>` +
+      `<style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;` +
+      `justify-content:center;min-height:100vh;margin:0;background:#f8fafc}` +
+      `.card{background:#fff;border-radius:12px;padding:2.5rem 3rem;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center;max-width:420px}` +
+      `h1{font-size:1.25rem;margin:0 0 .75rem;color:#1a1a1a}` +
+      `p{color:#555;margin:0 0 1.5rem;line-height:1.6}` +
+      `.check{font-size:3rem;margin-bottom:1rem}</style></head>` +
+      `<body><div class="card">` +
+      `<div class="check">✅</div>` +
+      `<h1>FamilySearch connected</h1>` +
+      `<p>Your FamilySearch account has been linked to Cognatio.<br>` +
+      `You can close this window and return to the app.</p>` +
+      `</div></body></html>`,
+    );
+  });
+
+  // Disconnect — delete the stored token row.
+  app.post("/api/familysearch/disconnect", requireAuth, async (_req: Request, res: Response) => {
+    try {
+      await deleteToken();
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Failed to disconnect" });
+    }
+  });
+
+  // Search FamilySearch for matching persons.
+  app.post("/api/familysearch/search", requireAuth, async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    const connected = await isConnected();
+    if (!connected) {
+      return res.json({ connected: false, candidates: [] });
+    }
+    try {
+      const body = req.body as { anchors?: PersonAnchors };
+      const candidates = await searchPersons(body.anchors ?? {});
+      res.json({ connected: true, candidates });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Search failed" });
+    }
+  });
+
+  // Fetch a single FamilySearch person by FS ID.
+  app.get("/api/familysearch/person/:id", requireAuth, async (req: Request, res: Response) => {
+    if (!familySearchEnabled()) {
+      return res.status(503).json({ error: "FamilySearch integration is not configured." });
+    }
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    if (rateLimited(ip)) {
+      return res.status(429).json({ error: "Too many requests — wait a minute and try again." });
+    }
+    const connected = await isConnected();
+    if (!connected) {
+      return res.json({ connected: false, person: null });
+    }
+    try {
+      const person = await getFsPerson(String(req.params.id));
+      res.json({ connected: true, person });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : "Fetch failed" });
     }
   });
 

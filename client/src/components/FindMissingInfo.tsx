@@ -19,6 +19,7 @@ import {
   type Person,
 } from "@/lib/family";
 import researchSuggestionsRaw from "@/research_suggestions.json";
+import { familySearchStatus, searchFamilySearch, type FsCandidate } from "@/lib/familysearch";
 
 interface StaticResearch {
   web_findings?: Record<string, PersonWebFinding>;
@@ -35,7 +36,7 @@ const STATIC = researchSuggestionsRaw as StaticResearch;
  * The button works for any signed-in OpenAI key; no key → opens ApiKeyDialog.
  */
 export function FindMissingInfo({ person }: { person: Person }) {
-  const { aiMode, aiReady, getAuth, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
+  const { aiMode, aiReady, getAuth, promptForAiAccess, researched, setResearched, researching, setResearching } = useAI();
   const { unlocked, setPatch, pending } = useEdit();
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
     if (placeholder) return; // hard guard — nothing useful to send
     const auth = getAuth();
     if (!auth) {
-      openKeyDialog();
+      promptForAiAccess();
       return;
     }
     setError(null);
@@ -60,7 +61,33 @@ export function FindMissingInfo({ person }: { person: Person }) {
       // Compact id → name lookup so the model can reason about parents/spouses.
       const lookup = new Map<string, string>();
       for (const p of people) lookup.set(p.id, p.name);
-      const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people });
+
+      // Fetch FamilySearch candidates to ground the model in verified records.
+      let fsCandidates: FsCandidate[] | undefined;
+      try {
+        const fsStatus = await familySearchStatus();
+        if (fsStatus.connected && unlocked) {
+          const byMatch = (person.birth?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+          const dyMatch = (person.death?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
+          const fsResult = await searchFamilySearch(
+            {
+              givenName: person.given ?? undefined,
+              surname: person.surname ?? undefined,
+              birthYear: byMatch ? parseInt(byMatch[0], 10) : undefined,
+              birthPlace: person.birth?.place ?? undefined,
+              deathYear: dyMatch ? parseInt(dyMatch[0], 10) : undefined,
+              deathPlace: person.death?.place ?? undefined,
+            },
+          );
+          if (fsResult.connected && fsResult.candidates.length > 0) {
+            fsCandidates = fsResult.candidates;
+          }
+        }
+      } catch {
+        // Non-fatal — proceed without FS grounding.
+      }
+
+      const result = await researchPerson({ auth, person, nameById: lookup, allPeople: people, fsCandidates });
       setResearched(person.id, result);
 
       // AI makes the edits: when opted in (and the editor is unlocked), stage
@@ -165,7 +192,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
           ) : (
             <>
               <KeyRound className="h-3.5 w-3.5 mr-1.5" />
-              {aiMode === "proxy" ? "Enter passphrase to research" : "Connect OpenAI to research"}
+              {aiMode === "proxy" ? "Sign in to research" : "Connect OpenAI to research"}
             </>
           )}
         </Button>
@@ -217,7 +244,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
             {aiReady
               ? "Searches the open web for this person — missing facts AND enrichment like accomplishments, press, obituaries, and biographies (with source URLs) — flags errors or conflicts in the existing data, and scans the archive for likely duplicates and missing parent / spouse / sibling links. Every result is applyable, savable as a note, or a link to check."
               : aiMode === "proxy"
-                ? "Enter the family access passphrase to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
+                ? "Sign in to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
                 : "Provide your OpenAI key once per session to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."}
           </p>
         )

@@ -1,9 +1,18 @@
 import "dotenv/config";
 import express, { Response, NextFunction } from 'express';
 import type { Request } from 'express';
+import session from "express-session";
+import createMemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "node:http";
+
+// Session shape — a logged-in user's id lives here (httpOnly cookie only).
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
 
 const app = express();
 // Behind Railway's proxy, trust X-Forwarded-For so req.ip is the real client
@@ -17,8 +26,15 @@ declare module "http" {
   }
 }
 
+// The app-wide JSON parser runs before every route, so its limit governs ALL
+// requests — including the AI endpoints that declare larger per-route limits
+// (POST /api/ai/responses = 1mb, POST /api/ai/images/edit = 12mb). Express's
+// default (100kb) silently shadowed those, so photo restoration and long chat
+// payloads were rejected with 413 before reaching their handlers. Match the
+// largest declared route limit here so those bodies are accepted.
 app.use(
   express.json({
+    limit: "12mb",
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
@@ -26,6 +42,45 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// ---------------------------------------------------------------------------
+// Sessions (login state)
+//
+// A single httpOnly session cookie carries the logged-in user's id. Cookies
+// flow automatically on same-origin fetches (the client is served by this same
+// Express server), so the browser never handles a token directly.
+//
+// TODO: the memorystore session store is in-memory and NON-persistent across
+// server restarts — users must re-login after a redeploy. A persistent
+// Postgres-backed session store (e.g. connect-pg-simple) is a future
+// improvement for production durability.
+// ---------------------------------------------------------------------------
+const MemoryStore = createMemoryStore(session);
+const sessionSecret =
+  process.env.SESSION_SECRET ||
+  (() => {
+    console.warn(
+      "[auth] SESSION_SECRET is not set — using an insecure development fallback. " +
+        "Set SESSION_SECRET in production so sessions survive and stay secure.",
+    );
+    return "cognatio-dev-insecure-session-secret";
+  })();
+
+app.use(
+  session({
+    name: "cognatio.sid",
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({ checkPeriod: 24 * 60 * 60 * 1000 }),
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    },
+  }),
+);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

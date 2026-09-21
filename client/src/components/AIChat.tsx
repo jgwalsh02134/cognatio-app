@@ -51,7 +51,7 @@ export function AIChat() {
     aiMode,
     aiReady,
     getAuth,
-    openKeyDialog,
+    promptForAiAccess,
     chatOpen,
     setChatOpen,
     chatHistory,
@@ -156,7 +156,7 @@ export function AIChat() {
           </header>
 
           {!aiReady ? (
-            <ConnectKeyEmpty mode={aiMode} onConnect={openKeyDialog} />
+            <ConnectKeyEmpty mode={aiMode} onConnect={promptForAiAccess} />
           ) : (
             <ChatBody
               archiveSummary={archiveSummary}
@@ -237,14 +237,14 @@ function ConnectKeyEmpty({
         <KeyRound className="h-5 w-5 text-primary" />
       </div>
       <h3 className="font-display text-base font-semibold">
-        {proxy ? "Unlock AI to chat" : "Connect OpenAI to chat"}
+        {proxy ? "Sign in to chat" : "Connect OpenAI to chat"}
       </h3>
       <p className="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xs">
         Chat sends a compact summary of every person in this archive to the
         chosen OpenAI model, with built-in web search when fresh facts are
         needed.{" "}
         {proxy
-          ? "Enter the family access passphrase to unlock it."
+          ? "Sign in to unlock it."
           : "The key is held only in this browser tab."}
       </p>
       <Button
@@ -255,7 +255,7 @@ function ConnectKeyEmpty({
         disabled={mode === "loading"}
       >
         <KeyRound className="h-3.5 w-3.5 mr-1.5" />
-        {proxy ? "Enter passphrase" : "Add OpenAI key"}
+        {proxy ? "Sign in" : "Add OpenAI key"}
       </Button>
     </div>
   );
