@@ -81,7 +81,7 @@ AFFILIATIONS = {
             "note": "Continued engineering studies at Cornell University (Ithaca, NY) after WWII naval service.",
         },
     ],
-    # Daniel J. Riordan (1870\u20131923) \u2014 U.S. Congressman, Manhattan College alumnus
+    # Daniel Joseph Riordan (1870\u20131923) \u2014 U.S. Congressman, Manhattan College alumnus
     "t0:I19744303987": [
         {
             "key": "manhattan_college",
