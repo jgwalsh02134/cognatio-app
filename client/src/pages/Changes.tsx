@@ -217,9 +217,9 @@ export default function Changes() {
         <Card className="border-card-border">
           <CardContent className="p-6 text-center">
             <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-3" />
-            <h1 className="font-display text-xl font-semibold">Edit mode is locked</h1>
+            <h1 className="font-display text-xl font-semibold">Sign in to edit</h1>
             <p className="text-sm text-muted-foreground mt-2">
-              Unlock edit mode from the header to begin staging changes.
+              Sign in from the header to begin staging changes.
             </p>
             <Link
               href="/"

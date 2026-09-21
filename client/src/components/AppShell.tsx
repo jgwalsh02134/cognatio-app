@@ -20,23 +20,25 @@ import {
   Combine,
   Map as MapIcon,
   Dna,
-  Lock,
-  Unlock,
   Pencil,
   FileEdit,
   LayoutGrid,
   ChevronDown,
+  LogIn,
+  LogOut,
+  UserCircle,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { useTheme } from "./ThemeProvider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useEdit } from "./EditContext";
+import { useAuth } from "./AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ApiKeyDialog } from "./ApiKeyDialog";
+import { AuthDialog } from "./AuthDialog";
 import { AIChat } from "./AIChat";
 import { EditSaveBar } from "./EditSaveBar";
 import { CommandPalette } from "./CommandPalette";
@@ -117,14 +119,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const isTreePage = location === "/tree";
   const { theme, toggle } = useTheme();
-  const { unlocked, unlock, lock, count, hasChanges, archiveEnabled, commitToArchive } = useEdit();
+  const { unlocked, count, hasChanges, archiveEnabled, commitToArchive } = useEdit();
+  const { user, logout, openAuthDialog } = useAuth();
   const { toast } = useToast();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [unlockOpen, setUnlockOpen] = useState(false);
-  const [unlockDraft, setUnlockDraft] = useState("");
-  const [unlockErr, setUnlockErr] = useState<string | null>(null);
-  const unlockInputRef = useRef<HTMLInputElement>(null);
 
   // Global shortcuts: Cmd/Ctrl-K and "/" open palette; "e" toggles edit mode.
   useEffect(() => {
@@ -155,14 +154,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-
-  useEffect(() => {
-    if (unlockOpen) {
-      setUnlockDraft("");
-      setUnlockErr(null);
-      setTimeout(() => unlockInputRef.current?.focus(), 30);
-    }
-  }, [unlockOpen]);
 
   // ⌘S / Ctrl+S saves pending edits straight to the archive (server mode only).
   // We only intercept the browser's Save dialog when there is actually
@@ -201,18 +192,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // When the floating EditSaveBar is showing, reserve extra space at the bottom
   // so the last of the page content isn't hidden behind it (mobile especially).
   const editBarVisible = unlocked && hasChanges && location !== "/changes";
-
-  async function tryUnlock() {
-    if (!unlockDraft.trim()) return;
-    const ok = await unlock(unlockDraft);
-    if (ok) {
-      setUnlockOpen(false);
-      setUnlockDraft("");
-      setUnlockErr(null);
-    } else {
-      setUnlockErr("Incorrect passphrase");
-    }
-  }
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -331,27 +310,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
           )}
 
-          {unlocked ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={lock}
-              aria-label="Lock edit mode"
-              data-testid="button-edit-lock"
-              className="h-9 w-9 text-primary"
-            >
-              <Unlock className="h-4 w-4" />
-            </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 gap-1.5 px-2 text-primary max-w-[10rem]"
+                  aria-label="Account menu"
+                  data-testid="button-account"
+                >
+                  <UserCircle className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline truncate">{user.username}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel className="truncate">
+                  {user.username}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => void logout()}
+                  className="cursor-pointer"
+                  data-testid="button-logout"
+                >
+                  <LogOut className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button
               variant="ghost"
-              size="icon"
-              onClick={() => setUnlockOpen(true)}
-              aria-label="Unlock edit mode"
-              data-testid="button-edit-unlock"
-              className="h-9 w-9"
+              size="sm"
+              onClick={openAuthDialog}
+              aria-label="Sign in"
+              data-testid="button-signin"
+              className="h-9 gap-1.5 px-2"
             >
-              <Lock className="h-4 w-4" />
+              <LogIn className="h-4 w-4" />
+              <span className="hidden sm:inline">Sign in</span>
             </Button>
           )}
 
@@ -369,7 +367,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {unlocked && (
           <div className="border-t border-primary/20 bg-primary/5 px-3 sm:px-5 py-1.5 text-[11px] uppercase tracking-[0.16em] text-primary flex items-center gap-1.5">
             <Pencil className="h-3 w-3" />
-            Edit mode — changes stay local until you download from
+            Signed in — inline editing is enabled. Review edits under
             <Link href="/changes" className="underline font-medium hover:opacity-80">
               Changes
             </Link>
@@ -501,71 +499,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
 
-      {/* Unlock overlay */}
-      {unlockOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[20vh] px-4"
-          onClick={() => setUnlockOpen(false)}
-          data-testid="overlay-unlock"
-        >
-          <div
-            className="w-full max-w-sm rounded-xl border bg-card shadow-xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 pt-5 pb-2">
-              <h2 className="font-display text-base font-semibold flex items-center gap-2">
-                <Lock className="h-4 w-4 text-primary" /> Unlock Edit Mode
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                Enter the family passphrase to enable inline editing.
-              </p>
-            </div>
-            <div className="px-5 py-3">
-              <Input
-                ref={unlockInputRef}
-                type="password"
-                value={unlockDraft}
-                onChange={(e) => {
-                  setUnlockDraft(e.target.value);
-                  setUnlockErr(null);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") tryUnlock();
-                  if (e.key === "Escape") setUnlockOpen(false);
-                }}
-                placeholder="Passphrase"
-                className="text-base"
-                data-testid="input-unlock"
-              />
-              {unlockErr && (
-                <p className="text-xs text-destructive mt-2" data-testid="text-unlock-error">
-                  {unlockErr}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-end gap-2 border-t px-5 py-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setUnlockOpen(false)}
-                data-testid="button-unlock-cancel"
-              >
-                Cancel
-              </Button>
-              <Button size="sm" onClick={tryUnlock} data-testid="button-unlock-submit">
-                Unlock
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        onRequestUnlock={() => setUnlockOpen(true)}
       />
 
+      <AuthDialog />
       <ApiKeyDialog />
       <AIChat />
       <EditSaveBar />

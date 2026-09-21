@@ -82,7 +82,7 @@ export function PhotoEditor({
   const [adjust, setAdjust] = useState<Adjust>(DEFAULT_ADJUST);
   const drag = useRef<{ x: number; y: number } | null>(null);
 
-  const { getAuth, aiReady, aiMode, openKeyDialog } = useAI();
+  const { getAuth, aiReady, aiMode, promptForAiAccess } = useAI();
   const [aiBusy, setAiBusy] = useState<EnhanceMode | null>(null);
   const [aiBefore, setAiBefore] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<string | null>(null);
@@ -182,7 +182,7 @@ export function PhotoEditor({
   async function runEnhance(mode: EnhanceMode) {
     const auth = getAuth();
     if (!auth) {
-      openKeyDialog();
+      promptForAiAccess();
       return;
     }
     const before = exportDataUrl(OUT, "image/jpeg", 0.92);
@@ -460,11 +460,11 @@ export function PhotoEditor({
                       size="sm"
                       variant="outline"
                       className="text-xs"
-                      onClick={openKeyDialog}
+                      onClick={promptForAiAccess}
                       data-testid="photo-ai-connect"
                     >
                       <KeyRound className="h-3.5 w-3.5 mr-1" />
-                      {aiMode === "proxy" ? "Enter passphrase for AI" : "Connect OpenAI for AI"}
+                      {aiMode === "proxy" ? "Sign in for AI" : "Connect OpenAI for AI"}
                     </Button>
                   )}
                 </div>

@@ -8,8 +8,9 @@
  *  - "direct": the user supplied their own OpenAI key; we call OpenAI directly
  *    with an Authorization header. Works on static/disk builds.
  *  - "proxy": a server holds the key (e.g. OPENAI_API_KEY on Railway); we call
- *    our own /api/ai/responses endpoint with a shared access passphrase. The
- *    key never reaches the browser.
+ *    our own /api/ai/responses endpoint. Access is gated by login (the session
+ *    cookie), so no secret is sent from the client and the key never reaches the
+ *    browser.
  */
 import type {
   PersonWebFinding,
@@ -32,7 +33,7 @@ import type { FsCandidate } from "@/lib/familysearch";
 /** How an AI request authenticates. */
 export type AiAuth =
   | { mode: "direct"; apiKey: string }
-  | { mode: "proxy"; passcode: string };
+  | { mode: "proxy" };
 
 const OPENAI_ENDPOINT = "https://api.openai.com/v1/responses";
 const PROXY_ENDPOINT = "/api/ai/responses";
@@ -108,9 +109,11 @@ async function callResponsesApi(
 ): Promise<ResponsesApiResult> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   let url: string;
+  // In proxy mode the session cookie authenticates the request (no secret sent).
+  const credentials: RequestCredentials =
+    auth.mode === "proxy" ? "same-origin" : "omit";
   if (auth.mode === "proxy") {
     url = PROXY_ENDPOINT;
-    headers["x-ai-passcode"] = auth.passcode;
   } else {
     url = OPENAI_ENDPOINT;
     headers["Authorization"] = `Bearer ${auth.apiKey}`;
@@ -119,6 +122,7 @@ async function callResponsesApi(
     method: "POST",
     headers,
     body: JSON.stringify(body),
+    credentials,
     signal,
   });
   const json = (await res.json()) as ResponsesApiResult;

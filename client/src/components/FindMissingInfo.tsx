@@ -36,8 +36,8 @@ const STATIC = researchSuggestionsRaw as StaticResearch;
  * The button works for any signed-in OpenAI key; no key → opens ApiKeyDialog.
  */
 export function FindMissingInfo({ person }: { person: Person }) {
-  const { aiMode, aiReady, getAuth, openKeyDialog, researched, setResearched, researching, setResearching } = useAI();
-  const { unlocked, passcode, setPatch, pending } = useEdit();
+  const { aiMode, aiReady, getAuth, promptForAiAccess, researched, setResearched, researching, setResearching } = useAI();
+  const { unlocked, setPatch, pending } = useEdit();
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [autoApply, setAutoApply] = useState(false);
@@ -52,7 +52,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
     if (placeholder) return; // hard guard — nothing useful to send
     const auth = getAuth();
     if (!auth) {
-      openKeyDialog();
+      promptForAiAccess();
       return;
     }
     setError(null);
@@ -66,7 +66,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
       let fsCandidates: FsCandidate[] | undefined;
       try {
         const fsStatus = await familySearchStatus();
-        if (fsStatus.connected && passcode) {
+        if (fsStatus.connected && unlocked) {
           const byMatch = (person.birth?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
           const dyMatch = (person.death?.date || "").match(/\b(1[5-9]\d{2}|20\d{2})\b/);
           const fsResult = await searchFamilySearch(
@@ -78,7 +78,6 @@ export function FindMissingInfo({ person }: { person: Person }) {
               deathYear: dyMatch ? parseInt(dyMatch[0], 10) : undefined,
               deathPlace: person.death?.place ?? undefined,
             },
-            passcode,
           );
           if (fsResult.connected && fsResult.candidates.length > 0) {
             fsCandidates = fsResult.candidates;
@@ -193,7 +192,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
           ) : (
             <>
               <KeyRound className="h-3.5 w-3.5 mr-1.5" />
-              {aiMode === "proxy" ? "Enter passphrase to research" : "Connect OpenAI to research"}
+              {aiMode === "proxy" ? "Sign in to research" : "Connect OpenAI to research"}
             </>
           )}
         </Button>
@@ -245,7 +244,7 @@ export function FindMissingInfo({ person }: { person: Person }) {
             {aiReady
               ? "Searches the open web for this person — missing facts AND enrichment like accomplishments, press, obituaries, and biographies (with source URLs) — flags errors or conflicts in the existing data, and scans the archive for likely duplicates and missing parent / spouse / sibling links. Every result is applyable, savable as a note, or a link to check."
               : aiMode === "proxy"
-                ? "Enter the family access passphrase to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
+                ? "Sign in to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."
                 : "Provide your OpenAI key once per session to enable AI research — it finds missing facts on the web, flags errors in existing data, and surfaces likely duplicates and missing relationships."}
           </p>
         )

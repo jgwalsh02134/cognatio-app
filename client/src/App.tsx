@@ -1,11 +1,13 @@
 import { Switch, Route, Router } from "wouter";
 import { useState } from "react";
 import { useHashLocation, useHashSearch } from "@/lib/hashLocation";
+import { safeGet, safeSet } from "@/lib/safeStorage";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/components/AuthContext";
 import { EditProvider } from "@/components/EditContext";
 import { AIProvider } from "@/components/AIContext";
 import { AppShell } from "@/components/AppShell";
@@ -61,14 +63,18 @@ function AppRouter() {
 
 function App() {
   // Show cinematic intro only on first visit.
-  // Uses localStorage key `cognatio_intro_seen` so returning users skip it.
+  // Uses the `cognatio_intro_seen` flag (UI preference only) so returning users
+  // skip it. MUST go through safeStorage: the production build runs inside a
+  // sandboxed iframe where touching `localStorage` THROWS, and doing so from
+  // this root component's render (a useState initializer) would crash the whole
+  // app — including the AI chat — before anything mounts (hard rule #1).
   const [showIntro, setShowIntro] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("cognatio_intro_seen") !== "true";
+    return safeGet("cognatio_intro_seen") !== "true";
   });
 
   const handleIntroComplete = () => {
-    localStorage.setItem("cognatio_intro_seen", "true");
+    safeSet("cognatio_intro_seen", "true");
     setShowIntro(false);
   };
 
@@ -80,19 +86,21 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <EditProvider>
-          <AIProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Router hook={useHashLocation} searchHook={useHashSearch}>
-                <ScrollToTop />
-                <AppShell>
-                  <AppRouter />
-                </AppShell>
-              </Router>
-            </TooltipProvider>
-          </AIProvider>
-        </EditProvider>
+        <AuthProvider>
+          <EditProvider>
+            <AIProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Router hook={useHashLocation} searchHook={useHashSearch}>
+                  <ScrollToTop />
+                  <AppShell>
+                    <AppRouter />
+                  </AppShell>
+                </Router>
+              </TooltipProvider>
+            </AIProvider>
+          </EditProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
