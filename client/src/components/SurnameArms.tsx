@@ -19,6 +19,7 @@ import caldwellArms from "@/assets/arms/caldwell.png";
 import pemrickArms from "@/assets/arms/pemrick.png";
 import qualeyArms from "@/assets/arms/qualey.png";
 import mahoneyArms from "@/assets/arms/mahoney.png";
+import medveArms from "@/assets/arms/medve.png";
 
 // Map of surname → coat of arms image.
 // Match is case-insensitive on the surname itself; family-name strings may
@@ -79,6 +80,7 @@ const ARMS_MAP: Record<string, string> = {
   mahony: mahoneyArms,
   "o'mahony": mahoneyArms,
   "o'mahoney": mahoneyArms,
+  medve: medveArms,
 };
 
 export const ARMS_SURNAMES: { surname: string; src: string }[] = [
@@ -102,6 +104,7 @@ export const ARMS_SURNAMES: { surname: string; src: string }[] = [
   { surname: "Pemrick", src: pemrickArms },
   { surname: "Qualey", src: qualeyArms },
   { surname: "Mahoney", src: mahoneyArms },
+  { surname: "Medve", src: medveArms },
 ];
 
 export function getArmsForSurname(surname: string | null | undefined): string | null {
