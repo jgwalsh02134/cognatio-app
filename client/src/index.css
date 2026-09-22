@@ -205,6 +205,14 @@
     /* Stop iOS/Android from inflating text on orientation change. */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Sticky page chrome offsets itself with this. Phones use a taller header. */
+    --shell-header: 8.25rem;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      --shell-header: 4rem;
+    }
   }
 
   body {
@@ -227,6 +235,18 @@
   label,
   summary {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* A thick focus ring is the difference between “where am I?” and a miss
+     for keyboard and switch users, and it stays visible on a phone. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role='tab']:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 
   /* Prevent iOS Safari from auto-zooming when a form field gains focus:
@@ -314,6 +334,48 @@
       radial-gradient(ellipse at 92% 10%, hsl(38 70% 62% / 0.22), transparent 50%),
       linear-gradient(180deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.35) 70%, transparent);
   }
+  /* Phone reading size. 10–11px labels and 12px meta fail older eyes;
+     body copy in the page (not the tree canvas) steps up to 16px.
+     Tree nodes keep their own pixel sizes so the graph does not collide. */
+  @media (max-width: 767.98px) {
+    main .text-sm {
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+    main .text-xs {
+      font-size: 0.9375rem;
+      line-height: 1.4;
+    }
+    main .text-\[10px\],
+    main .text-\[11px\] {
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+    }
+    main [id^="section-"] {
+      scroll-margin-top: calc(var(--shell-header) + 3.75rem);
+    }
+    /* The tree is a scaled diagram. Larger type here collides with the nodes. */
+    [data-tree-canvas] .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    [data-tree-canvas] .text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+    [data-tree-canvas] .text-\[10px\] {
+      font-size: 10px;
+      letter-spacing: normal;
+      line-height: 1.25;
+    }
+    [data-tree-canvas] .text-\[11px\] {
+      font-size: 11px;
+      letter-spacing: normal;
+      line-height: 1.25;
+    }
+  }
+
   .dark .profile-banner {
     background-image:
       radial-gradient(ellipse at 8% 0%, hsl(var(--primary) / 0.32), transparent 58%),

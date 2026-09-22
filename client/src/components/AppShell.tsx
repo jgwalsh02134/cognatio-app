@@ -190,9 +190,86 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const editBarVisible = unlocked && hasChanges && location !== "/changes";
 
   return (
-    <div className="min-h-[100dvh] flex flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center gap-3 sm:gap-4 px-3 sm:px-5">
+    <div
+      className={cn(
+        "min-h-[100dvh] flex flex-col",
+        isAuthPage && "max-md:[--shell-header:3.5rem]",
+        !isAuthPage && location === "/" && "max-md:[--shell-header:4.75rem]",
+      )}
+    >
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md">
+        {/* Phone header: a named home link, account actions, and a full-width
+            search. Icon-only controls were too easy to miss. */}
+        <div className={cn("md:hidden px-4 pt-2.5 pb-3", !isAuthPage && "space-y-2.5")}>
+          <div className="flex items-center gap-2 min-h-12">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 min-w-0 text-foreground"
+              data-testid="link-home-mobile"
+            >
+              <Logo className="h-8 w-8 shrink-0 text-primary" />
+              <span className="font-display text-lg font-semibold tracking-tight leading-none truncate">
+                Cognatio
+              </span>
+            </Link>
+            <div className="ml-auto flex shrink-0 items-center gap-1">
+              {unlocked ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={lock}
+                  aria-label="Log out"
+                  data-testid="button-edit-lock-mobile"
+                  className="h-11 px-3 text-base text-primary"
+                >
+                  Log out
+                </Button>
+              ) : (
+                !isAuthPage && (
+                  <>
+                    <Link
+                      href="/login"
+                      className="inline-flex h-11 items-center rounded-full px-3 text-base font-medium text-foreground hover-elevate active-elevate-2"
+                      data-testid="button-edit-unlock-mobile"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="inline-flex h-11 items-center rounded-full bg-primary px-3.5 text-base font-medium text-primary-foreground hover-elevate active-elevate-2"
+                      data-testid="nav-signup-mobile"
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                )
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggle}
+                aria-label="Toggle theme"
+                data-testid="button-theme-mobile"
+                className="h-11 w-11"
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+            </div>
+          </div>
+          {!isAuthPage && location !== "/" && (
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="flex h-12 w-full items-center gap-2.5 rounded-xl border border-border bg-card px-4 text-base text-muted-foreground shadow-sm"
+              data-testid="button-search-mobile"
+            >
+              <SearchIcon className="h-5 w-5 shrink-0" />
+              Search people
+            </button>
+          )}
+        </div>
+
+        <div className="mx-auto hidden h-14 sm:h-16 max-w-7xl items-center gap-3 sm:gap-4 px-3 sm:px-5 md:flex">
           <Link
             href="/"
             className="flex items-center gap-2.5 sm:gap-3 text-foreground min-w-0 shrink-0"
@@ -397,8 +474,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           isAuthPage
             ? "pb-0"
             : editBarVisible
-            ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pb-24"
-            : "pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
+            ? "pb-[calc(8.75rem+env(safe-area-inset-bottom))] md:pb-24"
+            : "pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0",
         )}
       >
         {children}
@@ -422,12 +499,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[11px] font-medium leading-none hover-elevate active-elevate-2",
-                  active ? "text-primary" : "text-muted-foreground",
+                  "relative basis-1/5 flex flex-col items-center justify-center gap-1 py-1.5 min-h-[4.25rem] text-[13px] font-semibold leading-none",
+                  active ? "text-primary" : "text-foreground/75",
                 )}
                 data-testid={`nav-mobile-${label.toLowerCase()}`}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-6 w-6" strokeWidth={active ? 2.25 : 1.75} />
                 {label}
                 {active && (
                   <span className="absolute top-0 inset-x-3 h-0.5 rounded-full bg-primary" aria-hidden />
@@ -441,12 +518,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             aria-label="More sections"
             aria-expanded={moreOpen}
             className={cn(
-              "relative basis-1/5 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[3.5rem] text-[11px] font-medium leading-none hover-elevate active-elevate-2",
-              moreActive ? "text-primary" : "text-muted-foreground",
+              "relative basis-1/5 flex flex-col items-center justify-center gap-1 py-1.5 min-h-[4.25rem] text-[13px] font-semibold leading-none",
+              moreActive ? "text-primary" : "text-foreground/75",
             )}
             data-testid="nav-mobile-more"
           >
-            <LayoutGrid className="h-5 w-5" />
+            <LayoutGrid className="h-6 w-6" strokeWidth={moreActive ? 2.25 : 1.75} />
             More
             {moreActive && (
               <span className="absolute top-0 inset-x-3 h-0.5 rounded-full bg-primary" aria-hidden />
@@ -462,15 +539,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           className="md:hidden rounded-t-2xl max-h-[80dvh] overflow-y-auto p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
           data-testid="sheet-more"
         >
-          <SheetHeader className="mb-3 text-left">
-            <SheetTitle className="font-display text-base">Browse</SheetTitle>
+          <SheetHeader className="mb-4 text-left">
+            <SheetTitle className="font-display text-xl">Browse the archive</SheetTitle>
           </SheetHeader>
           {!unlocked && (
             <div className="mb-4 grid grid-cols-2 gap-2">
               <Link
                 href="/login"
                 onClick={() => setMoreOpen(false)}
-                className="flex items-center justify-center rounded-lg border border-card-border px-3 py-2.5 text-sm hover-elevate active-elevate-2"
+                className="flex h-12 items-center justify-center rounded-xl border border-card-border px-3 text-base font-medium hover-elevate active-elevate-2"
                 data-testid="nav-sheet-login"
               >
                 Log in
@@ -478,7 +555,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 href="/signup"
                 onClick={() => setMoreOpen(false)}
-                className="flex items-center justify-center rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-primary-foreground hover-elevate active-elevate-2"
+                className="flex h-12 items-center justify-center rounded-xl bg-primary px-3 text-base font-medium text-primary-foreground hover-elevate active-elevate-2"
                 data-testid="nav-sheet-signup"
               >
                 Sign up
@@ -488,10 +565,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="space-y-5">
             {GROUPS.map((group) => (
               <div key={group.title}>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2">
+                <div className="text-sm font-semibold text-foreground mb-2">
                   {group.title}
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   {group.items.map(({ href, icon: Icon, label }) => {
                     const active = isActivePath(location, href);
                     return (
@@ -501,16 +578,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         onClick={() => setMoreOpen(false)}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-sm hover-elevate active-elevate-2",
+                          "flex min-h-12 items-center gap-3 rounded-xl border px-4 text-base hover-elevate active-elevate-2",
                           active
-                            ? "border-primary/40 bg-primary/5 text-foreground font-medium"
-                            : "border-card-border text-muted-foreground",
+                            ? "border-primary/40 bg-primary/10 text-foreground font-semibold"
+                            : "border-card-border text-foreground",
                         )}
                         data-testid={`nav-sheet-${label.toLowerCase()}`}
                       >
                         <Icon
                           className={cn(
-                            "h-4 w-4 shrink-0",
+                            "h-5 w-5 shrink-0",
                             active ? "text-primary" : "text-muted-foreground",
                           )}
                         />
@@ -528,7 +605,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Extra bottom padding leaves room for the fixed "Ask AI" launcher
           (bottom-right) so it never covers the footer text. */}
       <footer className={cn("border-t px-4 sm:px-5", isTreePage || isAuthPage ? "hidden" : "mt-10 md:mt-16")}>
-        <p className="md:hidden py-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-center text-[11px] leading-relaxed text-muted-foreground">
+        <p className="md:hidden py-6 pb-[calc(6.25rem+env(safe-area-inset-bottom))] text-center text-sm leading-relaxed text-muted-foreground">
           Walsh · Maloy · Cranwell · Dugan
         </p>
         <div className="mx-auto hidden max-w-7xl py-10 md:block">

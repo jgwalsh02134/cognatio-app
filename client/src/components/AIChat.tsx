@@ -95,8 +95,8 @@ export function AIChat() {
           className={cn(
             "fixed z-40 right-4 md:right-6 transition-[bottom] duration-200 print:hidden",
             editBarVisible
-              ? "bottom-[calc(8rem+env(safe-area-inset-bottom))] md:bottom-20"
-              : "bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-6",
+              ? "bottom-[calc(9.25rem+env(safe-area-inset-bottom))] md:bottom-20"
+              : "bottom-[calc(5.75rem+env(safe-area-inset-bottom))] md:bottom-6",
             "inline-flex w-fit items-center gap-2 rounded-full bg-primary text-primary-foreground",
             // NOTE: do NOT use hover-elevate/active-elevate here — those utilities
             // force `position: relative`, which overrides `fixed` and drops the

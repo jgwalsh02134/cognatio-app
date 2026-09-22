@@ -233,8 +233,8 @@ function FeatureCard({
         )}
       </div>
       <div>
-        <div className="font-display font-semibold text-sm leading-snug">{title}</div>
-        <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+        <div className="font-display font-semibold text-base leading-snug">{title}</div>
+        <div className="text-sm text-muted-foreground mt-1 leading-relaxed">
           {description}
         </div>
       </div>
@@ -655,20 +655,20 @@ export default function Home() {
 
         <form
           onSubmit={handleSearch}
-          className="mt-5 sm:mt-6 flex h-11 w-full min-w-0 items-center gap-2 rounded-full border border-border bg-card pl-4 pr-1 shadow-sm focus-within:ring-2 focus-within:ring-primary/30"
+          className="mt-5 sm:mt-6 flex h-14 sm:h-11 w-full min-w-0 items-center gap-2 rounded-full border border-border bg-card pl-4 pr-1.5 shadow-sm focus-within:ring-2 focus-within:ring-primary/30"
         >
-          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
           <input
             type="search"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search by name, surname, or place…"
-            className="flex-1 bg-transparent outline-none text-sm min-w-0"
+            className="flex-1 bg-transparent outline-none text-base sm:text-sm min-w-0"
             data-testid="home-search-input"
           />
           <button
             type="submit"
-            className="inline-flex h-9 shrink-0 items-center rounded-full bg-primary text-primary-foreground text-xs font-medium px-4 hover-elevate active-elevate-2"
+            className="inline-flex h-11 sm:h-9 shrink-0 items-center rounded-full bg-primary text-primary-foreground text-base sm:text-xs font-medium px-5 hover-elevate active-elevate-2"
             data-testid="home-search-submit"
           >
             Search
@@ -687,17 +687,17 @@ export default function Home() {
             <Link
               key={href}
               href={href}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+              className="inline-flex h-11 sm:h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm sm:text-xs font-medium text-foreground hover:text-foreground hover-elevate active-elevate-2"
               data-testid={testId}
             >
-              <Icon className="h-3.5 w-3.5" />
+              <Icon className="h-4 w-4" />
               {label}
             </Link>
           ))}
           <button
             onClick={() => setChatOpen(true)}
             type="button"
-            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex h-11 sm:h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm sm:text-xs font-medium text-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="cta-ai"
           >
             <MessageCircle className="h-3.5 w-3.5" />
@@ -710,7 +710,7 @@ export default function Home() {
                 `cognatio_archive_${new Date().toISOString().slice(0, 10)}.ged`,
               )
             }
-            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex h-11 sm:h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm sm:text-xs font-medium text-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="cta-download-ged"
             title="Download the archive as a GEDCOM 5.5.1 file (.ged)"
           >

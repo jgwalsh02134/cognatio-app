@@ -493,7 +493,7 @@ export default function PeopleList() {
               <section key={sec.key} className="mb-5 last:mb-0">
                 <div
                   id={`grp-${sec.key}`}
-                  className="scroll-mt-28 sticky top-14 z-10 -mx-1 mb-2 flex items-baseline gap-2 border-b border-border/60 bg-background/90 px-1 py-1.5 backdrop-blur"
+                  className="scroll-mt-28 sticky top-[var(--shell-header)] z-10 -mx-1 mb-2 flex items-baseline gap-2 border-b border-border/60 bg-background/90 px-1 py-2 backdrop-blur"
                 >
                   <span className="font-display text-sm font-semibold">{sec.label}</span>
                   <span className="text-[11px] tabular-nums text-muted-foreground">
@@ -508,15 +508,15 @@ export default function PeopleList() {
                       <li key={p.id} className="min-w-0">
                         <Link
                           href={`/person/${encodeURIComponent(p.id)}`}
-                          className="flex items-center gap-3 px-3 py-2.5 sm:px-4 hover-elevate active-elevate-2 min-w-0 min-h-[3rem]"
+                          className="flex items-center gap-3 px-3 py-3 sm:px-4 sm:py-2.5 hover-elevate active-elevate-2 min-w-0 min-h-[4.25rem] sm:min-h-[3rem]"
                           data-testid={`person-row-${p.id}`}
                         >
                           <PersonAvatar person={p} size="sm" />
                           <div className="min-w-0 flex-1">
-                            <div className="text-sm font-medium truncate">
+                            <div className="text-base sm:text-sm font-medium truncate">
                               {fullDisplayName(p)}
                             </div>
-                            <div className="text-xs text-muted-foreground truncate">
+                            <div className="text-sm sm:text-xs text-muted-foreground truncate">
                               {lifespan(p)}
                               {place ? ` · ${place}` : ""}
                             </div>

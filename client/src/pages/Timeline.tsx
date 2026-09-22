@@ -240,7 +240,7 @@ export default function Timeline() {
         ) : (
           grouped.map(([century, items]) => (
             <div key={century} className="mb-10 last:mb-0">
-              <div className="sticky top-14 sm:top-16 z-10 bg-background/95 backdrop-blur-sm py-2 mb-3 border-b border-border/60">
+              <div className="sticky top-[var(--shell-header)] z-10 bg-background/95 backdrop-blur-sm py-2 mb-3 border-b border-border/60">
                 <h2 className="font-display text-xl font-semibold tabular-nums">
                   {century}s
                   <span className="ml-2 text-xs font-normal text-muted-foreground tabular-nums">

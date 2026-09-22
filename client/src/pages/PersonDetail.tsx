@@ -176,7 +176,7 @@ export default function PersonDetail() {
       <div className="flex items-center justify-between mb-5 sm:mb-7 print:hidden">
         <Link
           href="/people"
-          className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-11 text-sm text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
           data-testid="link-back"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -185,7 +185,7 @@ export default function PersonDetail() {
         <div className="flex items-center gap-1">
           <Link
             href={`/relate?a=${encodeURIComponent(person.id)}`}
-            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-11 text-sm text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="link-relate"
           >
             <GitMerge className="h-3.5 w-3.5" />
@@ -195,7 +195,7 @@ export default function PersonDetail() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-10 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-2 -mx-2 min-h-11 text-sm text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
             data-testid="button-print"
           >
             <Printer className="h-3.5 w-3.5" />
@@ -390,18 +390,18 @@ export default function PersonDetail() {
       {jumpTargets.length > 1 && (
         <nav
           aria-label="On this page"
-          className="sticky top-14 sm:top-16 z-20 mt-7 sm:mt-9 -mx-4 sm:mx-0 print:hidden border-y border-border/60 bg-background/90 backdrop-blur-md"
+          className="sticky top-[var(--shell-header)] z-20 mt-7 sm:mt-9 -mx-4 sm:mx-0 print:hidden border-y border-border/60 bg-background/95 backdrop-blur-md"
         >
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-4 sm:px-0 py-2">
-            <span className="hidden md:inline text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70 mr-1 shrink-0">
-              On this page
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none px-4 sm:px-0 py-2">
+            <span className="text-sm font-medium text-muted-foreground mr-1 shrink-0">
+              Sections
             </span>
             {jumpTargets.map((t) => (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => scrollToSection(t.id)}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-2 min-h-9 text-xs text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3.5 py-2 min-h-11 text-sm font-medium text-foreground hover:text-foreground hover-elevate active-elevate-2"
                 data-testid={`jump-${t.id}`}
               >
                 {t.icon}
