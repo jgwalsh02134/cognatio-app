@@ -2,6 +2,7 @@ import { Link, useSearch } from "wouter";
 import { useEffect, useMemo, useState } from "react";
 import {
   bySurname,
+  baseSurname,
   byCountry,
   personCountry,
   fullDisplayName,
@@ -61,7 +62,8 @@ function buildSections(pool: Person[], sort: SortKey): PeopleSection[] {
     return [...groups.entries()].map(([label, items]) => ({ key: label, label, items }));
   }
 
-  const keyOf = (p: Person) => (sort === "given" ? p.given || p.name : p.surname || "");
+  const keyOf = (p: Person) =>
+    sort === "given" ? p.given || p.name : baseSurname(p.surname) || p.surname || "";
   const sorted = [...pool].sort((a, b) => {
     const ka = keyOf(a);
     const kb = keyOf(b);
@@ -161,7 +163,10 @@ export default function PeopleList() {
 
   const filtered: Person[] = useMemo(() => {
     let pool = allPeople;
-    if (activeSurname) pool = pool.filter((p) => (p.surname || "(Unknown)") === activeSurname);
+    if (activeSurname) {
+      const want = baseSurname(activeSurname) || activeSurname;
+      pool = pool.filter((p) => (baseSurname(p.surname) || "(Unknown)") === want);
+    }
     if (activeCountry)
       pool = pool.filter((p) => (personCountry(p) || "Unknown") === activeCountry);
     if (filter.trim()) {

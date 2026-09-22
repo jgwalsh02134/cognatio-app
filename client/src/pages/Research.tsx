@@ -16,6 +16,7 @@ import {
   CalendarRange,
 } from "lucide-react";
 import {
+  baseSurname,
   people,
   fullDisplayName,
   lifespan,
@@ -644,8 +645,9 @@ function SurnameProjectsPanel() {
   const topSurnames = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const p of people) {
-      if (!p.surname) continue;
-      counts[p.surname] = (counts[p.surname] || 0) + 1;
+      const surname = baseSurname(p.surname);
+      if (!surname) continue;
+      counts[surname] = (counts[surname] || 0) + 1;
     }
     return Object.entries(counts)
       .filter(([s]) => s)
@@ -704,7 +706,7 @@ function SurnameProjectsPanel() {
               <div className="min-w-0">
                 <div className="text-sm font-semibold">{picked}</div>
                 <div className="text-[11px] text-muted-foreground">
-                  {people.filter((p) => p.surname === picked).length} people in the archive
+                  {people.filter((p) => baseSurname(p.surname) === picked).length} people in the archive
                 </div>
               </div>
               <Link

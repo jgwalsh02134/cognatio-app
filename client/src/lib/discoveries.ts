@@ -5,6 +5,7 @@
 // React render paths and memoized where useful.
 
 import {
+  baseSurname,
   familiesById,
   fullDisplayName,
   getSiblings,
@@ -127,11 +128,12 @@ export function deepestRootsBySurname(): RootLine[] {
   const anchorBySurname = new Map<string, { anchor: Person; info: DepthInfo }>();
   for (const p of people) {
     if (isAnchorlessPlaceholder(p)) continue;
-    if (!p.surname) continue;
+    const surname = baseSurname(p.surname);
+    if (!surname) continue;
     const info = ancestorDepth(p.id);
-    const cur = anchorBySurname.get(p.surname);
+    const cur = anchorBySurname.get(surname);
     if (!cur || info.depth > cur.info.depth) {
-      anchorBySurname.set(p.surname, { anchor: p, info });
+      anchorBySurname.set(surname, { anchor: p, info });
     }
   }
   const out: RootLine[] = [];
@@ -168,11 +170,12 @@ export interface EarliestPerSurname {
 export function earliestPerSurname(minCount = 2): EarliestPerSurname[] {
   const bySurname = new Map<string, { count: number; earliest: Person; year: number }>();
   for (const p of people) {
-    if (!p.surname || isAnchorlessPlaceholder(p)) continue;
+    const surname = baseSurname(p.surname);
+    if (!surname || isAnchorlessPlaceholder(p)) continue;
     const y = parseYear(p.birth?.date);
-    const cur = bySurname.get(p.surname);
+    const cur = bySurname.get(surname);
     if (!cur) {
-      bySurname.set(p.surname, {
+      bySurname.set(surname, {
         count: 1,
         earliest: p,
         year: y ?? Number.POSITIVE_INFINITY,
@@ -395,7 +398,7 @@ export function probableSiblings(p: Person, limit = 8): SiblingCandidate[] {
   for (const q of people) {
     if (q.id === p.id) continue;
     if (recordedSiblings.has(q.id)) continue;
-    if (q.surname.toLowerCase() !== p.surname.toLowerCase()) continue;
+    if (baseSurname(q.surname).toLowerCase() !== baseSurname(p.surname).toLowerCase()) continue;
     if (isAnchorlessPlaceholder(q)) continue;
     const reasons: string[] = [];
     let score = 0;

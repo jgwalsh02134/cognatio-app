@@ -1,5 +1,6 @@
 import { Link, useParams } from "wouter";
 import {
+  baseSurname,
   buildPedigree,
   familiesById,
   findRelationship,
@@ -242,7 +243,7 @@ export default function PersonDetail() {
           </div>
           <div className="min-w-0">
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">
-              <span>{person.surname || "Unknown"} family</span>
+              <span>{baseSurname(person.surname) || "Unknown"} family</span>
               {isLiving(person) && (
                 <span className="ml-3 inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 normal-case tracking-normal">
                   <span className="h-1.5 w-1.5 rounded-full bg-current" /> Living
@@ -353,10 +354,10 @@ export default function PersonDetail() {
           </div>
           {getArmsForSurname(person.surname) && (
             <Link
-              href={`/people?surname=${encodeURIComponent(person.surname || "")}`}
+              href={`/people?surname=${encodeURIComponent(baseSurname(person.surname) || person.surname || "")}`}
               className="hidden sm:flex flex-col items-center gap-2 self-end rounded-md px-2 py-1.5 hover-elevate active-elevate-2"
               data-testid="hero-arms-link"
-              title={`See all ${person.surname} family members`}
+              title={`See all ${baseSurname(person.surname) || person.surname} family members`}
             >
               <SurnameArms surname={person.surname} size="lg" />
               <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

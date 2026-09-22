@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { useMemo } from "react";
 import {
+  baseSurname,
   people,
   families,
   parseYear,
@@ -93,7 +94,7 @@ export default function Insights() {
       if (p.source_count && p.source_count > 0) withSources++;
       if (p.military) withMilitary++;
 
-      const sn = (p.surname || "").trim();
+      const sn = baseSurname(p.surname);
       if (sn) surnameCounts[sn] = (surnameCounts[sn] || 0) + 1;
 
       const eventPlaces = [

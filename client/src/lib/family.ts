@@ -360,9 +360,10 @@ export function searchPeople(query: string, limit = 50): Person[] {
     const name = p.name.toLowerCase();
     const given = p.given.toLowerCase();
     const surname = p.surname.toLowerCase();
+    const base = baseSurname(p.surname).toLowerCase();
     let score = 0;
     if (name === q) score = 100;
-    else if (surname === q) score = 90;
+    else if (surname === q || (base && base === q)) score = 90;
     else if (given === q) score = 85;
     else if (name.startsWith(q)) score = 80;
     else if (surname.startsWith(q)) score = 70;
@@ -375,10 +376,33 @@ export function searchPeople(query: string, limit = 50): Person[] {
   return results.slice(0, limit).map((r) => r.person);
 }
 
+/**
+ * Generational suffixes sometimes sit in the surname field ("Walsh Jr.",
+ * "Faden, Jr.", "Walsh III") instead of `suffix`. They are the same family
+ * name. Strip a trailing Sr./Jr./roman numeral/ordinal, repeatedly, but never
+ * reduce a surname to nothing.
+ */
+const TRAILING_GENERATIONAL_SUFFIX =
+  /(?:[,\s]+)(?:junior|senior|jnr\.?|snr\.?|jun\.?|sen\.?|jr\.?|sr\.?|esq\.?|viii|vii|iii|ii|ix|iv|vi|xi|x|v|i|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|10th)\.?$/i;
+
+export function baseSurname(surname: string | null | undefined): string {
+  if (!surname) return "";
+  let s = surname.trim().replace(/\s+/g, " ");
+  if (!s) return "";
+  let prev = "";
+  while (s !== prev) {
+    prev = s;
+    const next = s.replace(TRAILING_GENERATIONAL_SUFFIX, "").replace(/[,\s]+$/, "").trim();
+    if (!next) break;
+    s = next;
+  }
+  return s;
+}
+
 export function bySurname(): Record<string, Person[]> {
   const groups: Record<string, Person[]> = {};
   for (const p of people) {
-    const s = p.surname || "(Unknown)";
+    const s = baseSurname(p.surname) || "(Unknown)";
     (groups[s] ||= []).push(p);
   }
   return groups;
@@ -1112,11 +1136,12 @@ function findRelationshipInner(
 function orphanBranchLabel(p: Person): string {
   // Prefer surname; fall back to spouse's surname when the person itself has
   // only a given name.
-  const surname = p.surname && p.surname.trim().length > 0 ? p.surname : null;
+  const surname = baseSurname(p.surname);
   if (surname) return `in the ${surname} branch (unlinked record)`;
   for (const sid of p.spouse_ids) {
     const sp = peopleById[sid];
-    if (sp?.surname) return `in the ${sp.surname} branch (unlinked record)`;
+    const spouseSurname = sp ? baseSurname(sp.surname) : "";
+    if (spouseSurname) return `in the ${spouseSurname} branch (unlinked record)`;
   }
   return "unlinked record in the family file";
 }

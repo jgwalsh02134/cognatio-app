@@ -1,3 +1,4 @@
+import { baseSurname } from "@/lib/family";
 import maloyArms from "@/assets/arms/maloy.png";
 import walshArms from "@/assets/arms/walsh.png";
 import duganArms from "@/assets/arms/dugan.png";
@@ -92,7 +93,9 @@ export const ARMS_SURNAMES: { surname: string; src: string }[] = [
 
 export function getArmsForSurname(surname: string | null | undefined): string | null {
   if (!surname) return null;
-  const key = surname.trim().toLowerCase();
+  // "Walsh Jr." is still Walsh; suffixes are not a separate family.
+  const key = baseSurname(surname).trim().toLowerCase();
+  if (!key) return null;
   if (ARMS_MAP[key]) return ARMS_MAP[key];
   // strip leading "o'" or "mc" or "mac"
   const stripped = key.replace(/^o['’]?|^mc|^mac/, "");
