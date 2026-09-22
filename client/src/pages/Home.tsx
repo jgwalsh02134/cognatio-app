@@ -816,7 +816,7 @@ export default function Home() {
             href="/research"
             icon={Compass}
             title="Research workbench"
-            description="Brick walls, census coverage, FAN club, records checklist."
+            description="Brick walls, census coverage, and records checklist."
             accent="primary"
             testId="feature-research"
           />

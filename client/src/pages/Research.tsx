@@ -10,7 +10,6 @@ import {
   ScrollText,
   Search,
   TrendingUp,
-  Users as UsersIcon,
   Copy,
   Check,
   BrickWall,
@@ -27,7 +26,6 @@ import {
   brickWalls,
   censusCoverage,
   computeResearchStats,
-  fanClubFor,
   recordsToObtain,
   surnameProjectLinks,
   type CensusYear,
@@ -40,13 +38,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "brick" | "census" | "fan" | "records" | "surnames";
+type TabId = "overview" | "brick" | "census" | "records" | "surnames";
 
 const TABS: { id: TabId; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: "overview", label: "Overview", icon: Compass },
   { id: "brick", label: "Brick walls", icon: BrickWall },
   { id: "census", label: "Census coverage", icon: CalendarRange },
-  { id: "fan", label: "FAN club", icon: UsersIcon },
   { id: "records", label: "Records checklist", icon: ListChecks },
   { id: "surnames", label: "Surname projects", icon: ScrollText },
 ];
@@ -77,8 +74,7 @@ export default function Research() {
         </h1>
         <p className="text-sm text-muted-foreground mt-2.5 max-w-2xl">
           Pre-built deep links to FamilySearch, Ancestry, FindAGrave and country-specific
-          archives, plus brick-wall ancestors, census coverage and FAN-club neighbors —
-          everything you need to keep widening the tree.
+          archives, plus brick-wall ancestors, census coverage, and records to obtain.
         </p>
       </header>
 
@@ -131,7 +127,6 @@ export default function Research() {
         {tab === "overview" && <OverviewPanel stats={stats} onJump={setTab} />}
         {tab === "brick" && <BrickWallPanel />}
         {tab === "census" && <CensusPanel />}
-        {tab === "fan" && <FanClubPanel />}
         {tab === "records" && <RecordsPanel />}
         {tab === "surnames" && <SurnameProjectsPanel />}
       </div>
@@ -164,12 +159,6 @@ function OverviewPanel({
       subtitle: "Which censuses each person ought to appear in",
       icon: CalendarRange,
       count: stats.censusCoverableCount,
-    },
-    {
-      id: "fan",
-      title: "FAN club",
-      subtitle: "Friends, associates, neighbors — find collateral kin",
-      icon: UsersIcon,
     },
     {
       id: "records",
@@ -353,9 +342,6 @@ function BrickWallStrategies({ person }: { person: Person }) {
           <li>
             Search FamilySearch records and tree by spouse — marriage records often name the bride's father.
           </li>
-          <li>
-            Look at FAN-club neighbors — witnesses, godparents, and adjacent census households frequently turn out to be siblings or parents.
-          </li>
           {surname && (
             <li>
               Join the <span className="font-medium text-foreground">{surname}</span> Y-DNA project — paternal brick walls often crack via shared haplotypes.
@@ -524,90 +510,6 @@ function CensusTable({ person }: { person: Person }) {
             </div>
           </section>
         ))}
-      </CardContent>
-    </Card>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// FAN Club
-// ---------------------------------------------------------------------------
-
-function FanClubPanel() {
-  const [picked, setPicked] = useState<Person | null>(null);
-  return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:items-start">
-      <Card>
-        <CardContent className="p-4 sm:p-5">
-          <h2 className="font-display text-base font-semibold flex items-center gap-2 mb-2">
-            <UsersIcon className="h-4 w-4 text-muted-foreground" />
-            FAN club
-          </h2>
-          <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-            Friends, associates, neighbors. Pick a person and we surface others in the tree who
-            shared their place and era but aren't direct family — useful for spotting unrecorded
-            siblings, in-laws, witnesses, and migration cohorts.
-          </p>
-          <PersonPicker value={picked} onChange={setPicked} />
-        </CardContent>
-      </Card>
-
-      {picked ? (
-        <FanList person={picked} />
-      ) : (
-        <Card className="hidden lg:block">
-          <CardContent className="p-5 text-sm text-muted-foreground">
-            Choose a person on the left to find their collateral kin and cohort.
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-function FanList({ person }: { person: Person }) {
-  const neighbors = useMemo(() => fanClubFor(person, 20), [person]);
-  if (neighbors.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-4 sm:p-5 text-sm text-muted-foreground">
-          No overlapping neighbors found — needs at least one place on record.
-        </CardContent>
-      </Card>
-    );
-  }
-  return (
-    <Card>
-      <CardContent className="p-4 sm:p-5">
-        <header className="mb-3 flex items-center gap-3">
-          <PersonAvatar person={person} size="sm" />
-          <div className="min-w-0">
-            <div className="text-sm font-medium truncate">Neighbors of {fullDisplayName(person)}</div>
-            <div className="text-[11px] text-muted-foreground">{neighbors.length} possible associates</div>
-          </div>
-        </header>
-        <ul className="divide-y">
-          {neighbors.map((n) => (
-            <li key={n.person.id} className="py-2 first:pt-0 last:pb-0">
-              <Link
-                href={`/person/${n.person.id}`}
-                className="flex items-center gap-3 rounded-md p-1.5 -mx-1.5 hover-elevate active-elevate-2"
-                data-testid={`fan-${n.person.id}`}
-              >
-                <PersonAvatar person={n.person} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium truncate">{fullDisplayName(n.person)}</div>
-                  <div className="text-[11px] text-muted-foreground truncate">
-                    {lifespan(n.person)} · {n.reasons.join(" · ")}
-                  </div>
-                </div>
-                <span className="rounded-full border bg-background/60 px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-muted-foreground">
-                  {n.score}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </CardContent>
     </Card>
   );

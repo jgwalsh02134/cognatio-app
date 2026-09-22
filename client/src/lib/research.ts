@@ -1,7 +1,6 @@
 // Research helpers: structural utilities that turn the static dataset into
 // actionable research surfaces — brick walls (ancestors with no recorded
-// parents), census coverage windows, FAN-club neighbors (Friends, Associates,
-// Neighbors sharing place + era), records-to-obtain checklists, and
+// parents), census coverage windows, records-to-obtain checklists, and
 // surname-project deep links.
 //
 // All helpers are pure functions over the in-memory dataset — no network,
@@ -252,103 +251,6 @@ export function censusCoverage(p: Person): CensusYear[] {
       placeHint: placeForYear(p, year),
       url: censusUrl(p, year, countryName),
     }));
-}
-
-// ---------------------------------------------------------------------------
-// FAN club — Friends, Associates, Neighbors. Surface people who share an
-// overlapping place + era (and aren't already direct family).
-// ---------------------------------------------------------------------------
-
-export interface FanNeighbor {
-  person: Person;
-  reasons: string[];
-  score: number;
-}
-
-function normalize(s: string | null | undefined): string {
-  return (s || "").toLowerCase().replace(/\s+/g, " ").trim();
-}
-
-function eraAndPlace(p: Person): { era: number | null; places: string[] } {
-  const places = new Set<string>();
-  if (p.birth?.place) places.add(normalize(p.birth.place));
-  if (p.death?.place) places.add(normalize(p.death.place));
-  for (const r of p.residences || []) {
-    if (r.place) places.add(normalize(r.place));
-  }
-  const era = parseYear(p.birth?.date);
-  return { era, places: Array.from(places) };
-}
-
-function placesShareToken(a: string, b: string): boolean {
-  if (!a || !b) return false;
-  if (a === b) return true;
-  // Match by any shared place token (handles "Boston, MA" ↔ "Boston, Massachusetts").
-  const ta = new Set(a.split(/[,;]+/).map((s) => s.trim()).filter((s) => s.length >= 3));
-  for (const t of b.split(/[,;]+/).map((s) => s.trim())) {
-    if (t.length >= 3 && ta.has(t)) return true;
-  }
-  return false;
-}
-
-function directRelativeIds(p: Person): Set<string> {
-  const ids = new Set<string>();
-  ids.add(p.id);
-  p.parent_ids.forEach((id) => ids.add(id));
-  p.child_ids.forEach((id) => ids.add(id));
-  p.spouse_ids.forEach((id) => ids.add(id));
-  // Siblings via family_child_ids
-  for (const fid of p.family_child_ids) {
-    const f = familiesById[fid];
-    if (!f) continue;
-    f.children_ids.forEach((id) => ids.add(id));
-  }
-  return ids;
-}
-
-export function fanClubFor(p: Person, limit = 12): FanNeighbor[] {
-  const { era, places } = eraAndPlace(p);
-  if (places.length === 0) return [];
-  const exclude = directRelativeIds(p);
-  const out: FanNeighbor[] = [];
-  for (const other of people) {
-    if (exclude.has(other.id)) continue;
-    const o = eraAndPlace(other);
-    if (o.places.length === 0) continue;
-    let placeHit: string | null = null;
-    for (const a of places) {
-      for (const b of o.places) {
-        if (placesShareToken(a, b)) {
-          placeHit = a;
-          break;
-        }
-      }
-      if (placeHit) break;
-    }
-    if (!placeHit) continue;
-    const reasons: string[] = [];
-    reasons.push(`Shared place: ${placeHit}`);
-    let score = 1;
-    if (era != null && o.era != null) {
-      const diff = Math.abs(era - o.era);
-      if (diff <= 15) {
-        score += 2;
-        reasons.push(`Same generation (±${diff}y)`);
-      } else if (diff <= 35) {
-        score += 1;
-        reasons.push(`Overlapping era (±${diff}y)`);
-      } else {
-        continue; // too far apart to be useful neighbors
-      }
-    }
-    if (other.surname && other.surname === p.surname) {
-      score += 1;
-      reasons.push("Same surname — possible kin");
-    }
-    out.push({ person: other, reasons, score });
-  }
-  out.sort((a, b) => b.score - a.score);
-  return out.slice(0, limit);
 }
 
 // ---------------------------------------------------------------------------

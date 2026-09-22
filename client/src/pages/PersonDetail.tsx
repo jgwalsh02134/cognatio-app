@@ -29,7 +29,7 @@ import { GeneticsCard } from "@/components/GeneticsCard";
 import { PhotoEditor } from "@/components/PhotoEditor";
 import { CountryFlag } from "@/components/CountryFlag";
 import { linksFor } from "@/lib/researchLinks";
-import { censusCoverage, fanClubFor, recordsToObtain } from "@/lib/research";
+import { censusCoverage, recordsToObtain } from "@/lib/research";
 import { cn } from "@/lib/utils";
 import { EditableText, EventEditorPopover } from "@/components/Editable";
 import { NameFixChips } from "@/components/NameFixChips";
@@ -1322,7 +1322,6 @@ function ResearchCard({ person }: { person: Person }) {
   const links = linksFor(person);
   const census = censusCoverage(person);
   const records = recordsToObtain(person);
-  const fan = fanClubFor(person, 6);
 
   return (
     <Card className="border-card-border">
@@ -1438,34 +1437,6 @@ function ResearchCard({ person }: { person: Person }) {
           </section>
         )}
 
-        {/* FAN club */}
-        {fan.length > 0 && (
-          <section>
-            <h3 className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Users className="h-3 w-3" />
-              FAN club — possible associates
-            </h3>
-            <ul className="divide-y">
-              {fan.map((n) => (
-                <li key={n.person.id}>
-                  <Link
-                    href={`/person/${n.person.id}`}
-                    className="flex items-center gap-2.5 py-1.5 rounded-md px-1.5 -mx-1.5 hover-elevate active-elevate-2"
-                    data-testid={`fan-${n.person.id}`}
-                  >
-                    <PersonAvatar person={n.person} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium truncate">{fullDisplayName(n.person)}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">
-                        {lifespan(n.person)} · {n.reasons[0]}
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </CardContent>
     </Card>
   );

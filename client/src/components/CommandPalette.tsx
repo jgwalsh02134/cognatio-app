@@ -163,9 +163,9 @@ export function CommandPalette({
       {
         id: "nav-research",
         label: "Go to Research workbench",
-        hint: "Brick walls, census, FAN club, records",
+        hint: "Brick walls, census, records",
         icon: <Compass className="h-4 w-4" />,
-        keywords: ["research", "brick wall", "census", "records", "fan club", "surname", "dna"],
+        keywords: ["research", "brick wall", "census", "records", "surname", "dna"],
         perform: go("/research"),
       },
       {
