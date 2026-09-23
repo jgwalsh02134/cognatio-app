@@ -236,7 +236,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </Link>
                     <Link
                       href="/signup"
-                      className="inline-flex h-11 items-center rounded-full bg-primary px-3.5 text-base font-medium text-primary-foreground hover-elevate active-elevate-2"
+                      className="inline-flex h-11 shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-3.5 text-base font-medium text-primary-foreground hover-elevate active-elevate-2"
                       data-testid="nav-signup-mobile"
                     >
                       Sign up
@@ -281,7 +281,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 Cognatio
               </span>
               <span className="hidden xl:inline-block h-4 w-px bg-border" aria-hidden="true" />
-              <span className="hidden xl:inline text-[10px] uppercase tracking-[0.2em] text-muted-foreground truncate leading-none">
+              <span className="hidden xl:inline-block min-w-0 max-w-[12rem] truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-none">
                 Walsh · Maloy · Cranwell · Dugan
               </span>
             </div>
@@ -380,7 +380,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             data-testid="button-search"
           >
             <SearchIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">Search or jump…</span>
+            <span className="hidden xl:inline">Search or jump…</span>
             <kbd className="hidden md:inline ml-1 rounded border border-border/70 bg-muted px-1.5 text-[10px] font-mono">
               ⌘K
             </kbd>
@@ -422,17 +422,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           ) : (
             !isAuthPage && (
-              <div className="flex items-center gap-1.5">
+              <div className="flex shrink-0 items-center gap-1.5">
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
+                  className="hidden sm:inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover-elevate active-elevate-2"
                   data-testid="button-edit-unlock"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="inline-flex h-9 items-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover-elevate active-elevate-2"
+                  className="inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover-elevate active-elevate-2"
                   data-testid="nav-signup"
                 >
                   Sign up
@@ -447,7 +447,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={toggle}
             aria-label="Toggle theme"
             data-testid="button-theme"
-            className={cn("h-9 w-9", isAuthPage && "ml-auto")}
+            className={cn("h-9 w-9 shrink-0", isAuthPage && "ml-auto")}
           >
             {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
